@@ -4,3 +4,4 @@
 - Messanging service between users
 - Payment implementation
 - User Calendars
+- Rating of parking spots and renters (like Uber)
