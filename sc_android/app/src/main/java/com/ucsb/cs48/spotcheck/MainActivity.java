@@ -23,8 +23,8 @@ public class MainActivity extends AppCompatActivity {
         tv.setText(stringFromJNI());
     }
 
-    public void goToMapActivity(View view){
-        Intent i = new Intent(this, MainMapActivity.class);
+    public void goToGoogleMapsActivity(View view){
+        Intent i = new Intent(this, GoogleMapsActivity.class);
         startActivity(i);
     }
 
@@ -33,4 +33,5 @@ public class MainActivity extends AppCompatActivity {
      * which is packaged with this app
      */
     public native String stringFromJNI();
+
 }
