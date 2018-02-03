@@ -11,21 +11,23 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setTheme(android.R.style.Theme_Material_NoActionBar_Fullscreen);
         setContentView(R.layout.splash);
 
         int secondsDelayed = 1;
 
-        new Handler().postDelayed(new Runnable() {
+       /* new Handler().postDelayed(new Runnable() {
             public void run() {
                 startActivity(new Intent(SplashActivity.this, MainActivity.class));
                 finish();
             }
-        }, secondsDelayed * 1000);
+        }, secondsDelayed * 1000); */
     }
 
     public void goToMain(){
-        startActivity(new Intent(SplashActivity.this, MainActivity.class));
-        finish();
+        Intent i = new Intent(this, MainActivity.class);
+        startActivity(i);
     }
 
 }
