@@ -25,4 +25,13 @@
         tools:layout_editor_absoluteX="72dp"
         tools:layout_editor_absoluteY="95dp"/>
 
+    <Button
+        android:id="@+id/create_spot_button"
+        android:onClick="createSpotClicked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create Spot"
+        tools:layout_editor_absoluteX="147dp"
+        tools:layout_editor_absoluteY="386dp"/>
+
 </android.support.constraint.ConstraintLayout>
