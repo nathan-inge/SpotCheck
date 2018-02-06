@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void createSpotClicked(View view) {
-        Intent i = new Intent(this, CreateSpotEntry.class);
+        Intent i = new Intent(this, LoginActivity.class);
         startActivity(i);
     }
 
