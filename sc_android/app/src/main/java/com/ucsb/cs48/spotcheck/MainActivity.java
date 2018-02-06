@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 public class MainActivity extends AppCompatActivity {
 
     // Used to load the 'native-lib' library on application startup.
@@ -18,14 +21,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        FirebaseUser myUser = FirebaseAuth.getInstance().getCurrentUser();
+        String myUserEmail = "Not signed in";
+        if(myUser != null) {
+            myUserEmail = myUser.getEmail();
+        }
+
         // Example of a call to a native method
         TextView tv = (TextView) findViewById(R.id.sample_text);
-        tv.setText(stringFromJNI());
+        tv.setText(myUserEmail);
     }
 
     public void createSpotClicked(View view) {
         Intent i = new Intent(this, LoginActivity.class);
         startActivity(i);
+
     }
 
     /**
