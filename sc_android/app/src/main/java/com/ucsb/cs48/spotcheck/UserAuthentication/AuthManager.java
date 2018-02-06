@@ -1,4 +1,4 @@
-package com.ucsb.cs48.spotcheck;
+package com.ucsb.cs48.spotcheck.UserAuthentication;
 
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;

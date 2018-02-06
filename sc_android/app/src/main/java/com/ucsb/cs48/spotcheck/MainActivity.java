@@ -8,6 +8,8 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.ucsb.cs48.spotcheck.UserAuthentication.LoginActivity;
+import com.ucsb.cs48.spotcheck.UserAuthentication.RegisterActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void createSpotClicked(View view) {
-        Intent i = new Intent(this, LoginActivity.class);
+        Intent i = new Intent(this, RegisterActivity.class);
         startActivity(i);
 
     }

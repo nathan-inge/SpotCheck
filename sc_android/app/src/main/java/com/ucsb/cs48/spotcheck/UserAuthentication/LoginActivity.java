@@ -1,4 +1,4 @@
-package com.ucsb.cs48.spotcheck;
+package com.ucsb.cs48.spotcheck.UserAuthentication;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -20,7 +20,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -37,6 +36,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.ucsb.cs48.spotcheck.MainActivity;
+import com.ucsb.cs48.spotcheck.R;
 
 import java.util.ArrayList;
 import java.util.List;
