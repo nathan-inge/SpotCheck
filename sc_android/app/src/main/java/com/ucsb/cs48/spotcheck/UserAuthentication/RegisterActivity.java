@@ -36,8 +36,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.ucsb.cs48.spotcheck.MainActivity;
 import com.ucsb.cs48.spotcheck.R;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +69,8 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private EditText mFullNameView;
+    private EditText mPasswordTwoView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,16 +95,19 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
         };
 
 
-        // Set up the login form.
+        // Set up the register forms.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
 
+        mFullNameView = (EditText) findViewById(R.id.full_name);
         mPasswordView = (EditText) findViewById(R.id.password);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+
+        mPasswordTwoView = (EditText) findViewById(R.id.password_2);
+        mPasswordTwoView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
+                if (id == R.id.register || id == EditorInfo.IME_NULL) {
+                    attemptRegister();
                     return true;
                 }
                 return false;
@@ -110,7 +118,7 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptLogin();
+                attemptRegister();
             }
         });
 
@@ -181,21 +189,37 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
-    private void attemptLogin() {
+    private void attemptRegister() {
         if (mAuthTask != null) {
             return;
         }
 
         // Reset errors.
+        mFullNameView.setError(null);
         mEmailView.setError(null);
         mPasswordView.setError(null);
+        mPasswordView.setError(null);
 
-        // Store values at the time of the login attempt.
+        // Store values at the time of the register attempt.
+        String fullName = mFullNameView.getText().toString();
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
+        String passwordTwo = mPasswordTwoView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
+
+        // Check full name field
+        if (TextUtils.isEmpty(fullName)) {
+            mFullNameView.setError(getString(R.string.error_field_required));
+            focusView = mFullNameView;
+            cancel = true;
+        }
+        if(!isFullNameValid(fullName)) {
+            mFullNameView.setError(getString(R.string.error_invalid_fullName));
+            focusView = mFullNameView;
+            cancel = true;
+        }
 
         // Check for a valid password, if the user entered one.
         if (TextUtils.isEmpty(password)) {
@@ -220,6 +244,18 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
             cancel = true;
         }
 
+        // Check re-enter password field
+        if (TextUtils.isEmpty(passwordTwo)) {
+            mPasswordTwoView.setError(getString(R.string.error_field_required));
+            focusView = mPasswordTwoView;
+            cancel = true;
+        }
+        if (!password.contentEquals(passwordTwo)) {
+            mPasswordTwoView.setError(getString(R.string.error_passwords_different));
+            focusView = mPasswordTwoView;
+            cancel = true;
+        }
+
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
@@ -229,11 +265,11 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
             // perform the user login attempt.
             showProgress(true);
 
-            performLogin(email, password);
+            performRegister(fullName, email, password);
         }
     }
 
-    private void performLogin(String email, String password) {
+    private void performRegister(final String fullName, String email, String password) {
 
         mAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
@@ -242,16 +278,26 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
                     showProgress(false);
 
                     if (task.isSuccessful()) {
-                        // User successfully signed in
+                        // User successfully registered
+                        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+                        if (currentUser != null) {
+                            UserProfileChangeRequest profileUpdate = new UserProfileChangeRequest.Builder()
+                                .setDisplayName(fullName).build();
+                            currentUser.updateProfile(profileUpdate);
+                        }
+
                     } else {
-                        mPasswordView.setError(getString(R.string.error_incorrect_password));
-                        mPasswordView.requestFocus();
+
                     }
 
                 }
             });
     }
 
+    private boolean isFullNameValid(String fullName) {
+        return fullName.contains(" ") && fullName.length() > 3;
+    }
     private boolean isEmailValid(String email) {
         return email.contains("@");
     }

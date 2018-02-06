@@ -18,6 +18,8 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="error_invalid_fullName">This name is invalid</string>
+    <string name="error_passwords_different">Passwords don\'t match</string>
 
     <string name="auth_failed">Incorrect email and/or password.</string>
     <string name="title_activity_register">Register</string>

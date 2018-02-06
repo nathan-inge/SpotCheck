@@ -367,7 +367,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            mAuth.createUserWithEmailAndPassword(mEmail, mPassword)
+            mAuth.signInWithEmailAndPassword(mEmail, mPassword)
                 .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
