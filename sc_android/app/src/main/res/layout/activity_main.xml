@@ -1,51 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relativeLayout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     tools:context="com.ucsb.cs48.spotcheck.MainActivity">
 
     <TextView
-        android:id="@+id/sample_text"
-        android:layout_width="wrap_content"
-        android:layout_height="15dp"
-        android:layout_above="@+id/buyer_button"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="53dp"
+        android:id="@+id/welcome_text"
+        android:layout_width="165dp"
+        android:layout_height="31dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="96dp"
         android:text="Welcome to SpotCheck!"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/or_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Or:"
+        tools:layout_editor_absoluteX="196dp"
+        tools:layout_editor_absoluteY="278dp" />
+
+    <Button
+        android:id="@+id/register_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="goToRegisterActivity"
+        android:text="Register with e-mail"
+        app:layout_constraintBottom_toTopOf="@+id/or_text"
+        app:layout_constraintTop_toBottomOf="@+id/welcome_text"
+        app:layout_constraintVertical_bias="0.275"
+        tools:layout_editor_absoluteX="117dp" />
+
+    <Button
+        android:id="@+id/facebook_login_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:onClick="goToGoogleMapsActivity"
+        android:text="Login with Facebook"
+        app:layout_constraintTop_toBottomOf="@+id/or_text"
+        tools:layout_editor_absoluteX="117dp" />
+
+    <Button
+        android:id="@+id/google_login_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="goToGoogleMapsActivity"
+        android:text="Login with Google"
+        app:layout_constraintBottom_toTopOf="@+id/login_text"
+        app:layout_constraintTop_toBottomOf="@+id/facebook_login_button"
+        app:layout_constraintVertical_bias="0.101"
+        tools:layout_editor_absoluteX="125dp" />
+
+
+    <TextView
+        android:id="@+id/login_text"
+        android:layout_width="wrap_content"
+        android:layout_height="14dp"
+        android:text="Already Registered? Login here:"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.796" />
 
     <Button
-        android:id="@+id/buyer_button"
+        android:id="@+id/login_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="67dp"
-        android:layout_marginStart="67dp"
-        android:onClick="goToRegisterActivity"
-        android:text="Register"
-        tools:layout_editor_absoluteX="72dp"
-        tools:layout_editor_absoluteY="324dp" />
-
-    <Button
-        android:id="@+id/seller_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/buyer_button"
-        android:layout_alignBottom="@+id/buyer_button"
-        android:layout_marginLeft="40dp"
-        android:layout_marginStart="80dp"
-        android:layout_toEndOf="@+id/buyer_button"
-        android:layout_toRightOf="@+id/buyer_button"
+        android:layout_marginTop="28dp"
         android:onClick="goToLoginActivity"
         android:text="Login"
-        tools:layout_editor_absoluteX="212dp"
-        tools:layout_editor_absoluteY="324dp" />
+        app:layout_constraintTop_toBottomOf="@+id/login_text"
+        tools:layout_editor_absoluteX="161dp" />
 
-</android.widget.RelativeLayout>
+
+</android.support.constraint.ConstraintLayout>
