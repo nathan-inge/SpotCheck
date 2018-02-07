@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Spot Check</string>
+    <string name="edit_profile_button">Edit Profile Button</string>
+    <string name="edit_profile">Edit Profile</string>
 </resources>
