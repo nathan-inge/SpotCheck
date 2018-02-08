@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Spot Check</string>
 
-<string name="title_activity_google_maps">sc_Map</string>
+<string name="title_activity_google_maps">Spot Check</string>
     <string name="title_activity_create_spot_entry">CreateSpotEntry</string>
     <string name="title_activity_login">Sign in</string>
 

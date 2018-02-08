@@ -19,11 +19,7 @@
 
         <activity android:name=".MainActivity"
                   android:theme="@android:style/Theme.NoTitleBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
 
@@ -33,7 +29,16 @@
 
         <activity
             android:name=".GoogleMapsActivity"
-            android:label="@string/title_activity_google_maps"></activity>        <activity
+            android:label="@string/title_activity_google_maps">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
+        <activity
             android:name=".CreateSpotEntry"
             android:label="@string/title_activity_create_spot_entry"
             android:theme="@style/AppTheme.NoActionBar">
