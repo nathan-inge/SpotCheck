@@ -8,6 +8,9 @@ import android.view.View;
 import android.widget.TextView;
 import android.view.View;
 
+import com.ucsb.cs48.spotcheck.UserAuthentication.LoginActivity;
+import com.ucsb.cs48.spotcheck.UserAuthentication.RegisterActivity;
+
 public class MainActivity extends Activity {
 
     // Used to load the 'native-lib' library on application startup.

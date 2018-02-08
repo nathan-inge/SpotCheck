@@ -36,6 +36,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.ucsb.cs48.spotcheck.GoogleMapsActivity;
 import com.ucsb.cs48.spotcheck.MainActivity;
 import com.ucsb.cs48.spotcheck.R;
 
@@ -402,7 +403,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private void goToMapActivity() {
-        Intent i = new Intent(this, MainActivity.class);
+        Intent i = new Intent(this, GoogleMapsActivity.class);
         startActivity(i);
     }
 }
