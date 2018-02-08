@@ -1,7 +1,17 @@
 package com.ucsb.cs48.spotcheck;
 
+import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.view.Gravity;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -9,6 +19,10 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import org.w3c.dom.Text;
 
 
 /**
@@ -16,15 +30,47 @@ import com.google.android.gms.maps.model.MarkerOptions;
  */
 
 
-public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
 
     private GoogleMap mMap;
 
-    @Override
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private FirebaseAuth mAuth;
+    private FirebaseUser currentUser;
+
+    private DrawerLayout mDrawerLayout;
+    private TextView mUserName;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Retrieve the content view that renders the map.
         setContentView(R.layout.activity_google_maps);
+
+        setNavigationViewListner();
+
+        mAuth = FirebaseAuth.getInstance();
+
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        mUserName = (TextView) findViewById(R.id.display_name);
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // User is signed in - do nothing, stay in main view
+                    currentUser = user;
+                    mUserName.setText(currentUser.getDisplayName());
+
+                } else {
+                    // No user is signed in, go to splash screen
+                    goToSplashScreen();
+                }
+            }
+        };
+
 
         // Construct a GeoDataClient.
        // mGeoDataClient = Places.getGeoDataClient(this, null);
@@ -40,6 +86,21 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
     }
 
 
@@ -62,5 +123,38 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
         LatLng IV = new LatLng(34.412609, -119.861433);
         mMap.addMarker(new MarkerOptions().position(IV).title("Marker in Isla Vista"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(IV));
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        // Handle navigation view item clicks here.
+        switch (item.getItemId()) {
+
+            case R.id.logout_button: {
+                mAuth.signOut();
+                break;
+            }
+        }
+        //close navigation drawer
+        mDrawerLayout.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    private void setNavigationViewListner() {
+        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
+        navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    public void goToSplashScreen() {
+        Intent i = new Intent(this, MainActivity.class);
+        startActivity(i);
+    }
+
+    public void logoutButtonClicked(View view) {
+        mAuth.signOut();
+    }
+
+    public void menuButtonClicked(View view) {
+        mDrawerLayout.openDrawer(Gravity.LEFT);
     }
 }
