@@ -16,6 +16,14 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity
+            android:name=".EditProfile"
+            android:label="@string/edit_profile">
+        </activity>
+        <activity
+            android:name=".ProfilePage"
+            android:label="@string/my_profile">
+        </activity>
     </application>
 
 </manifest>
