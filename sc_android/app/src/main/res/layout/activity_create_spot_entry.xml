@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.widget.RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/gradient"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,28 +13,27 @@
         android:id="@+id/addressTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
         android:text="TextView"
         tools:layout_editor_absoluteX="43dp"
-        tools:layout_editor_absoluteY="64dp"
-        android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/editText"
-        android:layout_marginTop="53dp"/>
+        tools:layout_editor_absoluteY="64dp" />
 
     <EditText
         android:id="@+id/addressEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/addressTextView"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="52dp"
+        android:layout_marginRight="52dp"
         android:ems="10"
         android:inputType="textPersonName"
         android:text="Address"
         tools:layout_editor_absoluteX="123dp"
-        tools:layout_editor_absoluteY="46dp"
-        android:layout_alignBaseline="@+id/textView2"
-        android:layout_alignBottom="@+id/textView2"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginRight="23dp"
-        android:layout_marginEnd="23dp"/>
+        tools:layout_editor_absoluteY="46dp" />
 
     <Button
         android:id="@+id/submitSpotButton"
@@ -44,5 +44,15 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="82dp"
         android:text="Submit"/>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/addressEditText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="77dp"
+        android:scaleType="fitCenter"
+        app:srcCompat="@drawable/sclogo" />
 
 </android.widget.RelativeLayout>
