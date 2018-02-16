@@ -134,6 +134,11 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
                 mAuth.signOut();
                 break;
             }
+
+            case R.id.create_spot_entry_button: {
+                Intent create_spot_entry = new Intent(this, CreateSpotEntry.class);
+                startActivity(create_spot_entry);
+            }
         }
         //close navigation drawer
         mDrawerLayout.closeDrawer(GravityCompat.START);
