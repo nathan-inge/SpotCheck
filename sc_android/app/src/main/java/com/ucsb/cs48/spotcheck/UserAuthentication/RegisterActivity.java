@@ -14,7 +14,6 @@ import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -29,7 +28,6 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -38,11 +36,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.ucsb.cs48.spotcheck.GoogleMapsActivity;
-import com.ucsb.cs48.spotcheck.MainActivity;
 import com.ucsb.cs48.spotcheck.R;
-
-import org.w3c.dom.Text;
-
+import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseAuth;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,11 +53,8 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
      */
     private static final int REQUEST_READ_CONTACTS = 0;
 
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-    private LoginActivity.UserLoginTask mAuthTask = null;
-    private FirebaseAuth mAuth;
+    // Firebase and Interface references.
+    private SCFirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
     // UI references.
@@ -78,8 +70,7 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        // Set up Firebase instance and listener
-        mAuth = FirebaseAuth.getInstance();
+        mAuth = new SCFirebaseAuth();
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -88,22 +79,19 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
                 if (user != null) {
                     // User is signed in
                     goToMapActivity();
-                } else {
-                    // User is signed out
                 }
-                // ...
             }
         };
 
 
         // Set up the register forms.
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+        mEmailView = findViewById(R.id.email);
         populateAutoComplete();
 
-        mFullNameView = (EditText) findViewById(R.id.full_name);
-        mPasswordView = (EditText) findViewById(R.id.password);
+        mFullNameView = findViewById(R.id.full_name);
+        mPasswordView = findViewById(R.id.password);
 
-        mPasswordTwoView = (EditText) findViewById(R.id.password_2);
+        mPasswordTwoView = findViewById(R.id.password_2);
         mPasswordTwoView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -115,7 +103,7 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        Button mEmailSignInButton = findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -130,14 +118,14 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
     @Override
     public void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
+        mAuth.addAuthListener(mAuthListener);
     }
 
     @Override
     public void onStop() {
         super.onStop();
         if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
+            mAuth.removeAuthListener(mAuthListener);
         }
     }
 
@@ -191,9 +179,6 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
      * errors are presented and no actual login attempt is made.
      */
     private void attemptRegister() {
-        if (mAuthTask != null) {
-            return;
-        }
 
         // Reset errors.
         mFullNameView.setError(null);
@@ -272,7 +257,7 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
 
     private void performRegister(final String fullName, String email, String password) {
 
-        mAuth.createUserWithEmailAndPassword(email, password)
+        mAuth.register(email, password)
             .addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
@@ -287,8 +272,6 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
                                 .setDisplayName(fullName).build();
                             currentUser.updateProfile(profileUpdate);
                         }
-
-                    } else {
 
                     }
 
@@ -315,32 +298,26 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
         // for very easy animations. If available, use these APIs to fade-in
         // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+        int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
-                show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
+        mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+        mLoginFormView.animate().setDuration(shortAnimTime).alpha(
+            show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            }
+        });
 
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
+        mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+        mProgressView.animate().setDuration(shortAnimTime).alpha(
+            show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            }
+        });
+
     }
 
     @Override
@@ -394,58 +371,6 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
         };
 
         int ADDRESS = 0;
-        int IS_PRIMARY = 1;
-    }
-
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mEmail;
-        private final String mPassword;
-
-        UserLoginTask(String email, String password) {
-            mEmail = email;
-            mPassword = password;
-
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            mAuth.createUserWithEmailAndPassword(mEmail, mPassword)
-                .addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (!task.isSuccessful()) {
-                            Toast.makeText(RegisterActivity.this, R.string.auth_failed,
-                                Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (success) {
-                finish();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
-        }
     }
 
     private void goToMapActivity() {
