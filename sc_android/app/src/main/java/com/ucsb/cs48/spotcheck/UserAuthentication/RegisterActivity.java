@@ -38,6 +38,9 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.ucsb.cs48.spotcheck.GoogleMapsActivity;
 import com.ucsb.cs48.spotcheck.R;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseAuth;
+import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseUser;
+import com.ucsb.cs48.spotcheck.SCLocalObjects.SpotCheckUser;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,6 +58,7 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
 
     // Firebase and Interface references.
     private SCFirebaseAuth mAuth;
+    private SCFirebaseUser scFirebaseUser;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
     // UI references.
@@ -71,6 +75,7 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
         setContentView(R.layout.activity_register);
 
         mAuth = new SCFirebaseAuth();
+        scFirebaseUser = new SCFirebaseUser();
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -271,6 +276,14 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
                             UserProfileChangeRequest profileUpdate = new UserProfileChangeRequest.Builder()
                                 .setDisplayName(fullName).build();
                             currentUser.updateProfile(profileUpdate);
+
+                            SpotCheckUser newRegisteredUser = new SpotCheckUser(
+                                currentUser.getUid(),
+                                currentUser.getEmail(),
+                                fullName
+                            );
+
+                            scFirebaseUser.createUser(newRegisteredUser);
                         }
 
                     }

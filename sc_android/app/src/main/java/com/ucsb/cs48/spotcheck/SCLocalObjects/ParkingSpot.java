@@ -1,12 +1,9 @@
-package com.ucsb.cs48.spotcheck;
+package com.ucsb.cs48.spotcheck.SCLocalObjects;
 
 import com.google.firebase.database.Exclude;
 
 import java.util.UUID;
 
-/**
- * Created by Nathan Inge on 2/3/18.
- */
 
 public class ParkingSpot {
 
@@ -16,12 +13,18 @@ public class ParkingSpot {
     private Double rate;
 
     public ParkingSpot() {
-
+        // Required no argument constructor for Firebase database
     }
 
+    // Constructor only used to create new spot in interface
     public ParkingSpot(String ownerID, String address, Double rate) {
-        String uuid = UUID.randomUUID().toString();
-        this.spotID = "spot-" + uuid;
+        this.ownerID = ownerID;
+        this.address = address;
+        this.rate = rate;
+    }
+
+    public ParkingSpot(String spotID, String ownerID, String address, Double rate) {
+        this.spotID = spotID;
         this.ownerID = ownerID;
         this.address = address;
         this.rate = rate;
