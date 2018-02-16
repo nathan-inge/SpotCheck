@@ -46,4 +46,14 @@ public class ParkingSpot {
         return this.rate;
     }
 
+    @Exclude
+    public void setSpotID(String spotID) { this.spotID = spotID; }
+
+    public void setOwnerID(String ownerID) { this.ownerID = ownerID; }
+
+    public void setAddress(String address) { this.address = address; }
+
+    public void setRate(Double rate) {
+        this.rate = rate;
+    }
 }

@@ -8,6 +8,9 @@ import android.view.View;
 import android.widget.TextView;
 import android.view.View;
 
+import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseCallback;
+import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseParkingSpot;
+import com.ucsb.cs48.spotcheck.SCLocalObjects.ParkingSpot;
 import com.ucsb.cs48.spotcheck.UserAuthentication.LoginActivity;
 import com.ucsb.cs48.spotcheck.UserAuthentication.RegisterActivity;
 

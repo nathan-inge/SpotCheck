@@ -27,6 +27,10 @@ android {
             path "CMakeLists.txt"
         }
     }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 }
 
 dependencies {

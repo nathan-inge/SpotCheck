@@ -1,0 +1,62 @@
+package com.ucsb.cs48.spotcheck;
+
+import android.content.Context;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.runner.AndroidJUnit4;
+
+import com.google.firebase.FirebaseApp;
+import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseCallback;
+import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseParkingSpot;
+import com.ucsb.cs48.spotcheck.SCLocalObjects.ParkingSpot;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
+import static org.junit.Assert.*;
+
+/**
+ * Instrumentation test, which will execute on an Android device.
+ *
+ * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
+ */
+@RunWith(AndroidJUnit4.class)
+public class SCInterfaceTest {
+    @Test
+    public void useAppContext() throws Exception {
+        // Context of the app under test.
+        Context appContext = InstrumentationRegistry.getTargetContext();
+
+        assertEquals("com.ucsb.cs48.spotcheck", appContext.getPackageName());
+    }
+
+    @Test
+    public void write_and_readSpot() throws InterruptedException {
+        Context appContext = InstrumentationRegistry.getTargetContext();
+        FirebaseApp.initializeApp(appContext);
+
+        SCFirebaseParkingSpot scFirebaseParkingSpot = new SCFirebaseParkingSpot();
+        final ParkingSpot writeSpot = new ParkingSpot("testOwnerID", "testAddress", 10.5);
+
+        final String spotID = scFirebaseParkingSpot.createNewSpot(writeSpot);
+        writeSpot.setSpotID(spotID);
+
+        final CountDownLatch signal = new CountDownLatch(1);
+
+        scFirebaseParkingSpot.getParkingSpot(spotID, new SCFirebaseCallback<ParkingSpot>() {
+            @Override
+            public void callback(ParkingSpot data) {
+                data.setSpotID(spotID);
+                assertEquals(writeSpot.getSpotID(), data.getSpotID());
+                assertEquals(writeSpot.getOwnerID(), data.getOwnerID());
+                assertEquals(writeSpot.getAddress(), data.getAddress());
+                assertEquals(writeSpot.getRate(), data.getRate(), 0.0);
+                signal.countDown();
+            }
+        });
+
+        signal.await(30, TimeUnit.SECONDS);
+    }
+}
