@@ -89,6 +89,9 @@ public class CreateSpotEntry extends AppCompatActivity {
 
 
         spotDatabase.child("parking_spots").child(newSpot.getSpotID()).setValue(newSpot);
+
+        Intent returnToMaps = new Intent(this, GoogleMapsActivity.class);
+        startActivity(returnToMaps);
     }
 
 }
