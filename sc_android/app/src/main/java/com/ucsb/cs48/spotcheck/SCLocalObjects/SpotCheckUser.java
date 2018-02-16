@@ -11,7 +11,7 @@ public class SpotCheckUser {
     private String userID;
     private String email;
     private String fullname;
-    private List<String> parkingSpotIDs;
+    // private List<String> parkingSpotIDs;
 
 
     public SpotCheckUser() {
@@ -36,5 +36,12 @@ public class SpotCheckUser {
     public String getFullname() {
         return this.fullname;
     }
+
+    @Exclude
+    public void setUserID(String userID) { this.userID = userID; }
+
+    public void setEmail(String email) { this.email = email; }
+
+    public void setFullname(String fullname) { this.fullname = fullname; }
 
 }

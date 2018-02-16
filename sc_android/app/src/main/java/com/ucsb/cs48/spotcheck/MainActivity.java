@@ -2,15 +2,9 @@ package com.ucsb.cs48.spotcheck;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
-import android.view.View;
 
-import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseCallback;
-import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseParkingSpot;
-import com.ucsb.cs48.spotcheck.SCLocalObjects.ParkingSpot;
 import com.ucsb.cs48.spotcheck.UserAuthentication.LoginActivity;
 import com.ucsb.cs48.spotcheck.UserAuthentication.RegisterActivity;
 
