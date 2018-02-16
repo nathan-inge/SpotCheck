@@ -2,7 +2,6 @@ package com.ucsb.cs48.spotcheck.SCLocalObjects;
 
 import com.google.firebase.database.Exclude;
 
-import java.util.UUID;
 
 
 public class ParkingSpot {
