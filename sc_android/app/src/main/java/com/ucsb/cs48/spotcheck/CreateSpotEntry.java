@@ -33,14 +33,6 @@ public class CreateSpotEntry extends AppCompatActivity {
         String address = addressInput.getText().toString();
 
         spotDatabase = FirebaseDatabase.getInstance().getReference();
-
-        ParkingSpot newSpot = new ParkingSpot("user1+2+3", address, 12.50);
-
-        SpotCheckUser newUser = new SpotCheckUser("rick_franc", "Rick Franc");
-
-        spotDatabase.child("users").child(newUser.getUserID()).setValue(newUser);
-
-        spotDatabase.child("parking_spots").child(newSpot.getSpotID()).setValue(newSpot);
     }
 
 }
