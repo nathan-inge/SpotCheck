@@ -21,6 +21,8 @@ public class SCFirebase {
         scDatabase = FirebaseDatabase.getInstance().getReference();
     }
 
+    /// MARK - Parking Spot Interface
+    // Create a new parking spot in the database
     public String createNewSpot(ParkingSpot spot) {
         String newSpotID = "spot-" + UUID.randomUUID().toString();
 
@@ -29,6 +31,7 @@ public class SCFirebase {
         return newSpotID;
     }
 
+    // Get a parking spot from the data base
     public void getParkingSpot(String spotID,
         @NonNull final SCFirebaseCallback<ParkingSpot> finishedCallback) {
 
@@ -47,10 +50,15 @@ public class SCFirebase {
         });
     }
 
+
+    /// MARK - User Interface
+    // Create a new user in database
+    // SHOULD ONLY BE USED WHEN REGISTERING A NEW USER
     public void createUser(SpotCheckUser user) {
         scDatabase.child("users").child(user.getUserID()).setValue(user);
     }
 
+    // Get a user from the database
     public void getSCUser(String userID,
                           @NonNull final SCFirebaseCallback<SpotCheckUser> finishedCallback) {
 

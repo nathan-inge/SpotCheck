@@ -2,7 +2,9 @@ package com.ucsb.cs48.spotcheck;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.view.View;
 
 import com.ucsb.cs48.spotcheck.UserAuthentication.LoginActivity;
