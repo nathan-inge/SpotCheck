@@ -21,6 +21,18 @@
         tools:layout_editor_absoluteX="43dp"
         tools:layout_editor_absoluteY="64dp" />
 
+
+
+    <!--
+    <fragment
+        android:id="@+id/place_autocomplete_fragment"
+        android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/rateEditText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="104dp"
+        tools:layout="@layout/place_autocomplete_fragment" />
     <EditText
         android:id="@+id/addressEditText"
         android:layout_width="wrap_content"
@@ -34,15 +46,15 @@
         android:textAlignment="center"
         tools:layout_editor_absoluteX="123dp"
         tools:layout_editor_absoluteY="46dp" />
+        -->
 
     <EditText
         android:id="@+id/rateEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/addressTextView"
-        android:layout_alignStart="@+id/addressTextView"
-        android:layout_below="@+id/addressEditText"
-        android:layout_marginTop="67dp"
+        android:layout_above="@+id/submitSpotButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="75dp"
         android:ems="10"
         android:hint="Rate ($/hour)"
         android:inputType="textPersonName"
@@ -59,5 +71,16 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="82dp"
         android:text="Submit"/>
+
+    <Button
+        android:id="@+id/find_place_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/addressTextView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="105dp"
+        android:onClick="findPlace"
+        android:text="Find my Spot!" />
+
 
 </android.widget.RelativeLayout>
