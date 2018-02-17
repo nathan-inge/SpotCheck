@@ -79,7 +79,7 @@ public class SCInterfaceTest {
             "Test Name"
         );
 
-        scFirebase.createUser(writeUser);
+        scFirebase.updateDatabaseUser(writeUser);
 
         final CountDownLatch signal = new CountDownLatch(1);
 
