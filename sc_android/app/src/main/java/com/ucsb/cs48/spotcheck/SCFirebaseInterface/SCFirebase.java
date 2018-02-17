@@ -11,6 +11,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.ParkingSpot;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.SpotCheckUser;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class SCFirebase {
@@ -48,6 +50,30 @@ public class SCFirebase {
             public void onCancelled(DatabaseError databaseError) {}
 
         });
+    }
+
+    public void getAllParkingSpots(
+        @NonNull final SCFirebaseCallback<ArrayList<ParkingSpot>> finishedCalback) {
+
+        DatabaseReference myRef = scDatabase.child("parking_spots/");
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<ParkingSpot> parkingSpots = new ArrayList<>();
+
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    parkingSpots.add(postSnapshot.getValue(ParkingSpot.class));
+                }
+
+                finishedCalback.callback(parkingSpots);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+
+        });
+
     }
 
 
