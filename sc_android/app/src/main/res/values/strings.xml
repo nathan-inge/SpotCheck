@@ -1,12 +1,7 @@
 <resources>
     <string name="app_name">Spot Check</string>
 
-
-    <string name="edit_profile_button">Edit Profile Button</string>
-    <string name="edit_profile">Edit Profile</string>
-    <string name="my_profile">My Profile</string>
-
-<string name="title_activity_google_maps">Spot Check</string>
+    <string name="title_activity_google_maps">Spot Check</string>
     <string name="title_activity_create_spot_entry">CreateSpotEntry</string>
     <string name="title_activity_login">Sign in</string>
 
