@@ -2,7 +2,6 @@ package com.ucsb.cs48.spotcheck;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -21,13 +20,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-import org.w3c.dom.Text;
-
-
-/**
- * Created by Arielle on 1/31/18.
- */
 
 
 public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
@@ -51,9 +43,9 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
         mAuth = FirebaseAuth.getInstance();
 
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
 
-        mUserName = (TextView) findViewById(R.id.display_name);
+        mUserName = findViewById(R.id.display_name);
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -139,6 +131,11 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
                 mAuth.signOut();
                 break;
             }
+
+            case R.id.create_spot_entry_button: {
+                Intent create_spot_entry = new Intent(this, CreateSpotEntry.class);
+                startActivity(create_spot_entry);
+            }
         }
         //close navigation drawer
         mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -146,7 +143,7 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
     }
 
     private void setNavigationViewListner() {
-        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
+        NavigationView navigationView = findViewById(R.id.navigation);
         navigationView.setNavigationItemSelectedListener(this);
     }
 
@@ -155,8 +152,12 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
         startActivity(i);
     }
 
+    public void logoutButtonClicked(View view) {
+        mAuth.signOut();
+    }
+
     public void menuButtonClicked(View view) {
-        mDrawerLayout.openDrawer(Gravity.LEFT);
+        mDrawerLayout.openDrawer(Gravity.START);
     }
 
     public void viewProfileButtonClicked() {
