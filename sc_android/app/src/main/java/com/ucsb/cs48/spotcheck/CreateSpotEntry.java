@@ -23,6 +23,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebase;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.ParkingSpot;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.SCLatLng;
+import com.ucsb.cs48.spotcheck.Utilities.MoneyTextWatcher;
+
+import java.text.NumberFormat;
 
 
 public class CreateSpotEntry extends AppCompatActivity {
@@ -44,6 +47,7 @@ public class CreateSpotEntry extends AppCompatActivity {
         rateErrorText = findViewById(R.id.rate_error_text);
         placeText = findViewById(R.id.place_result_text);
 
+        rateInput.addTextChangedListener(new MoneyTextWatcher(rateInput));
     }
 
 
@@ -82,9 +86,12 @@ public class CreateSpotEntry extends AppCompatActivity {
     }
 
 
+
     public void submitSpotButtonTapped(View view) {
         String address = place.getAddress().toString();
-        double rate = Double.parseDouble(rateInput.getText().toString());
+        String formattedRate = rateInput.getText().toString().substring(1);
+
+        double rate = Double.parseDouble(formattedRate);
         LatLng latLng = place.getLatLng();
         SCLatLng scLatLng = new SCLatLng(latLng.latitude, latLng.longitude);
 
@@ -95,19 +102,8 @@ public class CreateSpotEntry extends AppCompatActivity {
         SCFirebase scFirebase = new SCFirebase();
         scFirebase.createNewSpot(newSpot);
 
-            Intent returnToMaps = new Intent(this, GoogleMapsActivity.class);
-            startActivity(returnToMaps);
-        }
-        else {
-            if (!validPlace) {
-                placeText.setTextColor(0xffcc0000);
-                placeText.setText("Not a valid Place");
-            }
-            rateErrorText.setText("Invalid Rate: Must be greater than zero");
-        }
+        Intent returnToMaps = new Intent(this, GoogleMapsActivity.class);
+        startActivity(returnToMaps);
 
     }
-
-
-
 }

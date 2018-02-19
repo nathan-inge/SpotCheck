@@ -57,7 +57,7 @@
         android:layout_marginTop="48dp"
         android:ems="10"
         android:hint="Rate ($/hour)"
-        android:inputType="textPersonName"
+        android:inputType="number"
         android:textAlignment="center"
         tools:layout_editor_absoluteX="123dp"
         tools:layout_editor_absoluteY="46dp" />
