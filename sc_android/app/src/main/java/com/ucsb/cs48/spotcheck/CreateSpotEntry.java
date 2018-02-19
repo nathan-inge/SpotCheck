@@ -85,7 +85,7 @@ public class CreateSpotEntry extends AppCompatActivity {
             }
         }
     }
-    
+
 
     public void submitSpotButtonTapped(View view) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
