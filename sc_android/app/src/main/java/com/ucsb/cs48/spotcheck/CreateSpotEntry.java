@@ -18,26 +18,25 @@ import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebase;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.ParkingSpot;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.SCLatLng;
 import com.ucsb.cs48.spotcheck.Utilities.MoneyTextWatcher;
 
-import java.text.NumberFormat;
-
 
 public class CreateSpotEntry extends AppCompatActivity {
 
 
-    TextView placeText;
-    TextView rateErrorText;
-    EditText rateInput;
+    private TextView placeText;
+    private TextView rateErrorText;
+    private EditText rateInput;
+
     private static final String TAG = "CreateSpotEntry";
     int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
-    Place place;
-    boolean validPlace = false;
+    private Place place;
+
+    private boolean validPlace = false;
+    private boolean validRate = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,34 +75,61 @@ public class CreateSpotEntry extends AppCompatActivity {
                 placeText.setTextColor(0xff000000);
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(this, data);
-                // TODO: Handle the error.
+
                 Log.i(TAG, status.getStatusMessage());
 
-            } else if (resultCode == RESULT_CANCELED) {
-                // The user canceled the operation.
+                validPlace = false;
+                placeText.setText(R.string.place_error);
+                placeText.setTextColor(0xff000000);
+
             }
         }
     }
-
-
+    
 
     public void submitSpotButtonTapped(View view) {
-        String address = place.getAddress().toString();
-        String formattedRate = rateInput.getText().toString().substring(1);
-
-        double rate = Double.parseDouble(formattedRate);
-        LatLng latLng = place.getLatLng();
-        SCLatLng scLatLng = new SCLatLng(latLng.latitude, latLng.longitude);
-
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user == null) {
+            Intent returnToSplash = new Intent(this, MainActivity.class);
+            startActivity(returnToSplash);
+            return;
+        }
 
-        ParkingSpot newSpot = new ParkingSpot(user.getUid(), address, scLatLng, rate);
+        if(place == null) { validPlace = false; }
 
-        SCFirebase scFirebase = new SCFirebase();
-        scFirebase.createNewSpot(newSpot);
+        double rate = 0.0;
+        String rawRateInput = rateInput.getText().toString();
 
-        Intent returnToMaps = new Intent(this, GoogleMapsActivity.class);
-        startActivity(returnToMaps);
+        if((rawRateInput.length() > 0)) {
+            double rawRate = Double.parseDouble(rawRateInput.substring(1));
+            if(rawRate > 0) {
+                validRate = true;
+                rate = rawRate;
+            }
+        }
 
+        if(validRate && validPlace) {
+            String address = place.getAddress().toString();
+
+            LatLng latLng = place.getLatLng();
+            SCLatLng scLatLng = new SCLatLng(latLng.latitude, latLng.longitude);
+
+
+            ParkingSpot newSpot = new ParkingSpot(user.getUid(), address, scLatLng, rate);
+
+            SCFirebase scFirebase = new SCFirebase();
+            scFirebase.createNewSpot(newSpot);
+
+            Intent returnToMaps = new Intent(this, GoogleMapsActivity.class);
+            startActivity(returnToMaps);
+        } else {
+            if(!validPlace) {
+                placeText.setTextColor(0xffcc0000);
+
+                placeText.setText(R.string.place_error);
+            } else {
+                rateErrorText.setText(R.string.rate_input_error);
+            }
+        }
     }
 }
