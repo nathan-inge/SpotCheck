@@ -25,5 +25,7 @@
 
     <string name="auth_failed">Incorrect email and/or password.</string>
     <string name="title_activity_register">Register</string>
+    <string name="place_error">Not a vaild place</string>
+    <string name="rate_input_error">Rate must be greater than $0.00</string>
 
 </resources>

@@ -4,10 +4,14 @@ import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseCallback;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebase;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.ParkingSpot;
+import com.ucsb.cs48.spotcheck.SCLocalObjects.SCLatLng;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.SpotCheckUser;
 
 import org.junit.Test;
@@ -38,10 +42,13 @@ public class SCInterfaceTest {
         Context appContext = InstrumentationRegistry.getTargetContext();
         FirebaseApp.initializeApp(appContext);
 
+        SCLatLng testLatLng = new SCLatLng(13.4, -35.73);
+
         SCFirebase scFirebase = new SCFirebase();
         final ParkingSpot writeSpot = new ParkingSpot(
             "testOwnerID",
             "testAddress",
+            testLatLng,
             10.5
         );
 
@@ -57,6 +64,7 @@ public class SCInterfaceTest {
                 assertEquals(writeSpot.getSpotID(), data.getSpotID());
                 assertEquals(writeSpot.getOwnerID(), data.getOwnerID());
                 assertEquals(writeSpot.getAddress(), data.getAddress());
+                assertEquals(writeSpot.getLatLng(), data.getLatLng());
                 assertEquals(writeSpot.getRate(), data.getRate(), 0.0);
                 signal.countDown();
             }
