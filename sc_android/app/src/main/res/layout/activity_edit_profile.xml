@@ -16,7 +16,7 @@
         app:civ_border_width="2dp" />
 
     <EditText
-        android:id="@+id/editText3"
+        android:id="@+id/edit_user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/editText4"

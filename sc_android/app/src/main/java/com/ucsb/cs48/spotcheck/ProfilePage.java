@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
@@ -58,6 +59,7 @@ public class ProfilePage extends AppCompatActivity {
 
     public void editProfile(View view){
         Intent intent = new Intent(this, EditProfile.class);
+        intent.putExtra("currentSCUser", (Parcelable) user);
         startActivity(intent);
     }
 
