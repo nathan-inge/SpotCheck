@@ -19,6 +19,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebase;
+import com.ucsb.cs48.spotcheck.SCLocalObjects.ParkingSpot;
+import com.ucsb.cs48.spotcheck.SCLocalObjects.SCLatLng;
 
 
 public class CreateSpotEntry extends AppCompatActivity {
@@ -29,10 +32,6 @@ public class CreateSpotEntry extends AppCompatActivity {
     int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
     Place place;
 
-    private DatabaseReference spotDatabase;
-//    PlaceAutocompleteFragment autocompleteFragment;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,10 +39,6 @@ public class CreateSpotEntry extends AppCompatActivity {
         rateInput = (EditText) findViewById(R.id.rateEditText);
 
     }
-
-
-
-
 
 
     public void findPlace(View view) {
@@ -82,13 +77,14 @@ public class CreateSpotEntry extends AppCompatActivity {
         String address = place.getAddress().toString();
         double rate = Double.parseDouble(rateInput.getText().toString());
         LatLng latLng = place.getLatLng();
-        spotDatabase = FirebaseDatabase.getInstance().getReference();
+        SCLatLng scLatLng = new SCLatLng(latLng.latitude, latLng.longitude);
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        ParkingSpot newSpot = new ParkingSpot(user.getUid(), address, latLng, rate);
+        ParkingSpot newSpot = new ParkingSpot(user.getUid(), address, scLatLng, rate);
 
-
-        spotDatabase.child("parking_spots").child(newSpot.getSpotID()).setValue(newSpot);
+        SCFirebase scFirebase = new SCFirebase();
+        scFirebase.createNewSpot(newSpot);
 
         Intent returnToMaps = new Intent(this, GoogleMapsActivity.class);
         startActivity(returnToMaps);
