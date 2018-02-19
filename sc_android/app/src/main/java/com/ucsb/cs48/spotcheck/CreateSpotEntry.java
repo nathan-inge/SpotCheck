@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -26,17 +27,22 @@ import com.ucsb.cs48.spotcheck.SCLocalObjects.SCLatLng;
 
 public class CreateSpotEntry extends AppCompatActivity {
 
-    EditText addressInput;
+
+    TextView placeText;
+    TextView rateErrorText;
     EditText rateInput;
     private static final String TAG = "CreateSpotEntry";
     int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
     Place place;
+    boolean validPlace = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_spot_entry);
-        rateInput = (EditText) findViewById(R.id.rateEditText);
+        rateInput = findViewById(R.id.rateEditText);
+        rateErrorText = findViewById(R.id.rate_error_text);
+        placeText = findViewById(R.id.place_result_text);
 
     }
 
@@ -61,6 +67,9 @@ public class CreateSpotEntry extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 place = PlaceAutocomplete.getPlace(this, data);
                 Log.i(TAG, "Place: " + place.getName());
+                validPlace = true;
+                placeText.setText(place.getAddress());
+                placeText.setTextColor(0xff000000);
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(this, data);
                 // TODO: Handle the error.
@@ -86,8 +95,19 @@ public class CreateSpotEntry extends AppCompatActivity {
         SCFirebase scFirebase = new SCFirebase();
         scFirebase.createNewSpot(newSpot);
 
-        Intent returnToMaps = new Intent(this, GoogleMapsActivity.class);
-        startActivity(returnToMaps);
+            Intent returnToMaps = new Intent(this, GoogleMapsActivity.class);
+            startActivity(returnToMaps);
+        }
+        else {
+            if (!validPlace) {
+                placeText.setTextColor(0xffcc0000);
+                placeText.setText("Not a valid Place");
+            }
+            rateErrorText.setText("Invalid Rate: Must be greater than zero");
+        }
+
     }
+
+
 
 }

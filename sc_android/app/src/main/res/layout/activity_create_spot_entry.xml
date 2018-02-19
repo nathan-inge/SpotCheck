@@ -52,9 +52,9 @@
         android:id="@+id/rateEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/submitSpotButton"
+        android:layout_below="@+id/place_result_text"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="75dp"
+        android:layout_marginTop="48dp"
         android:ems="10"
         android:hint="Rate ($/hour)"
         android:inputType="textPersonName"
@@ -64,13 +64,14 @@
 
     <Button
         android:id="@+id/submitSpotButton"
-        android:onClick="submitSpotButtonTapped"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="82dp"
-        android:text="Submit"/>
+        android:onClick="submitSpotButtonTapped"
+        android:text="Submit"
+        android:textColor="@android:color/black" />
 
     <Button
         android:id="@+id/find_place_button"
@@ -78,9 +79,25 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/addressTextView"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="105dp"
+        android:layout_marginTop="67dp"
         android:onClick="findPlace"
         android:text="Find my Spot!" />
+
+    <TextView
+        android:id="@+id/place_result_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true" />
+
+    <TextView
+        android:id="@+id/rate_error_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/submitSpotButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="40dp"
+        android:textColor="@android:color/holo_red_dark" />
 
 
 </android.widget.RelativeLayout>
