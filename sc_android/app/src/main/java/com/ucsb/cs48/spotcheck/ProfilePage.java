@@ -58,9 +58,11 @@ public class ProfilePage extends AppCompatActivity {
     }
 
     public void editProfile(View view){
-        Intent intent = new Intent(this, EditProfile.class);
-        intent.putExtra("currentSCUser", (Parcelable) user);
-        startActivity(intent);
+        if(user != null) {
+            Intent intent = new Intent(this, EditProfile.class);
+            intent.putExtra("currentSCUserID", user.getUserID());
+            startActivity(intent);
+        }
     }
 
 }

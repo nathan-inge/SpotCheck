@@ -1,6 +1,8 @@
 package com.ucsb.cs48.spotcheck;
 
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentActivity;
@@ -20,6 +22,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebase;
+import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseCallback;
+import com.ucsb.cs48.spotcheck.SCLocalObjects.SpotCheckUser;
 
 
 public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
@@ -28,7 +33,9 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
 
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseAuth mAuth;
-    private FirebaseUser currentUser;
+    private SCFirebase scFirebase;
+
+    private SpotCheckUser user;
 
     private DrawerLayout mDrawerLayout;
     private TextView mUserName;
@@ -40,8 +47,8 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
 
         setNavigationViewListner();
 
+        scFirebase = new SCFirebase();
         mAuth = FirebaseAuth.getInstance();
-
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
 
@@ -50,11 +57,26 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
+                final FirebaseUser userFirebase = firebaseAuth.getCurrentUser();
+                if (userFirebase != null) {
                     // User is signed in - do nothing, stay in main view
-                    currentUser = user;
-                    mUserName.setText(currentUser.getDisplayName());
+                    scFirebase.getSCUser(userFirebase.getUid(), new SCFirebaseCallback<SpotCheckUser>() {
+                        @Override
+                        public void callback(SpotCheckUser data) {
+                            if(data != null) {
+                                user = data;
+                                user.setUserID(userFirebase.getUid());
+
+                                Handler mainHandler = new Handler(Looper.getMainLooper());
+                                mainHandler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mUserName.setText(user.getFullname());
+                                    }
+                                });
+                            }
+                        }
+                    });
 
                 } else {
                     // No user is signed in, go to splash screen
@@ -62,6 +84,7 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
                 }
             }
         };
+
 
 
         // Construct a GeoDataClient.
@@ -150,10 +173,6 @@ public class GoogleMapsActivity extends FragmentActivity implements OnMapReadyCa
     public void goToSplashScreen() {
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
-    }
-
-    public void logoutButtonClicked(View view) {
-        mAuth.signOut();
     }
 
     public void menuButtonClicked(View view) {
