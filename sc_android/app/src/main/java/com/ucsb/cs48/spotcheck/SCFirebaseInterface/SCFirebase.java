@@ -54,7 +54,7 @@ public class SCFirebase {
     /// MARK - User Interface
     // Create a new user in database
     // SHOULD ONLY BE USED WHEN REGISTERING A NEW USER
-    public void createUser(SpotCheckUser user) {
+    public void uploadUser(SpotCheckUser user) {
         scDatabase.child("users").child(user.getUserID()).setValue(user);
     }
 

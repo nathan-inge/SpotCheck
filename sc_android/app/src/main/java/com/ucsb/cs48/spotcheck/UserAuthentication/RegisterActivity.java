@@ -283,7 +283,7 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
                                 fullName
                             );
 
-                            scFirebase.createUser(newRegisteredUser);
+                            scFirebase.uploadUser(newRegisteredUser);
                         }
 
                     }

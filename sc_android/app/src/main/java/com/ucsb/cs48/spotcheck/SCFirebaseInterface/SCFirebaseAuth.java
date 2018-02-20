@@ -3,6 +3,8 @@ package com.ucsb.cs48.spotcheck.SCFirebaseInterface;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.ucsb.cs48.spotcheck.SCLocalObjects.SpotCheckUser;
 
 
 public class SCFirebaseAuth {
@@ -27,6 +29,10 @@ public class SCFirebaseAuth {
 
     public void removeAuthListener(FirebaseAuth.AuthStateListener listener) {
         scAuth.removeAuthStateListener(listener);
+    }
+
+    public FirebaseUser getCurrentUser() {
+        return scAuth.getCurrentUser();
     }
 
 }
