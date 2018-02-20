@@ -12,4 +12,9 @@
         android:id="@+id/create_spot_entry_button"
         android:title="Add a Spot"
         android:titleCondensed="Add a Spot" />
+
+    <item
+        android:id="@+id/option_get_place"
+        android:title="@string/option_get_place"
+        app:showAsAction="always"/>
 </menu>
