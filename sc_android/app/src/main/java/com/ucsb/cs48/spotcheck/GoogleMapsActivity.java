@@ -1,5 +1,6 @@
 package com.ucsb.cs48.spotcheck;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
@@ -25,6 +26,7 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Menu;
 import android.widget.FrameLayout;
+import android.support.v7.widget.Toolbar;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -121,6 +123,7 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
         setContentView(R.layout.activity_google_maps);
 
 
+
         // Construct a GeoDataClient.
         mGeoDataClient = Places.getGeoDataClient(this, null);
 
@@ -143,6 +146,7 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                 Log.d("Maps", "An error occurred: " + status);
             }
         });
+
         // Build the map.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -250,12 +254,6 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
     }
-//
-//        // Add a marker in Isla Vista and move the camera
-//        LatLng IV = new LatLng(34.412609, -119.861433);
-//        map.addMarker(new MarkerOptions().position(IV).title("Marker in Isla Vista"));
-//        map.moveCamera(CameraUpdateFactory.newLatLng(IV));
-//    }
 
 
     /**
