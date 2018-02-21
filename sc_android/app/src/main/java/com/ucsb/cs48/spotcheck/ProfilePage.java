@@ -14,11 +14,14 @@ import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseAuth;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseCallback;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.SpotCheckUser;
 
+import org.w3c.dom.Text;
+
 
 public class ProfilePage extends AppCompatActivity {
 
     private SpotCheckUser user;
     private TextView userNameTextView;
+    private TextView userLocationTextView;
     private SCFirebase scFirebase;
     private SCFirebaseAuth scFirebaseAuth;
 
@@ -33,6 +36,7 @@ public class ProfilePage extends AppCompatActivity {
 
         // Initialize UI objects
         userNameTextView = findViewById(R.id.user_name_view);
+        userLocationTextView = findViewById(R.id.user_location_view);
 
         if(scFirebaseAuth.getCurrentUser() != null) {
             final String currentUserID = scFirebaseAuth.getCurrentUser().getUid();
@@ -48,6 +52,7 @@ public class ProfilePage extends AppCompatActivity {
                         mainHandler.post(new Runnable() {
                             @Override
                             public void run() {
+                                userLocationTextView.setText(user.getLocation());
                                 userNameTextView.setText(user.getFullname());
                             }
                         });
