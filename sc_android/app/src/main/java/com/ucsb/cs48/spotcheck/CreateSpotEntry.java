@@ -42,6 +42,7 @@ public class CreateSpotEntry extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_spot_entry);
+
         rateInput = findViewById(R.id.rateEditText);
         rateErrorText = findViewById(R.id.rate_error_text);
         placeText = findViewById(R.id.place_result_text);
@@ -53,7 +54,7 @@ public class CreateSpotEntry extends AppCompatActivity {
     public void findPlace(View view) {
         try {
             Intent intent =
-                    new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
+                    new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)
                             .build(this);
             startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
         } catch (GooglePlayServicesRepairableException e) {
