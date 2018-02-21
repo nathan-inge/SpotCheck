@@ -2,6 +2,7 @@ package com.ucsb.cs48.spotcheck;
 
 import android.app.ActionBar;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -14,6 +15,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 
@@ -23,6 +27,7 @@ import android.location.Location;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AppCompatImageButton;
 import android.util.Log;
 import android.view.Menu;
 import android.widget.FrameLayout;
@@ -134,6 +139,15 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         placeAutoComplete = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.place_autocomplete);
+
+        placeAutoComplete.getView().setBackgroundColor(getResources().getColor(android.R.color.white));
+
+
+//        EditText autocompleteSearchInput = placeAutoComplete.getView().findViewById(R.id.place_autocomplete_search_input);
+//        autocompleteSearchInput.setHintTextColor(getResources().getColor(android.R.color.white));
+//        autocompleteSearchInput.setTextColor(getResources().getColor(android.R.color.white));
+
+
         placeAutoComplete.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
