@@ -99,4 +99,17 @@
         android:contentDescription="listings"
         android:text="Listings:" />
 
+    <TextView
+        android:id="@+id/user_location_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textView7"
+        android:layout_marginLeft="109dp"
+        android:layout_marginStart="109dp"
+        android:layout_toEndOf="@+id/textView7"
+        android:layout_toRightOf="@+id/textView7"
+        android:contentDescription="user_location"
+        android:text="Mario Galaxy"
+        android:textAppearance="@android:style/TextAppearance.Material.Medium" />
+
 </android.widget.RelativeLayout>

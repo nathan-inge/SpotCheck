@@ -53,12 +53,14 @@ public class SCLocalObjectsTest {
         SpotCheckUser spotCheckUser = new SpotCheckUser(
             "userID",
             "email",
-            "Full Name"
+            "Full Name",
+                "location"
         );
 
         assertEquals("userID", spotCheckUser.getUserID());
         assertEquals("email", spotCheckUser.getEmail());
         assertEquals("Full Name", spotCheckUser.getFullname());
+        assertEquals("location", spotCheckUser.getLocation());
     }
 
 

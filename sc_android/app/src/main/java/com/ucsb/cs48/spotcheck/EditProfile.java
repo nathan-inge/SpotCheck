@@ -18,6 +18,7 @@ public class EditProfile extends AppCompatActivity {
     private SpotCheckUser user;
     private String currentSCUserID;
     private EditText editName;
+    private EditText editLocation;
     private SCFirebase scFirebase;
 
     @Override
@@ -28,6 +29,7 @@ public class EditProfile extends AppCompatActivity {
         scFirebase = new SCFirebase();
 
         editName = findViewById(R.id.edit_user_name);
+        editLocation = findViewById(R.id.edit_user_location);
 
         Intent intent = getIntent();
         currentSCUserID = intent.getStringExtra("currentSCUserID");
@@ -44,6 +46,8 @@ public class EditProfile extends AppCompatActivity {
                         @Override
                         public void run() {
                             editName.setHint(user.getFullname());
+                            editLocation.setHint(user.getLocation());
+
                         }
                     });
                 }
@@ -58,12 +62,16 @@ public class EditProfile extends AppCompatActivity {
     public void confirm(View view){
         //Change user's screen name, profile pic, and location in firebase
         String rawNewName = editName.getText().toString();
+        String rawNewLocation = editLocation.getText().toString();
 
         if((rawNewName.length()) > 0) {
             user.setFullname(rawNewName);
             scFirebase.uploadUser(user);
         }
-
+        if((rawNewLocation.length()) > 0) {
+            user.setLocation(rawNewLocation);
+            scFirebase.uploadUser(user);
+        }
         finish();
     }
 }

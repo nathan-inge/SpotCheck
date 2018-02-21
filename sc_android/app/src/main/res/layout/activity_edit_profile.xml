@@ -19,8 +19,8 @@
         android:id="@+id/edit_user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/editText4"
-        android:layout_alignStart="@+id/editText4"
+        android:layout_alignLeft="@+id/edit_user_location"
+        android:layout_alignStart="@+id/edit_user_location"
         android:layout_centerVertical="true"
         android:contentDescription="user_name"
         android:ems="10"
@@ -28,7 +28,7 @@
         android:inputType="textPersonName" />
 
     <EditText
-        android:id="@+id/editText4"
+        android:id="@+id/edit_user_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/edit_user_name"

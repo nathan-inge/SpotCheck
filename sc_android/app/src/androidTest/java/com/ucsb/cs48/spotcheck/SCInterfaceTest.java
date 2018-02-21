@@ -81,7 +81,8 @@ public class SCInterfaceTest {
         final SpotCheckUser writeUser = new SpotCheckUser(
             testUserID,
             "testEmail",
-            "Test Name"
+            "Test Name",
+                "Test Location"
         );
 
         scFirebase.uploadUser(writeUser);
@@ -95,6 +96,7 @@ public class SCInterfaceTest {
                 assertEquals(writeUser.getUserID(), data.getUserID());
                 assertEquals(writeUser.getEmail(), data.getEmail());
                 assertEquals(writeUser.getFullname(), data.getFullname());
+                assertEquals(writeUser.getLocation(), data.getLocation());
                 signal.countDown();
             }
         });

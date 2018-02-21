@@ -280,7 +280,8 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
                             SpotCheckUser newRegisteredUser = new SpotCheckUser(
                                 currentUser.getUid(),
                                 currentUser.getEmail(),
-                                fullName
+                                fullName,
+                                    ""
                             );
 
                             scFirebase.uploadUser(newRegisteredUser);

@@ -49,7 +49,7 @@
             android:label="Edit Profile"></activity>
         <activity
             android:name=".ProfilePage"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".GoogleMapsActivity"
             android:label="My Profile"></activity>
     </application>
 
