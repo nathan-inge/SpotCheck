@@ -16,37 +16,45 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".MainActivity"
             android:theme="@android:style/Theme.NoTitleBar"></activity>
 
     <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
+            android:value="@string/google_maps_key"
+             />
 
         <activity
             android:name=".GoogleMapsActivity"
-            android:label="@string/title_activity_google_maps">
+            android:label="@string/title_activity_google_maps"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".CreateSpotEntry"
-            android:label="@string/title_activity_create_spot_entry"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:parentActivityName=".MainActivity"
+            android:label="@string/title_activity_create_spot_entry" />
+
         <activity
             android:name=".UserAuthentication.LoginActivity"
-            android:label="@string/title_activity_login"></activity>
+            android:label="@string/title_activity_login" />
+
         <activity
             android:name=".UserAuthentication.RegisterActivity"
-            android:label="@string/title_activity_register"></activity>
+            android:label="@string/title_activity_register" />
+
         <activity
             android:name=".EditProfile"
             android:parentActivityName=".ProfilePage"
-            android:label="Edit Profile"></activity>
+            android:label="Edit Profile" />
+
         <activity
             android:name=".ProfilePage"
             android:parentActivityName=".GoogleMapsActivity"

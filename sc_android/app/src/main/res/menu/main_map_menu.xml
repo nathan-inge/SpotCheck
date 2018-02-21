@@ -12,6 +12,10 @@
         android:title="Add a Spot"
         android:titleCondensed="Add a Spot" />
 
+    <item android:id="@+id/option_get_place"
+          android:title="Around Me" />
+
     <item android:id="@+id/logout_button"
-          android:title="Logout" />git stat
+        android:title="Logout" />
+
 </menu>
