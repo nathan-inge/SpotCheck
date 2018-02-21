@@ -9,21 +9,24 @@
     app:popupTheme="@style/AppTheme.PopupOverlay"
     android:id="@+id/custom_toolbar">
 
-    <fragment
-        android:id="@+id/place_autocomplete"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
-        />
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="left|top"
-        android:src="@drawable/ic_menu_white_24dp"
-        android:onClick="menuButtonClicked"
-        android:padding="10dp"
-        android:layout_marginTop="10dp"
-        android:paddingLeft="10dp"/>
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|center"
+            android:src="@drawable/ic_menu_white_24dp"
+            android:onClick="menuButtonClicked"
+            android:background="@android:color/transparent"/>
 
+        <fragment
+            android:id="@+id/place_autocomplete"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment" />
+
+    </LinearLayout>
 </android.support.v7.widget.Toolbar>
