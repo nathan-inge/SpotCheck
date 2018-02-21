@@ -4,10 +4,7 @@ import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseCallback;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebase;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.ParkingSpot;
@@ -87,7 +84,7 @@ public class SCInterfaceTest {
             "Test Name"
         );
 
-        scFirebase.createUser(writeUser);
+        scFirebase.uploadUser(writeUser);
 
         final CountDownLatch signal = new CountDownLatch(1);
 

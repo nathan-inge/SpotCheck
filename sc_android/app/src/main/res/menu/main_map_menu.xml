@@ -4,17 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <item
-        android:id="@+id/logout_button"
-        android:title="Logout" />
+    <item android:id="@+id/profile_page_button"
+          android:title="My Profile" />
 
     <item
         android:id="@+id/create_spot_entry_button"
         android:title="Add a Spot"
         android:titleCondensed="Add a Spot" />
 
-    <item
-        android:id="@+id/option_get_place"
-        android:title="@string/option_get_place"
-        app:showAsAction="always"/>
+    <item android:id="@+id/logout_button"
+        android:title="Logout" />git stat
 </menu>
