@@ -280,7 +280,11 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                     public void onComplete(@NonNull Task<Location> task) {
                         if (task.isSuccessful()) {
                             // Set the map's camera position to the current location of the device.
-                            setupCamera(task.getResult());
+                            mLastKnownLocation = task.getResult();
+
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                new LatLng(mLastKnownLocation.getLatitude(),
+                                    mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
 
 
                         } else {
@@ -524,14 +528,5 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
     public void viewProfileButtonClicked() {
         Intent i = new Intent(this, ProfilePage.class);
         startActivity(i);
-    }
-
-    public void setupCamera(Location location) {
-        mLastKnownLocation = location;
-
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-            new LatLng(location.getLatitude(),
-                location.getLongitude()), DEFAULT_ZOOM));
-
     }
 }
