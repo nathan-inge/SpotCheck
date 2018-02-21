@@ -152,8 +152,6 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
 
         setNavigationViewListner();
 
-        mUserName = findViewById(R.id.display_name);
-
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -167,13 +165,6 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                                 user = data;
                                 user.setUserID(userFirebase.getUid());
 
-                                Handler mainHandler = new Handler(Looper.getMainLooper());
-                                mainHandler.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        mUserName.setText(user.getFullname());
-                                    }
-                                });
                             }
                         }
                     });
