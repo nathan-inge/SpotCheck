@@ -17,6 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+
         <activity android:name=".MainActivity"
                   android:theme="@android:style/Theme.NoTitleBar">
 
@@ -49,6 +50,7 @@
         </activity>
         <activity
             android:name=".UserAuthentication.RegisterActivity"
+            android:parentActivityName=".UserAuthentication.LoginActivity"
             android:label="@string/title_activity_register">
         </activity>
     </application>

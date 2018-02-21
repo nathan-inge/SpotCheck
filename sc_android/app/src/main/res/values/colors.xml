@@ -5,4 +5,6 @@
     <color name="colorAccent">#FF4081</color>
     <color name="colorGradientPurple">#D1C4E9</color>
     <color name="colorGradientYellow">#FFF9C4</color>
+    <color name="colorGradientDarkPurple">#7E57C2</color>
+    <color name="colorGradientDarkGrey">#5C6BC0</color>
 </resources>
