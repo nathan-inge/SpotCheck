@@ -139,6 +139,9 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
             public void onPlaceSelected(Place place) {
 
                 Log.d("Maps", "Place selected: " + place.getName());
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                    new LatLng(place.getLatLng().latitude,
+                        place.getLatLng().longitude), DEFAULT_ZOOM));
             }
 
             @Override
