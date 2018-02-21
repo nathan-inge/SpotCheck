@@ -150,6 +150,8 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
 
+        setNavigationViewListner();
+
         mUserName = findViewById(R.id.display_name);
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -278,10 +280,9 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                     public void onComplete(@NonNull Task<Location> task) {
                         if (task.isSuccessful()) {
                             // Set the map's camera position to the current location of the device.
-                            mLastKnownLocation = task.getResult();
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                    new LatLng(mLastKnownLocation.getLatitude(),
-                                            mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                            setupCamera(task.getResult());
+
+
                         } else {
                             Log.d(TAG, "Current location is null. Using defaults.");
                             Log.e(TAG, "Exception: %s", task.getException());
@@ -494,6 +495,7 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                 Intent create_spot_entry = new Intent(this, CreateSpotEntry.class);
                 startActivity(create_spot_entry);
             }
+
             case R.id.option_get_place: {
                 showCurrentPlace();
                 break;
@@ -522,5 +524,14 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
     public void viewProfileButtonClicked() {
         Intent i = new Intent(this, ProfilePage.class);
         startActivity(i);
+    }
+
+    public void setupCamera(Location location) {
+        mLastKnownLocation = location;
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+            new LatLng(location.getLatitude(),
+                location.getLongitude()), DEFAULT_ZOOM));
+
     }
 }
