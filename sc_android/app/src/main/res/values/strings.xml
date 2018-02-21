@@ -2,7 +2,7 @@
     <string name="app_name">Spot Check</string>
 
     <string name="title_activity_google_maps">Spot Check</string>
-    <string name="title_activity_create_spot_entry">CreateSpotEntry</string>
+    <string name="title_activity_create_spot_entry">Create Spot</string>
     <string name="title_activity_login">Sign in</string>
 
     <!-- Strings related to login and register -->
