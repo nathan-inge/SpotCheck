@@ -142,12 +142,6 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
 
         placeAutoComplete.getView().setBackgroundColor(getResources().getColor(android.R.color.white));
 
-
-//        EditText autocompleteSearchInput = placeAutoComplete.getView().findViewById(R.id.place_autocomplete_search_input);
-//        autocompleteSearchInput.setHintTextColor(getResources().getColor(android.R.color.white));
-//        autocompleteSearchInput.setTextColor(getResources().getColor(android.R.color.white));
-
-
         placeAutoComplete.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
@@ -507,6 +501,7 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
             case R.id.create_spot_entry_button: {
                 Intent create_spot_entry = new Intent(this, CreateSpotEntry.class);
                 startActivity(create_spot_entry);
+                break;
             }
 
             case R.id.option_get_place: {
