@@ -13,5 +13,9 @@
         android:titleCondensed="Add a Spot" />
 
     <item android:id="@+id/logout_button"
-        android:title="Logout" />git stat
+        android:title="Logout" />
+
+    <item android:id="@+id/option_get_place"
+        android:title="Show Current Place" />
+
 </menu>
