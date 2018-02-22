@@ -67,7 +67,10 @@ public class SCFirebase {
                 ArrayList<ParkingSpot> parkingSpots = new ArrayList<>();
 
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-                    parkingSpots.add(postSnapshot.getValue(ParkingSpot.class));
+                    ParkingSpot spot = postSnapshot.getValue(ParkingSpot.class);
+                    spot.setSpotID(postSnapshot.getKey());
+
+                    parkingSpots.add(spot);
                 }
 
                 finishedCalback.callback(parkingSpots);
