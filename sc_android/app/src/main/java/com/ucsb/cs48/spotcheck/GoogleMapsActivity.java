@@ -34,6 +34,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.widget.FrameLayout;
 import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -256,6 +257,16 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                 TextView snippet = ((TextView) infoWindow.findViewById(R.id.snippet));
                 snippet.setText(marker.getSnippet());
 
+                mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                    @Override
+                    public void onInfoWindowClick(Marker marker) {
+                        // TODO: When display parking spot info issue is done
+//                        Intent i = new Intent(getApplicationContext(), ProfilePage.class);
+//                        i.putExtra("spotID", marker.getTag().toString());
+//                        startActivity(i);
+                    }
+                });
+
                 return infoWindow;
             }
         });
@@ -288,8 +299,9 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                                     .position(spot.getLatLng().convertToGoogleLatLng())
                                     .title(spot.formattedRate() + "/hour")
                                     .icon(BitmapDescriptorFactory.fromResource(R.mipmap.spot_marker_icon))
+                                    .snippet("See Details")
                                 );
-                                spotMarker.setTag(spot);
+                                spotMarker.setTag(spot.getSpotID());
                             }
                         }
                     });
