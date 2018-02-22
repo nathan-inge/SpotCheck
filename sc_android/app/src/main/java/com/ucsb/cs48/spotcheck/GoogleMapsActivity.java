@@ -2,6 +2,8 @@ package com.ucsb.cs48.spotcheck;
 
 import android.app.ActionBar;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -285,7 +287,7 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                                 Marker spotMarker = mMap.addMarker(new MarkerOptions()
                                     .position(spot.getLatLng().convertToGoogleLatLng())
                                     .title(spot.formattedRate() + "/hour")
-                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                                    .icon(BitmapDescriptorFactory.fromResource(R.mipmap.spot_marker_icon))
                                 );
                                 spotMarker.setTag(spot);
                             }
