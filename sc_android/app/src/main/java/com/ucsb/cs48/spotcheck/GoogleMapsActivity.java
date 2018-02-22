@@ -43,6 +43,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -276,8 +277,21 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
             public void callback(ArrayList<ParkingSpot> data) {
                 if((data != null) && (data.size() > 0)) {
 
+                    // TODO: Improve query with more specific 'get' function
+                    scFirebase.getAllParkingSpots(new SCFirebaseCallback<ArrayList<ParkingSpot>>() {
+                        @Override
+                        public void callback(ArrayList<ParkingSpot> data) {
+                            for(ParkingSpot spot : data) {
+                                Marker spotMarker = mMap.addMarker(new MarkerOptions()
+                                    .position(spot.getLatLng().convertToGoogleLatLng())
+                                    .title(spot.getRate().toString())
+                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                                );
+                                spotMarker.setTag(spot);
+                            }
+                        }
+                    });
                 }
-
             }
         });
     }

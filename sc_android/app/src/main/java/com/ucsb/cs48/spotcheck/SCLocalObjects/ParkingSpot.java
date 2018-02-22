@@ -3,6 +3,7 @@ package com.ucsb.cs48.spotcheck.SCLocalObjects;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.Exclude;
 
+import java.text.NumberFormat;
 
 
 public class ParkingSpot {
@@ -31,6 +32,10 @@ public class ParkingSpot {
         this.address = address;
         this.latLng = latLng;
         this.rate = rate;
+    }
+
+    public String formattedRate() {
+        return NumberFormat.getCurrencyInstance().format((rate));
     }
 
     @Exclude
