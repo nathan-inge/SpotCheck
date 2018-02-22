@@ -121,8 +121,8 @@ public class CreateSpotEntry extends AppCompatActivity {
             SCFirebase scFirebase = new SCFirebase();
             scFirebase.createNewSpot(newSpot);
 
-            Intent returnToMaps = new Intent(this, GoogleMapsActivity.class);
-            startActivity(returnToMaps);
+            finish();
+
         } else {
             if(!validPlace) {
                 placeText.setTextColor(0xffcc0000);

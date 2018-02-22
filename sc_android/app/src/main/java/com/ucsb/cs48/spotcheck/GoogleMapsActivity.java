@@ -284,7 +284,7 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                             for(ParkingSpot spot : data) {
                                 Marker spotMarker = mMap.addMarker(new MarkerOptions()
                                     .position(spot.getLatLng().convertToGoogleLatLng())
-                                    .title(spot.getRate().toString())
+                                    .title(spot.formattedRate() + "/hour")
                                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
                                 );
                                 spotMarker.setTag(spot);
