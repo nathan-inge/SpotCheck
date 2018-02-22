@@ -33,8 +33,8 @@ public class SCFirebase {
     }
 
     // Get a parking spot from the data base
-    public void getParkingSpot(String spotID,
-        @NonNull final SCFirebaseCallback<ParkingSpot> finishedCallback) {
+    public void getParkingSpot(final String spotID,
+                               @NonNull final SCFirebaseCallback<ParkingSpot> finishedCallback) {
 
         DatabaseReference myRef = scDatabase.child("parking_spots/");
 
@@ -42,6 +42,11 @@ public class SCFirebase {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 ParkingSpot spot = dataSnapshot.getValue(ParkingSpot.class);
+
+                if(spot != null) {
+                    spot.setSpotID(spotID);
+                }
+
                 finishedCallback.callback(spot);
             }
 
@@ -77,13 +82,14 @@ public class SCFirebase {
 
 
     /// MARK - User Interface
-    // Create a new user in database or edits existing user
-    public void updateDatabaseUser(SpotCheckUser user) {
+    // Create a new user in database
+    // SHOULD ONLY BE USED WHEN REGISTERING A NEW USER
+    public void uploadUser(SpotCheckUser user) {
         scDatabase.child("users").child(user.getUserID()).setValue(user);
     }
 
     // Get a user from the database
-    public void getSCUser(String userID,
+    public void getSCUser(final String userID,
                           @NonNull final SCFirebaseCallback<SpotCheckUser> finishedCallback) {
 
         DatabaseReference myRef = scDatabase.child("users/");
@@ -92,6 +98,11 @@ public class SCFirebase {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 SpotCheckUser user = dataSnapshot.getValue(SpotCheckUser.class);
+
+                if(user != null) {
+                    user.setUserID(userID);
+                }
+
                 finishedCallback.callback(user);
             }
 
