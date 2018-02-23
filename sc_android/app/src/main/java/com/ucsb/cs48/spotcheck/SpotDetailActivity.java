@@ -1,5 +1,6 @@
 package com.ucsb.cs48.spotcheck;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
@@ -9,6 +10,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebase;
@@ -67,27 +69,23 @@ public class SpotDetailActivity extends AppCompatActivity {
     }
 
     public void rentButtonClicked(View view) {
-        AlertDialog.Builder builder;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            builder = new AlertDialog.Builder(this, R.style.AppTheme);
-        } else {
-            builder = new AlertDialog.Builder(this);
-        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        builder.setTitle("Delete entry")
-            .setMessage("Are you sure you want to delete this entry?")
-            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+        builder.setTitle("Confirm Rent Request")
+            .setMessage(("Are you sure you want to request to rent this spot?\n\n" +
+                "The owner will be provided with your email to contact you directly."))
+            .setPositiveButton("Rent", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
-                    // continue with delete
+                    // continue with rent
+                    finish();
                 }
             })
-            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     // do nothing
                 }
             })
             .setIcon(R.mipmap.spot_marker_icon)
             .show();
-
     }
 }
