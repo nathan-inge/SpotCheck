@@ -4,6 +4,8 @@
 - Developed in CS48 (UCSB, W18)
 - Developers: [Arielle Robles](https://github.com/rarielle), [Juan Manzo](https://github.com/juanmanzo), [Kai Labasan](https://github.com/labasan), [Nathan Inge](https://github.com/nathan-inge), [Ray Muhlenkamp](https://github.com/RayMuhlenkamp)
 
+**Setup Instructions**
+
 **Project**
 - [Android Project](/sc_android)
 - [Server Project](/sc_server)
