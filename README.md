@@ -18,7 +18,6 @@
 
 **Project**
 - [Android Project](/sc_android)
-- [Server Project](/sc_server)
   - *All development should occur on dev branch for Android and server projects*
 - [Design](/sc_design)
   - Contains design ideas, mockups, features, etc...
