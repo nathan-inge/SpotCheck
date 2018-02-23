@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebase;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseCallback;
@@ -77,6 +78,8 @@ public class SpotDetailActivity extends AppCompatActivity {
             .setPositiveButton("Rent", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     // continue with rent
+                    // TODO: Actually send owner details or connect users somehow
+                    Toast.makeText(getApplicationContext(), "Request Sent!",Toast.LENGTH_SHORT).show();
                     finish();
                 }
             })

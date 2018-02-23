@@ -11,8 +11,10 @@ import com.ucsb.cs48.spotcheck.SCLocalObjects.ParkingSpot;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.SCLatLng;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.SpotCheckUser;
 
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 
 import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
@@ -26,6 +28,7 @@ import static org.junit.Assert.*;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 @RunWith(AndroidJUnit4.class)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SCInterfaceTest {
 
     @Test
@@ -108,6 +111,40 @@ public class SCInterfaceTest {
         });
 
         signalB.await(30, TimeUnit.SECONDS);
+    }
+
+    @Test
+    public void deleteSpot() throws InterruptedException {
+        Context appContext = InstrumentationRegistry.getTargetContext();
+        FirebaseApp.initializeApp(appContext);
+
+        SCLatLng testLatLng = new SCLatLng(13.4, -35.73);
+
+        SCFirebase scFirebase = new SCFirebase();
+        final ParkingSpot writeSpot = new ParkingSpot(
+            "testOwnerDelete",
+            "testAddressDelete",
+            testLatLng,
+            10.5
+        );
+
+        final String spotID = scFirebase.createNewSpot(writeSpot);
+        writeSpot.setSpotID(spotID);
+
+        scFirebase.deleteParkingSpot(spotID);
+
+        final CountDownLatch signal = new CountDownLatch(1);
+
+        scFirebase.getParkingSpot(spotID, new SCFirebaseCallback<ParkingSpot>() {
+            @Override
+            public void callback(ParkingSpot data) {
+                assertNull(data);
+                signal.countDown();
+            }
+        });
+
+        signal.await(30, TimeUnit.SECONDS);
+
     }
 
     @Test

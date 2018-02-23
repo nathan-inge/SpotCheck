@@ -1,6 +1,7 @@
 package com.ucsb.cs48.spotcheck.SCFirebaseInterface;
 
 
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 
 import com.google.firebase.database.DataSnapshot;
@@ -18,6 +19,9 @@ public class SCFirebase {
 
     private DatabaseReference scDatabase;
 
+    private final String PARKINGSPOT_PATH = "parking_spots";
+    private final String USER_PATH = "users";
+
     public SCFirebase() {
         scDatabase = FirebaseDatabase.getInstance().getReference();
     }
@@ -27,7 +31,7 @@ public class SCFirebase {
     public String createNewSpot(ParkingSpot spot) {
         String newSpotID = "spot-" + UUID.randomUUID().toString();
 
-        scDatabase.child("parking_spots").child(newSpotID).setValue(spot);
+        scDatabase.child(PARKINGSPOT_PATH).child(newSpotID).setValue(spot);
 
         return newSpotID;
     }
@@ -36,7 +40,7 @@ public class SCFirebase {
     public void getParkingSpot(final String spotID,
                                @NonNull final SCFirebaseCallback<ParkingSpot> finishedCallback) {
 
-        DatabaseReference myRef = scDatabase.child("parking_spots/");
+        DatabaseReference myRef = scDatabase.child(PARKINGSPOT_PATH);
 
         myRef.child(spotID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -59,7 +63,7 @@ public class SCFirebase {
     public void getAllParkingSpots(
         @NonNull final SCFirebaseCallback<ArrayList<ParkingSpot>> finishedCalback) {
 
-        DatabaseReference myRef = scDatabase.child("parking_spots/");
+        DatabaseReference myRef = scDatabase.child(PARKINGSPOT_PATH);
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -80,7 +84,11 @@ public class SCFirebase {
             public void onCancelled(DatabaseError databaseError) {}
 
         });
+    }
 
+    public void deleteParkingSpot(String spotID) {
+        DatabaseReference myRef = scDatabase.child(PARKINGSPOT_PATH).child(spotID);
+        myRef.removeValue();
     }
 
 
@@ -95,7 +103,7 @@ public class SCFirebase {
     public void getSCUser(final String userID,
                           @NonNull final SCFirebaseCallback<SpotCheckUser> finishedCallback) {
 
-        DatabaseReference myRef = scDatabase.child("users/");
+        DatabaseReference myRef = scDatabase.child(USER_PATH);
 
         myRef.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
