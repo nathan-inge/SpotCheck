@@ -64,6 +64,8 @@ public class SpotDetailActivity extends AppCompatActivity {
                         }
                     });
 
+                } else {
+                    showSpotNotAvailableDialog();
                 }
             }
         });
@@ -77,15 +79,39 @@ public class SpotDetailActivity extends AppCompatActivity {
                 "The owner will be provided with your email to contact you directly."))
             .setPositiveButton("Rent", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
-                    // continue with rent
                     // TODO: Actually send owner details or connect users somehow
-                    Toast.makeText(getApplicationContext(), "Request Sent!",Toast.LENGTH_SHORT).show();
+                    // TODO: and mark parking spot as "taken" or "unavaliable"
+                    // TODO: For now, just delete it because... yolo
+
+                    if(spot != null) {
+                        scFirebase.deleteParkingSpot(spot.getSpotID());
+                    }
+
+                    Toast.makeText(
+                        getApplicationContext(),
+                        "Request Sent!",
+                        Toast.LENGTH_SHORT).show();
+
                     finish();
                 }
             })
             .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     // do nothing
+                }
+            })
+            .setIcon(R.mipmap.spot_marker_icon)
+            .show();
+    }
+
+    public void showSpotNotAvailableDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Spot Unavailable!")
+            .setMessage(("Sorry, but this parking spot is currently unavailable."))
+            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();
                 }
             })
             .setIcon(R.mipmap.spot_marker_icon)

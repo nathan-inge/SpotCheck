@@ -14,7 +14,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="58dp"
-        android:text="@string/address_placeholder"/>
+        />
 
     <TextView
         android:id="@+id/spot_detail_rate_view"
