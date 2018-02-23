@@ -30,6 +30,9 @@
     <string name="address_placeholder">Address</string>
     <string name="owner_name_placeholder">Owner Name</string>
     <string name="rent_button_text">Rent</string>
+    <string name="address_view">Address:</string>
+    <string name="rate_view">Rate:</string>
+    <string name="per_hour">/hour</string>
 
 
 </resources>
