@@ -1,36 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<android.widget.RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context="com.ucsb.cs48.spotcheck.SpotDetailActivity">
+
+    <TextView
+        android:id="@+id/spot_detail_address_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="58dp"
+        android:text="@string/address_placeholder"/>
+
+    <TextView
+        android:id="@+id/spot_details_owner_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/spot_detail_address_view"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="41dp"
+        android:text="@string/owner_name_placeholder"/>
 
     <Button
-        android:id="@+id/rent_spot_button"
-        android:layout_width="85dp"
-        android:layout_height="wrap_content"
-        android:contentDescription="rent_spot"
-        android:onClick="rent"
-        android:text="Rent"
-        tools:layout_editor_absoluteX="151dp"
-        tools:layout_editor_absoluteY="393dp" />
-
-    <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/spot_details_rent_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="User's Parking Spot"
-        tools:layout_editor_absoluteX="132dp"
-        tools:layout_editor_absoluteY="16dp" />
+        android:layout_alignLeft="@+id/spot_details_owner_name"
+        android:layout_alignStart="@+id/spot_details_owner_name"
+        android:layout_centerVertical="true"
+        android:onClick="rentButtonClicked"
+        android:text="@string/rent_button_text"/>
 
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Parking spot info:"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="54dp" />
-
-
-</android.support.constraint.ConstraintLayout>
+</android.widget.RelativeLayout>

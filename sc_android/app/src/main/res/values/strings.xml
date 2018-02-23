@@ -27,6 +27,9 @@
     <string name="title_activity_register">Register</string>
     <string name="place_error">Not a vaild place</string>
     <string name="rate_input_error">Rate must be greater than $0.00</string>
+    <string name="address_placeholder">Address</string>
+    <string name="owner_name_placeholder">Owner Name</string>
+    <string name="rent_button_text">Rent</string>
 
 
 </resources>

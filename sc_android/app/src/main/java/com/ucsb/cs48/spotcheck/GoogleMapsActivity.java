@@ -260,10 +260,10 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                 mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                     @Override
                     public void onInfoWindowClick(Marker marker) {
-                        // TODO: When display parking spot info issue is done
-//                        Intent i = new Intent(getApplicationContext(), ProfilePage.class);
-//                        i.putExtra("spotID", marker.getTag().toString());
-//                        startActivity(i);
+                         //TODO: When display parking spot info issue is done
+                        Intent i = new Intent(getApplicationContext(), SpotDetailActivity.class);
+                        i.putExtra("spotID", marker.getTag().toString());
+                        startActivity(i);
                     }
                 });
 
