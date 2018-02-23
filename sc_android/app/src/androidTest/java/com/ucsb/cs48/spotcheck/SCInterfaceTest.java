@@ -14,6 +14,7 @@ import com.ucsb.cs48.spotcheck.SCLocalObjects.SpotCheckUser;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -26,6 +27,7 @@ import static org.junit.Assert.*;
  */
 @RunWith(AndroidJUnit4.class)
 public class SCInterfaceTest {
+
     @Test
     public void useAppContext() throws Exception {
         // Context of the app under test.
@@ -57,7 +59,8 @@ public class SCInterfaceTest {
         scFirebase.getParkingSpot(spotID, new SCFirebaseCallback<ParkingSpot>() {
             @Override
             public void callback(ParkingSpot data) {
-                data.setSpotID(spotID);
+
+                assertNotNull(data);
                 assertEquals(writeSpot.getSpotID(), data.getSpotID());
                 assertEquals(writeSpot.getOwnerID(), data.getOwnerID());
                 assertEquals(writeSpot.getAddress(), data.getAddress());
@@ -71,11 +74,48 @@ public class SCInterfaceTest {
     }
 
     @Test
+    public void getAllSpots() throws InterruptedException {
+        Context appContext = InstrumentationRegistry.getTargetContext();
+        FirebaseApp.initializeApp(appContext);
+
+        // Run the SCFirebase test
+        final SCFirebase scFirebase = new SCFirebase();
+
+        final CountDownLatch signalB = new CountDownLatch(1);
+
+        scFirebase.getAllParkingSpots(new SCFirebaseCallback<ArrayList<ParkingSpot>>() {
+            @Override
+            public void callback(ArrayList<ParkingSpot> data) {
+                assertNotNull(data);
+
+                for(final ParkingSpot spot : data) {
+
+                    scFirebase.getParkingSpot(spot.getSpotID(), new SCFirebaseCallback<ParkingSpot>() {
+                        @Override
+                        public void callback(ParkingSpot data) {
+                            assertNotNull(data);
+                            assertEquals(data.getSpotID(), spot.getSpotID());
+                            assertEquals(data.getOwnerID(), spot.getOwnerID());
+                            assertEquals(data.getAddress(), spot.getAddress());
+                            assertEquals(data.getLatLng(), spot.getLatLng());
+                            assertEquals(data.getRate(), spot.getRate(), 0.0);
+                        }
+                    });
+                }
+
+                signalB.countDown();
+            }
+        });
+
+        signalB.await(30, TimeUnit.SECONDS);
+    }
+
+    @Test
     public void write_and_readUser() throws InterruptedException {
         Context appContext = InstrumentationRegistry.getTargetContext();
         FirebaseApp.initializeApp(appContext);
 
-        final String testUserID = "testUserID";
+        final String testUserID = "test-user-ID-123-abc";
 
         SCFirebase scFirebase = new SCFirebase();
         final SpotCheckUser writeUser = new SpotCheckUser(
@@ -92,7 +132,8 @@ public class SCInterfaceTest {
         scFirebase.getSCUser(testUserID, new SCFirebaseCallback<SpotCheckUser>() {
             @Override
             public void callback(SpotCheckUser data) {
-                data.setUserID(testUserID);
+                assertNotNull(data);
+
                 assertEquals(writeUser.getUserID(), data.getUserID());
                 assertEquals(writeUser.getEmail(), data.getEmail());
                 assertEquals(writeUser.getFullname(), data.getFullname());

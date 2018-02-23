@@ -11,6 +11,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.ParkingSpot;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.SpotCheckUser;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class SCFirebase {
@@ -32,8 +33,8 @@ public class SCFirebase {
     }
 
     // Get a parking spot from the data base
-    public void getParkingSpot(String spotID,
-        @NonNull final SCFirebaseCallback<ParkingSpot> finishedCallback) {
+    public void getParkingSpot(final String spotID,
+                               @NonNull final SCFirebaseCallback<ParkingSpot> finishedCallback) {
 
         DatabaseReference myRef = scDatabase.child("parking_spots/");
 
@@ -41,6 +42,11 @@ public class SCFirebase {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 ParkingSpot spot = dataSnapshot.getValue(ParkingSpot.class);
+
+                if(spot != null) {
+                    spot.setSpotID(spotID);
+                }
+
                 finishedCallback.callback(spot);
             }
 
@@ -48,6 +54,33 @@ public class SCFirebase {
             public void onCancelled(DatabaseError databaseError) {}
 
         });
+    }
+
+    public void getAllParkingSpots(
+        @NonNull final SCFirebaseCallback<ArrayList<ParkingSpot>> finishedCalback) {
+
+        DatabaseReference myRef = scDatabase.child("parking_spots/");
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<ParkingSpot> parkingSpots = new ArrayList<>();
+
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    ParkingSpot spot = postSnapshot.getValue(ParkingSpot.class);
+                    spot.setSpotID(postSnapshot.getKey());
+
+                    parkingSpots.add(spot);
+                }
+
+                finishedCalback.callback(parkingSpots);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+
+        });
+
     }
 
 
@@ -59,7 +92,7 @@ public class SCFirebase {
     }
 
     // Get a user from the database
-    public void getSCUser(String userID,
+    public void getSCUser(final String userID,
                           @NonNull final SCFirebaseCallback<SpotCheckUser> finishedCallback) {
 
         DatabaseReference myRef = scDatabase.child("users/");
@@ -68,6 +101,11 @@ public class SCFirebase {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 SpotCheckUser user = dataSnapshot.getValue(SpotCheckUser.class);
+
+                if(user != null) {
+                    user.setUserID(userID);
+                }
+
                 finishedCallback.callback(user);
             }
 

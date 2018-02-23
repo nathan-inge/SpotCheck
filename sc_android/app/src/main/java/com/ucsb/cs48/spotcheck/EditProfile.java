@@ -39,7 +39,6 @@ public class EditProfile extends AppCompatActivity {
             public void callback(SpotCheckUser data) {
                 if(data != null) {
                     user = data;
-                    user.setUserID(currentSCUserID);
 
                     Handler mainHandler = new Handler(Looper.getMainLooper());
                     mainHandler.post(new Runnable() {
