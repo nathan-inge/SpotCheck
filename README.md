@@ -5,6 +5,12 @@
 - Developers: [Arielle Robles](https://github.com/rarielle), [Juan Manzo](https://github.com/juanmanzo), [Kai Labasan](https://github.com/labasan), [Nathan Inge](https://github.com/nathan-inge), [Ray Muhlenkamp](https://github.com/RayMuhlenkamp)
 
 **Setup Instructions**
+1) Clone root directory
+2) In Android Studio, select `New` -> `Import Project...`
+3) Select the folder `sc_android` and click `Open`
+4) Allow Gradle and project to sync
+5) Select the green run icon along the top bar
+6) Create/select an Android emulator or choose to run ona a physical device if plugged in via USB
 
 **Project**
 - [Android Project](/sc_android)
