@@ -1,8 +1,11 @@
 package com.ucsb.cs48.spotcheck;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -64,6 +67,27 @@ public class SpotDetailActivity extends AppCompatActivity {
     }
 
     public void rentButtonClicked(View view) {
+        AlertDialog.Builder builder;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder = new AlertDialog.Builder(this, R.style.AppTheme);
+        } else {
+            builder = new AlertDialog.Builder(this);
+        }
+
+        builder.setTitle("Delete entry")
+            .setMessage("Are you sure you want to delete this entry?")
+            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    // continue with delete
+                }
+            })
+            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    // do nothing
+                }
+            })
+            .setIcon(R.mipmap.spot_marker_icon)
+            .show();
 
     }
 }
