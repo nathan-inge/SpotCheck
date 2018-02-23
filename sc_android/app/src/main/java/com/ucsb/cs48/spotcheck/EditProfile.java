@@ -46,7 +46,8 @@ public class EditProfile extends AppCompatActivity {
                         public void run() {
                             editName.setHint(user.getFullname());
 
-                            String locationHint = (user.getLocation() == "") ? "Location" : user.getLocation();
+                            String locationHint =
+                                (user.getLocation().isEmpty()) ? "Location" : user.getLocation();
                             editLocation.setHint(locationHint);
 
                         }
