@@ -115,14 +115,13 @@ public class CreateSpotEntry extends AppCompatActivity {
             LatLng latLng = place.getLatLng();
             SCLatLng scLatLng = new SCLatLng(latLng.latitude, latLng.longitude);
 
-
             ParkingSpot newSpot = new ParkingSpot(user.getUid(), address, scLatLng, rate);
 
             SCFirebase scFirebase = new SCFirebase();
             scFirebase.createNewSpot(newSpot);
 
-            Intent returnToMaps = new Intent(this, GoogleMapsActivity.class);
-            startActivity(returnToMaps);
+            finish();
+
         } else {
             if(!validPlace) {
                 placeText.setTextColor(0xffcc0000);

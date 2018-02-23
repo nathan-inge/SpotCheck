@@ -1,13 +1,8 @@
 package com.ucsb.cs48.spotcheck;
 
-import android.app.ActionBar;
 import android.content.Intent;
-import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -15,9 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 
@@ -27,28 +19,24 @@ import android.location.Location;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.AppCompatImageButton;
 import android.util.Log;
-import android.view.Menu;
 import android.widget.FrameLayout;
-import android.support.v7.widget.Toolbar;
 
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebase;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseCallback;
+import com.ucsb.cs48.spotcheck.SCLocalObjects.ParkingSpot;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.SpotCheckUser;
 
 
@@ -65,9 +53,10 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+
+import java.util.ArrayList;
 
 public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
 
@@ -128,7 +117,6 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
         setContentView(R.layout.activity_google_maps);
 
 
-
         // Construct a GeoDataClient.
         mGeoDataClient = Places.getGeoDataClient(this, null);
 
@@ -181,7 +169,6 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                         public void callback(SpotCheckUser data) {
                             if(data != null) {
                                 user = data;
-                                user.setUserID(userFirebase.getUid());
 
                             }
                         }
@@ -252,6 +239,16 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                 TextView snippet = ((TextView) infoWindow.findViewById(R.id.snippet));
                 snippet.setText(marker.getSnippet());
 
+                mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                    @Override
+                    public void onInfoWindowClick(Marker marker) {
+                         //TODO: When display parking spot info issue is done
+                        Intent i = new Intent(getApplicationContext(), SpotDetailActivity.class);
+                        i.putExtra("spotID", marker.getTag().toString());
+                        startActivity(i);
+                    }
+                });
+
                 return infoWindow;
             }
         });
@@ -264,6 +261,35 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
 
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
+
+        displayAllParkingSpots();
+    }
+
+
+    private void displayAllParkingSpots() {
+        scFirebase.getAllParkingSpots(new SCFirebaseCallback<ArrayList<ParkingSpot>>() {
+            @Override
+            public void callback(ArrayList<ParkingSpot> data) {
+                if((data != null) && (data.size() > 0)) {
+
+                    // TODO: Improve query with more specific 'get' function
+                    scFirebase.getAllParkingSpots(new SCFirebaseCallback<ArrayList<ParkingSpot>>() {
+                        @Override
+                        public void callback(ArrayList<ParkingSpot> data) {
+                            for(ParkingSpot spot : data) {
+                                Marker spotMarker = mMap.addMarker(new MarkerOptions()
+                                    .position(spot.getLatLng().convertToGoogleLatLng())
+                                    .title(spot.formattedRate() + "/hour")
+                                    .icon(BitmapDescriptorFactory.fromResource(R.mipmap.spot_marker_icon))
+                                    .snippet("See Details")
+                                );
+                                spotMarker.setTag(spot.getSpotID());
+                            }
+                        }
+                    });
+                }
+            }
+        });
     }
 
 
