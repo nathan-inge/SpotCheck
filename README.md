@@ -17,3 +17,4 @@
 - [Milestones](https://github.com/nathan-inge/SpotCheck/milestones)
 - [Vision Statement](https://docs.google.com/document/d/1uY8ura_jUY4Gcq4B5WxYX0IwC5ixNGXKTRLSpE7YyEA/edit?usp=sharing)
 - [Trello Board](https://trello.com/b/LGbtxXUF/spotcheck)
+- [Draft Project Google Doc](https://docs.google.com/document/d/1UTn_WbTc9A-A8ftDLvF8qt2i_0-ll9bfwnuI36cjqpY/edit?usp=sharing)
