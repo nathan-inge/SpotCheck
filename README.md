@@ -12,6 +12,10 @@
 5) Select the green run icon along the top bar
 6) Create/select an Android emulator or choose to run ona a physical device if plugged in via USB
 
+**Testing**
+- [Unit Tests](https://github.com/nathan-inge/SpotCheck/tree/master/sc_android/app/src/test/java/com/ucsb/cs48/spotcheck)
+- [Integration Tests](https://github.com/nathan-inge/SpotCheck/tree/master/sc_android/app/src/androidTest/java/com/ucsb/cs48/spotcheck)
+
 **Project**
 - [Android Project](/sc_android)
 - [Server Project](/sc_server)
