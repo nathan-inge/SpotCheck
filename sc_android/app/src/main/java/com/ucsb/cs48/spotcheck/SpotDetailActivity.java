@@ -9,6 +9,7 @@ import android.os.Looper;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +31,7 @@ public class SpotDetailActivity extends AppCompatActivity {
 
     private boolean openedMailClient = false;
     private int CODE_SEND = 0;
+    private ProgressDialog startingEmailDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +99,7 @@ public class SpotDetailActivity extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        startingEmailDialog.dismiss();
         if(requestCode == CODE_SEND && openedMailClient){
             Toast.makeText(
                 getApplicationContext(),
@@ -191,6 +194,9 @@ public class SpotDetailActivity extends AppCompatActivity {
     }
 
     public void sendOwnerEmail() {
+        startingEmailDialog = ProgressDialog.show(SpotDetailActivity.this, "",
+            "Setting up email...", true);
+
         String currentUserName = scAuth.getCurrentUser().getDisplayName();
         Intent i = new Intent(Intent.ACTION_SEND);
         i.setType("message/rfc822");
