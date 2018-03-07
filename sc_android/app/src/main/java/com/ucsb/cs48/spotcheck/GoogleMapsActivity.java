@@ -1,5 +1,6 @@
 package com.ucsb.cs48.spotcheck;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -267,27 +268,24 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
 
 
     private void displayAllParkingSpots() {
+        final ProgressDialog dialog = ProgressDialog.show(GoogleMapsActivity.this, "",
+            "SpotChecking...", true);
+
         scFirebase.getAllParkingSpots(new SCFirebaseCallback<ArrayList<ParkingSpot>>() {
             @Override
             public void callback(ArrayList<ParkingSpot> data) {
                 if((data != null) && (data.size() > 0)) {
-
-                    // TODO: Improve query with more specific 'get' function
-                    scFirebase.getAllParkingSpots(new SCFirebaseCallback<ArrayList<ParkingSpot>>() {
-                        @Override
-                        public void callback(ArrayList<ParkingSpot> data) {
-                            for(ParkingSpot spot : data) {
-                                Marker spotMarker = mMap.addMarker(new MarkerOptions()
-                                    .position(spot.getLatLng().convertToGoogleLatLng())
-                                    .title(spot.formattedRate() + "/hour")
-                                    .icon(BitmapDescriptorFactory.fromResource(R.mipmap.spot_marker_icon))
-                                    .snippet("See Details")
-                                );
-                                spotMarker.setTag(spot.getSpotID());
-                            }
-                        }
-                    });
+                    for(ParkingSpot spot : data) {
+                        Marker spotMarker = mMap.addMarker(new MarkerOptions()
+                            .position(spot.getLatLng().convertToGoogleLatLng())
+                            .title(spot.formattedRate() + "/hour")
+                            .icon(BitmapDescriptorFactory.fromResource(R.mipmap.spot_marker_icon))
+                            .snippet("See Details")
+                        );
+                        spotMarker.setTag(spot.getSpotID());
+                    }
                 }
+                dialog.dismiss();
             }
         });
     }
@@ -561,6 +559,6 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     public void selectTimeRangeTapped() {
-        
+
     }
 }
