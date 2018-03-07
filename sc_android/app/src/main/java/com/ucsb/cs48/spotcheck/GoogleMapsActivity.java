@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.TextView;
 
 
@@ -22,6 +23,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.widget.FrameLayout;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
@@ -57,7 +60,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
 
@@ -104,6 +111,8 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
     private SpotCheckUser user;
     private DrawerLayout mDrawerLayout;
     private TextView mUserName;
+
+    private int TIME_SELECTION = 4;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -207,6 +216,17 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
         super.onStop();
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == TIME_SELECTION){
+            Toast.makeText(
+                getApplicationContext(),
+                "Spot Successfully Rented!",
+                Toast.LENGTH_SHORT).show();
+
         }
     }
 
@@ -558,7 +578,29 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
         startActivity(i);
     }
 
-    public void selectTimeRangeTapped() {
+    public void selectTimeRangeTapped(View view) {
+        final View dialogView = View.inflate(this, R.layout.dialog_time_range, null);
+        final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+
+
+        dialogView.findViewById(R.id.date_time_set).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                DatePicker datePicker = (DatePicker) dialogView.findViewById(R.id.date_picker);
+                TimePicker timePicker = (TimePicker) dialogView.findViewById(R.id.time_picker);
+
+                Calendar calendar = new GregorianCalendar(datePicker.getYear(),
+                    datePicker.getMonth(),
+                    datePicker.getDayOfMonth(),
+                    timePicker.getCurrentHour(),
+                    timePicker.getCurrentMinute());
+
+                long time = calendar.getTimeInMillis();
+                alertDialog.dismiss();
+            }});
+        alertDialog.setView(dialogView);
+        alertDialog.show();
 
     }
 }
