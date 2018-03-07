@@ -1,20 +1,19 @@
 package com.ucsb.cs48.spotcheck;
 
-import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebase;
+import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseAuth;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseCallback;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.ParkingSpot;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.SpotCheckUser;
@@ -22,11 +21,15 @@ import com.ucsb.cs48.spotcheck.SCLocalObjects.SpotCheckUser;
 public class SpotDetailActivity extends AppCompatActivity {
 
     private SCFirebase scFirebase;
+    private SCFirebaseAuth scAuth;
     private TextView addressView;
     private TextView rateView;
 
     private SpotCheckUser owner;
     private ParkingSpot spot;
+
+    private boolean openedMailClient = false;
+    private int CODE_SEND = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +42,14 @@ public class SpotDetailActivity extends AppCompatActivity {
 
         // Initialize SCFirebase instance
         scFirebase = new SCFirebase();
+        scAuth = new SCFirebaseAuth();
+
+        final ProgressDialog dialog = ProgressDialog.show(
+            SpotDetailActivity.this,
+            "",
+            "Fetching spot details...",
+            true
+        );
 
         // Get intent and extras
         Intent intent = getIntent();
@@ -48,6 +59,7 @@ public class SpotDetailActivity extends AppCompatActivity {
         scFirebase.getParkingSpot(spotID, new SCFirebaseCallback<ParkingSpot>() {
             @Override
             public void callback(ParkingSpot data) {
+                dialog.dismiss();
                 if(data != null) {
                     spot = data;
 
@@ -71,28 +83,57 @@ public class SpotDetailActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        openedMailClient = false;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        openedMailClient = true;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == CODE_SEND && openedMailClient){
+            Toast.makeText(
+                getApplicationContext(),
+                "Spot Successfully Rented!",
+                Toast.LENGTH_SHORT).show();
+             rentSpot();
+
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Rent Request Cancelled")
+                .setMessage((
+                    "Your request has been cancelled. You must send the owner an email.\n\n" +
+                    "Would you like to try again?"))
+                .setPositiveButton("Try Again", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        sendOwnerEmail();
+                    }
+                })
+                .setNegativeButton("Cancel Request", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                })
+                .setIcon(R.mipmap.spot_marker_icon)
+                .show();
+        }
+    }
+
     public void rentButtonClicked(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setTitle("Confirm Rent Request")
             .setMessage(("Are you sure you want to request to rent this spot?\n\n" +
-                "The owner will be provided with your email to contact you directly."))
+                "You will be directed to a screen to send an email to the owner."))
             .setPositiveButton("Rent", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
-                    // TODO: Actually send owner details or connect users somehow
-                    // TODO: and mark parking spot as "taken" or "unavaliable"
-                    // TODO: For now, just delete it because... yolo
-
-                    if(spot != null) {
-                        scFirebase.deleteParkingSpot(spot.getSpotID());
-                    }
-
-                    Toast.makeText(
-                        getApplicationContext(),
-                        "Request Sent!",
-                        Toast.LENGTH_SHORT).show();
-
-                    finish();
+                    getOwnerInfo();
                 }
             })
             .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -116,5 +157,71 @@ public class SpotDetailActivity extends AppCompatActivity {
             })
             .setIcon(R.mipmap.spot_marker_icon)
             .show();
+    }
+
+    public void getOwnerInfo() {
+        final ProgressDialog dialog = ProgressDialog.show(SpotDetailActivity.this, "",
+            "Getting owner info...", true);
+
+        scFirebase.getSCUser(spot.getOwnerID(), new SCFirebaseCallback<SpotCheckUser>() {
+            @Override
+            public void callback(SpotCheckUser data) {
+                owner = data;
+
+                final Handler mainHandler = new Handler(Looper.getMainLooper());
+                mainHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        dialog.dismiss();
+                        if (owner != null) {
+                            sendOwnerEmail();
+                            rentSpot();
+
+                        } else {
+                            Toast.makeText(
+                                getApplicationContext(),
+                                "Error getting owner information.",
+                                Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    public void sendOwnerEmail() {
+        String currentUserName = scAuth.getCurrentUser().getDisplayName();
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType("message/rfc822");
+        i.putExtra(Intent.EXTRA_EMAIL  , new String[]{owner.getEmail()});
+        i.putExtra(Intent.EXTRA_SUBJECT, "SpotCheck Rent Request");
+        i.putExtra(
+            Intent.EXTRA_TEXT   ,
+            "Hello,\n" + currentUserName
+                + " would like to rent your parking spot located at " + spot.getAddress()
+                + " from START TIME until END TIME.\n\n"
+                + "Please confirm this request by replying to this email.\n\n"
+                + "Payment should be arranged directly with " + currentUserName + "\n\n"
+                + "Thank you,\nThe SpotCheck Team"
+        );
+
+        try {
+            startActivityForResult(
+                Intent.createChooser(i, "Send rent request..."),
+                0
+            );
+
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(
+                getApplicationContext(),
+                "There are no email clients installed.",
+                Toast.LENGTH_SHORT
+            ).show();
+        }
+    }
+
+    public void rentSpot() {
+
     }
 }
