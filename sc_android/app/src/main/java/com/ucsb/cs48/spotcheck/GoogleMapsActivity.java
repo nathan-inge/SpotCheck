@@ -559,4 +559,8 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
         Intent i = new Intent(this, ProfilePage.class);
         startActivity(i);
     }
+
+    public void selectTimeRangeTapped() {
+        
+    }
 }
