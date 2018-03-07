@@ -6,9 +6,6 @@
     android:layout_height="match_parent">
 <!-- The main content view -->
 
-
-
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -27,16 +24,52 @@
                   android:layout_height="match_parent"
                   tools:context="com.ucsb.cs48.spotcheck.GoogleMapsActivity" >
 
-            <Button
+            <android.support.v7.widget.CardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal|top"
-                android:text="Select Time Range"
-                android:padding="5dp"
-                android:layout_marginTop="7dp"
+                app:cardCornerRadius="12dp"
                 android:alpha="0.75"
-                android:background="@android:color/white"
-                android:onClick="selectTimeRangeTapped"/>
+                android:layout_marginTop="5dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Start Time"
+                        android:padding="5dp"
+                        android:alpha="1"
+                        android:background="@color/colorPrimary"
+                        android:textColor="@android:color/white"
+                        android:onClick="selectTimeRangeTapped"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text=" to "
+                        android:textColor="@color/colorPrimary"
+                        android:alpha="1"
+                        android:gravity="center"/>
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="End Time"
+                        android:padding="5dp"
+                        android:alpha="1"
+                        android:background="@color/colorPrimary"
+                        android:textColor="@android:color/white"
+                        android:onClick="selectTimeRangeTapped"/>
+                </LinearLayout>
+
+
+
+            </android.support.v7.widget.CardView>
+
+
 
         </fragment>
     </LinearLayout>
