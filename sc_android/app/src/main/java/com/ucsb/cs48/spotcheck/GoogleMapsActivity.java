@@ -60,6 +60,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -116,8 +117,8 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
     private Button endTimeButton;
 
     // Time Range Vars
-    private Date startTime;
-    private Date endTime;
+    private Date startTime = new Date();
+    private Date endTime = new Date(Long.MAX_VALUE);
     private int TIME_SELECTION = 4;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -198,8 +199,6 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
         // Set up time range related stuff
         startTimeButton = findViewById(R.id.start_time_button);
         endTimeButton = findViewById(R.id.end_time_button);
-
-        startTime = new Date();
     }
 
     /**
@@ -246,6 +245,8 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
     @Override
     public void onMapReady(GoogleMap map) {
         mMap = map;
+
+        mMap.getUiSettings().setCompassEnabled(false);
 
         // Use a custom info window adapter to handle multiple lines of text in the
         // info window contents.
@@ -522,7 +523,7 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
         try {
             if (mLocationPermissionGranted) {
                 mMap.setMyLocationEnabled(true);
-                mMap.getUiSettings().setMyLocationButtonEnabled(true);
+                mMap.getUiSettings().setMyLocationButtonEnabled(false);
             } else {
                 mMap.setMyLocationEnabled(false);
                 mMap.getUiSettings().setMyLocationButtonEnabled(false);
@@ -605,6 +606,10 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                     timePicker.getCurrentHour(),
                     timePicker.getCurrentMinute());
 
+                int unroundedMinutes = calendar.get(Calendar.MINUTE);
+                int mod = unroundedMinutes % 15;
+                calendar.add(Calendar.MINUTE, - mod);
+
                 verifyTimeRange(calendar.getTime(), true);
 
                 alertDialog.dismiss();
@@ -632,21 +637,28 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                     timePicker.getCurrentHour(),
                     timePicker.getCurrentMinute());
 
+                int unroundedMinutes = calendar.get(Calendar.MINUTE);
+                int mod = unroundedMinutes % 15;
+                calendar.add(Calendar.MINUTE, - mod);
+
                 verifyTimeRange(calendar.getTime(), false);
                 alertDialog.dismiss();
             }});
         alertDialog.setView(dialogView);
         alertDialog.show();
-
     }
 
     public void verifyTimeRange(Date newTime, Boolean start) {
         Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("E M/d, h:mm a");
 
         if(start) {
             Date currentTime = new Date();
             calendar.setTime(currentTime);
             long currentMillis = calendar.getTimeInMillis();
+
+            calendar.setTime(endTime);
+            long endTimeMillis = calendar.getTimeInMillis();
 
             calendar.setTime(newTime);
             long newMillis = calendar.getTimeInMillis();
@@ -665,9 +677,24 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                     .setIcon(R.mipmap.spot_marker_icon)
                     .show();
 
+            } else if(newMillis > endTimeMillis) {
+                // Cannot set start time before end time
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+                builder.setTitle("Invalid Start Time")
+                    .setMessage(("Start time cannot be after end time."))
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // do nothing
+                        }
+                    })
+                    .setIcon(R.mipmap.spot_marker_icon)
+                    .show();
+
             } else {
                 startTime = newTime;
-                startTimeButton.setText(calendar.getTime().toString());
+                startTimeButton.setText(simpleDateFormat.format(startTime));
+
             }
 
         } else {
@@ -693,14 +720,9 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
 
             } else {
                 endTime = newTime;
-                endTimeButton.setText(calendar.getTime().toString());
+                endTimeButton.setText(simpleDateFormat.format(endTime));
+
             }
         }
-
-
-
     }
-
-
-
 }
