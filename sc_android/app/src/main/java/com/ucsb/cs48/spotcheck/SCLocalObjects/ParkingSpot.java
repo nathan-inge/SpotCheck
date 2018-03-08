@@ -1,6 +1,5 @@
 package com.ucsb.cs48.spotcheck.SCLocalObjects;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.Exclude;
 
 import java.text.NumberFormat;
@@ -14,7 +13,7 @@ public class ParkingSpot {
     private String address;
     private Double rate;
     private SCLatLng latLng;
-    private ArrayList<BlockedDates> blockedDatesList;
+    private ArrayList<BlockedDates> blockedDatesList = new ArrayList<>();
 
     public ParkingSpot() {
         // Required no argument constructor for Firebase database
@@ -46,6 +45,10 @@ public class ParkingSpot {
 
     public void removeBlockedDates(BlockedDates oldBlock) {
         this.blockedDatesList.remove(oldBlock);
+    }
+
+    public int getBlockedDatesCount() {
+        return this.blockedDatesList.size();
     }
 
     @Exclude

@@ -29,4 +29,24 @@ public class BlockedDates {
 
     public long getEnd() { return this.end; }
     public void setEnd(long end) { this.end = end; }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (!BlockedDates.class.isAssignableFrom(obj.getClass())) {
+            return false;
+        }
+        final BlockedDates other = (BlockedDates) obj;
+
+        if (this.start != other.start) {
+            return false;
+        }
+
+        if (this.end != other.end) {
+            return false;
+        }
+        return true;
+    }
 }

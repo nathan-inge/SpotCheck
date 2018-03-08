@@ -1,11 +1,14 @@
 package com.ucsb.cs48.spotcheck;
 
-import com.google.android.gms.maps.model.LatLng;
+import com.ucsb.cs48.spotcheck.SCLocalObjects.BlockedDates;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.ParkingSpot;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.SCLatLng;
-import com.ucsb.cs48.spotcheck.SCLocalObjects.SpotCheckUser;
 
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import static org.junit.Assert.*;
 
@@ -66,5 +69,40 @@ public class ParkingSpotTest {
 
         parkingSpot.setRate(9.5);
         assertEquals("$9.50", parkingSpot.formattedRate());
+    }
+
+    @Test
+    public void test_blockedDates() {
+        SCLatLng testLatLng = new SCLatLng(13.4, -35.73);
+        ParkingSpot parkingSpot = new ParkingSpot(
+            "spotIDBlockedDates",
+            "ownerID",
+            "home",
+            testLatLng,
+            25.95
+        );
+
+        assertEquals(0, parkingSpot.getBlockedDatesCount());
+
+        Date startDate = new Date();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(startDate);
+        calendar.add(Calendar.MONTH, 3);
+        Date endDate = calendar.getTime();
+
+        BlockedDates blockedDatesAdd = new BlockedDates(startDate.getTime(), endDate.getTime());
+
+        parkingSpot.addBlockedDates(blockedDatesAdd);
+
+        assertEquals(1, parkingSpot.getBlockedDatesCount());
+
+        ArrayList<BlockedDates> blockedDatesList= parkingSpot.getBlockedDatesList();
+        assertEquals(blockedDatesList.get(0), blockedDatesAdd);
+
+        BlockedDates blockedDatesRemove = new BlockedDates(startDate.getTime(), endDate.getTime());
+        parkingSpot.removeBlockedDates(blockedDatesRemove);
+
+        assertEquals(0, parkingSpot.getBlockedDatesCount());
     }
 }
