@@ -667,19 +667,15 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     private void verifyTimeRange(Date newTime, Boolean start) {
-        Calendar calendar = Calendar.getInstance();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("E M/d, h:mm a");
 
         if(start) {
             Date currentTime = new Date();
-            calendar.setTime(currentTime);
-            long currentMillis = calendar.getTimeInMillis();
+            long currentMillis = currentTime.getTime();
 
-            calendar.setTime(endTime);
-            long endTimeMillis = calendar.getTimeInMillis();
+            long endTimeMillis = endTime.getTime();
 
-            calendar.setTime(newTime);
-            long newMillis = calendar.getTimeInMillis();
+            long newMillis = newTime.getTime();
 
             if(newMillis < currentMillis) {
                 // Cannot set start time before current time
@@ -718,11 +714,9 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
             }
 
         } else {
-            calendar.setTime(startTime);
-            long currentStartTimeMillis = calendar.getTimeInMillis();
+            long currentStartTimeMillis = startTime.getTime();
 
-            calendar.setTime(newTime);
-            long newMillis = calendar.getTimeInMillis();
+            long newMillis = newTime.getTime();
 
             if(newMillis <= currentStartTimeMillis) {
                 // Cannot set end time before start time
