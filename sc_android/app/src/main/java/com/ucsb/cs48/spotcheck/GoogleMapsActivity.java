@@ -648,7 +648,7 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
         alertDialog.show();
     }
 
-    public void verifyTimeRange(Date newTime, Boolean start) {
+    private void verifyTimeRange(Date newTime, Boolean start) {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("E M/d, h:mm a");
 
@@ -694,7 +694,8 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
             } else {
                 startTime = newTime;
                 startTimeButton.setText(simpleDateFormat.format(startTime));
-
+                displayParkingSpots();
+                
             }
 
         } else {
@@ -721,8 +722,20 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
             } else {
                 endTime = newTime;
                 endTimeButton.setText(simpleDateFormat.format(endTime));
+                displayParkingSpots();
 
             }
         }
+    }
+
+    private void displayParkingSpots() {
+        if(mMap == null) {
+            return;
+        }
+
+
+        mMap.clear();
+        displayAllParkingSpots();
+
     }
 }
