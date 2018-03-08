@@ -1,6 +1,7 @@
 package com.ucsb.cs48.spotcheck;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -18,9 +19,15 @@ import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 
 import java.util.ArrayList;
+import java.util.TimeZone;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
+
+import javax.security.auth.callback.Callback;
+
+import static com.ucsb.cs48.spotcheck.Utilities.SCConstants.TEST_USER_ID;
+import static com.ucsb.cs48.spotcheck.Utilities.SCConstants.TEST_SPOT_OWNER_ID;
 
 import static org.junit.Assert.*;
 
@@ -41,6 +48,10 @@ public class SCFirebaseTest {
         assertEquals("com.ucsb.cs48.spotcheck", appContext.getPackageName());
     }
 
+    /**
+     * MARK - ParkingSpot Integration Tests
+     */
+
     @Test
     public void write_and_readSpot() throws InterruptedException {
         Context appContext = InstrumentationRegistry.getTargetContext();
@@ -50,13 +61,15 @@ public class SCFirebaseTest {
 
         SCFirebase scFirebase = new SCFirebase();
         final ParkingSpot writeSpot = new ParkingSpot(
-            "testOwnerID",
+            TEST_SPOT_OWNER_ID,
             "testAddress",
             testLatLng,
             10.5
         );
 
-        writeSpot.addBlockedDates(new BlockedDates(ThreadLocalRandom.current().nextLong(), ThreadLocalRandom.current().nextLong()));
+        final BlockedDates blockedDates = new BlockedDates(ThreadLocalRandom.current().nextLong(),
+            ThreadLocalRandom.current().nextLong());
+        writeSpot.addBlockedDates(blockedDates);
 
         final String spotID = scFirebase.createNewSpot(writeSpot);
         writeSpot.setSpotID(spotID);
@@ -74,9 +87,13 @@ public class SCFirebaseTest {
                 assertEquals(writeSpot.getLatLng(), data.getLatLng());
                 assertEquals(writeSpot.getRate(), data.getRate(), 0.0);
                 assertEquals(writeSpot.getBlockedDatesCount(), data.getBlockedDatesCount());
+                ArrayList<BlockedDates> dataBlockedDates = data.getBlockedDatesList();
+                assertEquals(blockedDates, dataBlockedDates.get(0));
                 signal.countDown();
             }
         });
+
+        scFirebase.deleteParkingSpot(writeSpot.getSpotID());
 
         signal.await(30, TimeUnit.SECONDS);
     }
@@ -101,12 +118,13 @@ public class SCFirebaseTest {
                     scFirebase.getParkingSpot(spot.getSpotID(), new SCFirebaseCallback<ParkingSpot>() {
                         @Override
                         public void callback(ParkingSpot data) {
-                            assertNotNull(data);
-                            assertEquals(data.getSpotID(), spot.getSpotID());
-                            assertEquals(data.getOwnerID(), spot.getOwnerID());
-                            assertEquals(data.getAddress(), spot.getAddress());
-                            assertEquals(data.getLatLng(), spot.getLatLng());
-                            assertEquals(data.getRate(), spot.getRate(), 0.0);
+                            if(data != null) {
+                                assertEquals(data.getSpotID(), spot.getSpotID());
+                                assertEquals(data.getOwnerID(), spot.getOwnerID());
+                                assertEquals(data.getAddress(), spot.getAddress());
+                                assertEquals(data.getLatLng(), spot.getLatLng());
+                                assertEquals(data.getRate(), spot.getRate(), 0.0);
+                            }
                         }
                     });
                 }
@@ -127,8 +145,8 @@ public class SCFirebaseTest {
 
         SCFirebase scFirebase = new SCFirebase();
         final ParkingSpot writeSpot = new ParkingSpot(
-            "testOwnerDelete",
-            "testAddressDelete",
+            TEST_SPOT_OWNER_ID,
+            "testAddressID",
             testLatLng,
             10.5
         );
@@ -153,15 +171,61 @@ public class SCFirebaseTest {
     }
 
     @Test
+    public void test_deleteTestParkingSpots() throws InterruptedException {
+        Context appContext = InstrumentationRegistry.getTargetContext();
+        FirebaseApp.initializeApp(appContext);
+
+        SCFirebase scFirebase = new SCFirebase();
+
+        SCLatLng testLatLng = new SCLatLng(13.4, -35.73);
+
+        final ParkingSpot writeSpot = new ParkingSpot(
+            TEST_SPOT_OWNER_ID,
+            "testAddressID",
+            testLatLng,
+            10.5
+        );
+
+        final String spotID = scFirebase.createNewSpot(writeSpot);
+        writeSpot.setSpotID(spotID);
+
+        final CountDownLatch signalA = new CountDownLatch(1);
+
+        scFirebase.deleteTestParkingSpots(new SCFirebaseCallback<Boolean>() {
+            @Override
+            public void callback(Boolean data) {
+                assertTrue(data);
+                signalA.countDown();
+            }
+        });
+        signalA.await(30, TimeUnit.SECONDS);
+
+        final CountDownLatch signal = new CountDownLatch(1);
+
+        scFirebase.getParkingSpot(writeSpot.getSpotID(), new SCFirebaseCallback<ParkingSpot>() {
+            @Override
+            public void callback(ParkingSpot data) {
+                assertNull(data);
+                signal.countDown();
+            }
+        });
+
+        signal.await(30, TimeUnit.SECONDS);
+    }
+
+
+    /**
+     * MARK - SpotCheckUser Integration Tests
+     */
+
+    @Test
     public void write_and_readUser() throws InterruptedException {
         Context appContext = InstrumentationRegistry.getTargetContext();
         FirebaseApp.initializeApp(appContext);
 
-        final String testUserID = "test-user-ID-123-abc";
-
         SCFirebase scFirebase = new SCFirebase();
         final SpotCheckUser writeUser = new SpotCheckUser(
-            testUserID,
+            TEST_USER_ID,
             "testEmail",
             "Test Name",
                 "Test Location"
@@ -171,7 +235,7 @@ public class SCFirebaseTest {
 
         final CountDownLatch signal = new CountDownLatch(1);
 
-        scFirebase.getSCUser(testUserID, new SCFirebaseCallback<SpotCheckUser>() {
+        scFirebase.getSCUser(TEST_USER_ID, new SCFirebaseCallback<SpotCheckUser>() {
             @Override
             public void callback(SpotCheckUser data) {
                 assertNotNull(data);
@@ -180,6 +244,68 @@ public class SCFirebaseTest {
                 assertEquals(writeUser.getEmail(), data.getEmail());
                 assertEquals(writeUser.getFullname(), data.getFullname());
                 assertEquals(writeUser.getLocation(), data.getLocation());
+                signal.countDown();
+            }
+        });
+
+        scFirebase.deleteUser(writeUser.getUserID());
+
+        signal.await(30, TimeUnit.SECONDS);
+    }
+
+    @Test
+    public void deleteUser() throws InterruptedException {
+        Context appContext = InstrumentationRegistry.getTargetContext();
+        FirebaseApp.initializeApp(appContext);
+
+        SCFirebase scFirebase = new SCFirebase();
+        final SpotCheckUser writeUser = new SpotCheckUser(
+            TEST_USER_ID,
+            "testEmail",
+            "Test Name",
+            "Test Location"
+        );
+
+        scFirebase.uploadUser(writeUser);
+
+        scFirebase.deleteUser(writeUser.getUserID());
+
+        final CountDownLatch signal = new CountDownLatch(1);
+
+        scFirebase.getSCUser(writeUser.getUserID(), new SCFirebaseCallback<SpotCheckUser>() {
+            @Override
+            public void callback(SpotCheckUser data) {
+                assertNull(data);
+                signal.countDown();
+            }
+        });
+
+        signal.await(30, TimeUnit.SECONDS);
+    }
+
+    @Test
+    public void test_deleteTestUsers() throws InterruptedException {
+        Context appContext = InstrumentationRegistry.getTargetContext();
+        FirebaseApp.initializeApp(appContext);
+
+        SCFirebase scFirebase = new SCFirebase();
+        final SpotCheckUser writeUser = new SpotCheckUser(
+            TEST_USER_ID,
+            "testEmail",
+            "Test Name",
+            "Test Location"
+        );
+
+        scFirebase.uploadUser(writeUser);
+
+        scFirebase.deleteTestUsers();
+
+        final CountDownLatch signal = new CountDownLatch(1);
+
+        scFirebase.getSCUser(writeUser.getUserID(), new SCFirebaseCallback<SpotCheckUser>() {
+            @Override
+            public void callback(SpotCheckUser data) {
+                assertNull(data);
                 signal.countDown();
             }
         });
