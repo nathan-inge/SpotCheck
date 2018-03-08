@@ -7,6 +7,7 @@ import android.support.test.runner.AndroidJUnit4;
 import com.google.firebase.FirebaseApp;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseCallback;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebase;
+import com.ucsb.cs48.spotcheck.SCLocalObjects.BlockedDates;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.ParkingSpot;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.SCLatLng;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.SpotCheckUser;
@@ -18,6 +19,7 @@ import org.junit.runners.MethodSorters;
 
 import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
@@ -54,6 +56,8 @@ public class SCFirebaseTest {
             10.5
         );
 
+        writeSpot.addBlockedDates(new BlockedDates(ThreadLocalRandom.current().nextLong(), ThreadLocalRandom.current().nextLong()));
+
         final String spotID = scFirebase.createNewSpot(writeSpot);
         writeSpot.setSpotID(spotID);
 
@@ -69,6 +73,7 @@ public class SCFirebaseTest {
                 assertEquals(writeSpot.getAddress(), data.getAddress());
                 assertEquals(writeSpot.getLatLng(), data.getLatLng());
                 assertEquals(writeSpot.getRate(), data.getRate(), 0.0);
+                assertEquals(writeSpot.getBlockedDatesCount(), data.getBlockedDatesCount());
                 signal.countDown();
             }
         });

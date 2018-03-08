@@ -747,7 +747,6 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
             return;
         }
 
-
         mMap.clear();
         displayAllParkingSpots();
 
