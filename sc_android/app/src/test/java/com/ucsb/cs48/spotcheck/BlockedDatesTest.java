@@ -57,4 +57,19 @@ public class BlockedDatesTest {
 
         assertFalse(blockedDatesTwo.equals(blockedDatesFour));
     }
+
+    @Test
+    public void test_conflict() {
+        long start = 400L;
+        long end = 600L;
+        BlockedDates blockedDatesA = new BlockedDates(start, end);
+
+        assertFalse(blockedDatesA.conflict(100L, 350L));
+        assertFalse(blockedDatesA.conflict(700L, 900L));
+
+        assertTrue(blockedDatesA.conflict(300L, 500L));
+        assertTrue(blockedDatesA.conflict(550L, 800L));
+        assertTrue(blockedDatesA.conflict(200L, 1000L));
+
+    }
 }

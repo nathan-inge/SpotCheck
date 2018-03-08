@@ -1,7 +1,6 @@
 package com.ucsb.cs48.spotcheck;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -19,12 +18,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 
 import java.util.ArrayList;
-import java.util.TimeZone;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
-
-import javax.security.auth.callback.Callback;
 
 import static com.ucsb.cs48.spotcheck.Utilities.SCConstants.TEST_USER_ID;
 import static com.ucsb.cs48.spotcheck.Utilities.SCConstants.TEST_SPOT_OWNER_ID;
@@ -87,6 +83,7 @@ public class SCFirebaseTest {
                 assertEquals(writeSpot.getLatLng(), data.getLatLng());
                 assertEquals(writeSpot.getRate(), data.getRate(), 0.0);
                 assertEquals(writeSpot.getBlockedDatesCount(), data.getBlockedDatesCount());
+
                 ArrayList<BlockedDates> dataBlockedDates = data.getBlockedDatesList();
                 assertEquals(blockedDates, dataBlockedDates.get(0));
                 signal.countDown();

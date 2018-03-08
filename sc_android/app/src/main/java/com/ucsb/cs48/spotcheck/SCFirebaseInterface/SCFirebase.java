@@ -8,6 +8,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.ucsb.cs48.spotcheck.SCLocalObjects.BlockedDates;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.ParkingSpot;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.SpotCheckUser;
 
@@ -91,6 +92,49 @@ public class SCFirebase {
 
         });
     }
+
+//    public void getAvailableParkingSpots(long start, long end,
+//        @NonNull final SCFirebaseCallback<ArrayList<ParkingSpot>> finishedCallback) {
+//
+//        DatabaseReference myRef = scDatabase.child(PARKINGSPOT_PATH);
+//
+//        myRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                ArrayList<ParkingSpot> availableParkingSpots = new ArrayList<>();
+//
+//                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+//                    ParkingSpot spot = postSnapshot.getValue(ParkingSpot.class);
+//
+//                    if(spot != null) {
+//                        spot.setSpotID(postSnapshot.getKey());
+//
+//                        if (spot.getBlockedDatesCount() == 0) {
+//                            availableParkingSpots.add(spot);
+//                        } else {
+//                            ArrayList<BlockedDates> blockedDates = spot.getBlockedDatesList();
+//
+//                            for ( BlockedDates block : blockedDates) {
+//
+//                            }
+//                        }
+//                    }
+//
+//
+//                    parkingSpots.add(spot);
+//                }
+//
+//                finishedCalback.callback(parkingSpots);
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        })
+//
+//    }
 
     public void deleteParkingSpot(String spotID) {
         DatabaseReference myRef = scDatabase.child(PARKINGSPOT_PATH).child(spotID);

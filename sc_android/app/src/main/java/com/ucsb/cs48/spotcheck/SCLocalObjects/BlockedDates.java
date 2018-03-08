@@ -24,6 +24,18 @@ public class BlockedDates {
         return new Date(end);
     }
 
+    public Boolean conflict(long requestStart, long requestEnd) {
+        if(requestEnd < this.start) {
+            return false;
+        }
+
+        if(requestStart > this.end) {
+            return false;
+        }
+
+        return true;
+    }
+
     public long getStart() { return this.start; }
     public void setStart(long start) { this.start = start; }
 
