@@ -79,9 +79,12 @@ public class SCFirebase {
 
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
                     ParkingSpot spot = postSnapshot.getValue(ParkingSpot.class);
-                    spot.setSpotID(postSnapshot.getKey());
 
-                    parkingSpots.add(spot);
+                    if(spot != null) {
+                        spot.setSpotID(postSnapshot.getKey());
+                        parkingSpots.add(spot);
+                    }
+
                 }
 
                 finishedCalback.callback(parkingSpots);
@@ -93,48 +96,53 @@ public class SCFirebase {
         });
     }
 
-//    public void getAvailableParkingSpots(long start, long end,
-//        @NonNull final SCFirebaseCallback<ArrayList<ParkingSpot>> finishedCallback) {
-//
-//        DatabaseReference myRef = scDatabase.child(PARKINGSPOT_PATH);
-//
-//        myRef.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                ArrayList<ParkingSpot> availableParkingSpots = new ArrayList<>();
-//
-//                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-//                    ParkingSpot spot = postSnapshot.getValue(ParkingSpot.class);
-//
-//                    if(spot != null) {
-//                        spot.setSpotID(postSnapshot.getKey());
-//
-//                        if (spot.getBlockedDatesCount() == 0) {
-//                            availableParkingSpots.add(spot);
-//                        } else {
-//                            ArrayList<BlockedDates> blockedDates = spot.getBlockedDatesList();
-//
-//                            for ( BlockedDates block : blockedDates) {
-//
-//                            }
-//                        }
-//                    }
-//
-//
-//                    parkingSpots.add(spot);
-//                }
-//
-//                finishedCalback.callback(parkingSpots);
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        })
-//
-//    }
+    public void getAvailableParkingSpots(final long start, final long end,
+                                         @NonNull final SCFirebaseCallback<ArrayList<ParkingSpot>> finishedCallback) {
+
+        DatabaseReference myRef = scDatabase.child(PARKINGSPOT_PATH);
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<ParkingSpot> availableParkingSpots = new ArrayList<>();
+
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    ParkingSpot spot = postSnapshot.getValue(ParkingSpot.class);
+
+                    if(spot != null) {
+                        spot.setSpotID(postSnapshot.getKey());
+
+                        if (spot.getBlockedDatesCount() == 0) {
+                            availableParkingSpots.add(spot);
+
+                        } else {
+                            Boolean available = true;
+                            ArrayList<BlockedDates> blockedDates = spot.getBlockedDatesList();
+
+                            for ( BlockedDates block : blockedDates) {
+                                if(block.conflict(start, end)) {
+                                    available = false;
+                                    break;
+                                }
+                            }
+
+                            if(available) {
+                                availableParkingSpots.add(spot);
+                            }
+                        }
+                    }
+                }
+
+                finishedCallback.callback(availableParkingSpots);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
 
     public void deleteParkingSpot(String spotID) {
         DatabaseReference myRef = scDatabase.child(PARKINGSPOT_PATH).child(spotID);
