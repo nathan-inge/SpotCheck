@@ -29,7 +29,7 @@ import static org.junit.Assert.*;
  */
 @RunWith(AndroidJUnit4.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class SCInterfaceTest {
+public class SCFirebaseTest {
 
     @Test
     public void useAppContext() throws Exception {

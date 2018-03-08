@@ -10,11 +10,10 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * Unit tests for SCLocalObjects (user and parking spot)
+ * Unit tests for ParkingSpot
  */
-public class SCLocalObjectsTest {
+public class ParkingSpotTest {
 
-    /// MARK - ParkingSpot Unit Tests
     @Test
     public void firebase_constructor() {
         SCLatLng testLatLng = new SCLatLng(13.4, -35.73);
@@ -67,57 +66,5 @@ public class SCLocalObjectsTest {
 
         parkingSpot.setRate(9.5);
         assertEquals("$9.50", parkingSpot.formattedRate());
-    }
-
-
-    /// MARK - SpotCheckUser Unit Tests
-    @Test
-    public void all_args_userConstructor() {
-        SpotCheckUser spotCheckUser = new SpotCheckUser(
-            "userID",
-            "email",
-            "Full Name",
-                "location"
-        );
-
-        assertEquals("userID", spotCheckUser.getUserID());
-        assertEquals("email", spotCheckUser.getEmail());
-        assertEquals("Full Name", spotCheckUser.getFullname());
-        assertEquals("location", spotCheckUser.getLocation());
-    }
-
-
-    /// MARK - SCLatLng Unit Tests
-    @Test
-    public void convert_to_google_latlng() {
-        double latitude = 16.02;
-        double longitude = -102.4;
-
-        SCLatLng scLatLng = new SCLatLng(latitude, longitude);
-        LatLng googlelatLng = new LatLng(latitude, longitude);
-
-        assertEquals(scLatLng.getLatitude(), googlelatLng.latitude, 0.0);
-        assertEquals(scLatLng.getLongitude(), googlelatLng.longitude, 0.0);
-
-        LatLng convertedSCLatLng = scLatLng.convertToGoogleLatLng();
-
-        assertTrue(convertedSCLatLng.equals(googlelatLng));
-    }
-
-    @Test
-    public void overridden_equals() {
-        double latitude = 100.42;
-        double longitude = -349.3;
-
-        SCLatLng scLatLngOne = new SCLatLng(latitude, longitude);
-        SCLatLng scLatLngTwo = new SCLatLng(latitude, longitude);
-
-        assertTrue(scLatLngOne.equals(scLatLngTwo));
-
-        LatLng latLng = new LatLng(latitude, longitude);
-        assertFalse(scLatLngOne.equals(latLng));
-
-        SCLatLng scLatLngThree = new SCLatLng(-223.4, -244.2);
-        assertFalse(scLatLngOne.equals(scLatLngThree));
     }
 }
