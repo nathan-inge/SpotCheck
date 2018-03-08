@@ -120,6 +120,8 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
     private Date startTime = new Date();
     private Date endTime = new Date(Long.MAX_VALUE);
     private int TIME_SELECTION = 4;
+    private Boolean startTimeSet = false;
+    private Boolean endTimeSet = false;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -273,10 +275,26 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                 mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                     @Override
                     public void onInfoWindowClick(Marker marker) {
-                         //TODO: When display parking spot info issue is done
-                        Intent i = new Intent(getApplicationContext(), SpotDetailActivity.class);
-                        i.putExtra("spotID", marker.getTag().toString());
-                        startActivity(i);
+                        if(startTimeSet && endTimeSet) {
+                            Intent i = new Intent(getApplicationContext(), SpotDetailActivity.class);
+                            i.putExtra("spotID", marker.getTag().toString());
+                            startActivity(i);
+                        } else {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(
+                                GoogleMapsActivity.this);
+
+                            builder.setTitle("Set Start and End Time")
+                                .setMessage(("Please set a start and end time to view available "
+                                    + "spots and their details."))
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        // do nothing
+                                    }
+                                })
+                                .setIcon(R.mipmap.spot_marker_icon)
+                                .show();
+                        }
+
                     }
                 });
 
@@ -692,10 +710,11 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                     .show();
 
             } else {
+                startTimeSet = true;
                 startTime = newTime;
                 startTimeButton.setText(simpleDateFormat.format(startTime));
                 displayParkingSpots();
-                
+
             }
 
         } else {
@@ -720,6 +739,7 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                     .show();
 
             } else {
+                endTimeSet = true;
                 endTime = newTime;
                 endTimeButton.setText(simpleDateFormat.format(endTime));
                 displayParkingSpots();
