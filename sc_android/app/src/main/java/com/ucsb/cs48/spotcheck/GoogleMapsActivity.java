@@ -11,9 +11,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
-
 
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
@@ -60,24 +60,22 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.TimeZone;
 
 public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
 
+    // Map Related Vars
     private GoogleMap mMap;
     private CameraPosition mCameraPosition;
     PlaceAutocompleteFragment placeAutoComplete;
-
     private static final String TAG = GoogleMapsActivity.class.getSimpleName();
 
     // The entry points to the Places API.
     private GeoDataClient mGeoDataClient;
     private PlaceDetectionClient mPlaceDetectionClient;
-
 
     // The entry point to the Fused Location Provider.
     private FusedLocationProviderClient mFusedLocationProviderClient;
@@ -97,7 +95,6 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
 
-
     // Used for selecting the current place.
     private static final int M_MAX_ENTRIES = 5;
     private String[] mLikelyPlaceNames;
@@ -105,13 +102,22 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
     private String[] mLikelyPlaceAttributions;
     private LatLng[] mLikelyPlaceLatLngs;
 
+    // SC Interface Vars
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseAuth mAuth;
     private SCFirebase scFirebase;
-    private SpotCheckUser user;
-    private DrawerLayout mDrawerLayout;
-    private TextView mUserName;
 
+    // Local Vars
+    private SpotCheckUser user;
+
+    // UI Vars
+    private DrawerLayout mDrawerLayout;
+    private Button startTimeButton;
+    private Button endTimeButton;
+
+    // Time Range Vars
+    private Date startTime;
+    private Date endTime;
     private int TIME_SELECTION = 4;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,7 +132,6 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
         // Retrieve the content view that renders the map.
         setContentView(R.layout.activity_google_maps);
 
-
         // Construct a GeoDataClient.
         mGeoDataClient = Places.getGeoDataClient(this, null);
 
@@ -136,10 +141,9 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
         // Construct a FusedLocationProviderClient.
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
+        // Set up search
         placeAutoComplete = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.place_autocomplete);
-
         placeAutoComplete.getView().setBackgroundColor(getResources().getColor(android.R.color.white));
-
         placeAutoComplete.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
@@ -191,6 +195,11 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
             }
         };
 
+        // Set up time range related stuff
+        startTimeButton = findViewById(R.id.start_time_button);
+        endTimeButton = findViewById(R.id.end_time_button);
+
+        startTime = new Date();
     }
 
     /**
@@ -578,17 +587,17 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
         startActivity(i);
     }
 
-    public void selectTimeRangeTapped(View view) {
+    public void startTimeTapped(View view) {
         final View dialogView = View.inflate(this, R.layout.dialog_time_range, null);
         final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
 
-
+        alertDialog.setTitle("Set Start Time:");
         dialogView.findViewById(R.id.date_time_set).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                DatePicker datePicker = (DatePicker) dialogView.findViewById(R.id.date_picker);
-                TimePicker timePicker = (TimePicker) dialogView.findViewById(R.id.time_picker);
+                DatePicker datePicker = dialogView.findViewById(R.id.date_picker);
+                TimePicker timePicker = dialogView.findViewById(R.id.time_picker);
 
                 Calendar calendar = new GregorianCalendar(datePicker.getYear(),
                     datePicker.getMonth(),
@@ -596,11 +605,102 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                     timePicker.getCurrentHour(),
                     timePicker.getCurrentMinute());
 
-                long time = calendar.getTimeInMillis();
+                verifyTimeRange(calendar.getTime(), true);
+
                 alertDialog.dismiss();
             }});
         alertDialog.setView(dialogView);
         alertDialog.show();
 
     }
+
+    public void endTimeTapped(View view) {
+        final View dialogView = View.inflate(this, R.layout.dialog_time_range, null);
+        final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+
+        alertDialog.setTitle("Set End Time:");
+        dialogView.findViewById(R.id.date_time_set).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                DatePicker datePicker = dialogView.findViewById(R.id.date_picker);
+                TimePicker timePicker = dialogView.findViewById(R.id.time_picker);
+
+                Calendar calendar = new GregorianCalendar(datePicker.getYear(),
+                    datePicker.getMonth(),
+                    datePicker.getDayOfMonth(),
+                    timePicker.getCurrentHour(),
+                    timePicker.getCurrentMinute());
+
+                verifyTimeRange(calendar.getTime(), false);
+                alertDialog.dismiss();
+            }});
+        alertDialog.setView(dialogView);
+        alertDialog.show();
+
+    }
+
+    public void verifyTimeRange(Date newTime, Boolean start) {
+        Calendar calendar = Calendar.getInstance();
+
+        if(start) {
+            Date currentTime = new Date();
+            calendar.setTime(currentTime);
+            long currentMillis = calendar.getTimeInMillis();
+
+            calendar.setTime(newTime);
+            long newMillis = calendar.getTimeInMillis();
+
+            if(newMillis < currentMillis) {
+                // Cannot set start time before current time
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+                builder.setTitle("Invalid Start Time")
+                    .setMessage(("Start time cannot have already passed."))
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // do nothing
+                        }
+                    })
+                    .setIcon(R.mipmap.spot_marker_icon)
+                    .show();
+
+            } else {
+                startTime = newTime;
+                startTimeButton.setText(calendar.getTime().toString());
+            }
+
+        } else {
+            calendar.setTime(startTime);
+            long currentStartTimeMillis = calendar.getTimeInMillis();
+
+            calendar.setTime(newTime);
+            long newMillis = calendar.getTimeInMillis();
+
+            if(newMillis <= currentStartTimeMillis) {
+                // Cannot set end time before start time
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+                builder.setTitle("Invalid End Time")
+                    .setMessage(("End time cannot be before start time."))
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // do nothing
+                        }
+                    })
+                    .setIcon(R.mipmap.spot_marker_icon)
+                    .show();
+
+            } else {
+                endTime = newTime;
+                endTimeButton.setText(calendar.getTime().toString());
+            }
+        }
+
+
+
+    }
+
+
+
 }

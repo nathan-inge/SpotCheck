@@ -37,32 +37,36 @@
                     android:orientation="horizontal">
 
                     <Button
+                        android:id="@+id/start_time_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Start Time"
+                        android:text="@string/start_time"
                         android:padding="5dp"
                         android:alpha="1"
                         android:background="@color/colorPrimary"
                         android:textColor="@android:color/white"
-                        android:onClick="selectTimeRangeTapped"/>
+                        android:onClick="startTimeTapped"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:text=" to "
+                        android:text="@string/to"
                         android:textColor="@color/colorPrimary"
                         android:alpha="1"
-                        android:gravity="center"/>
+                        android:gravity="center"
+                        android:paddingLeft="3dp"
+                        android:paddingRight="3dp"/>
 
                     <Button
+                        android:id="@+id/end_time_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="End Time"
+                        android:text="@string/end_time"
                         android:padding="5dp"
                         android:alpha="1"
                         android:background="@color/colorPrimary"
                         android:textColor="@android:color/white"
-                        android:onClick="selectTimeRangeTapped"/>
+                        android:onClick="endTimeTapped"/>
                 </LinearLayout>
 
 
