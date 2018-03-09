@@ -47,6 +47,7 @@ public class ParkingSpot {
         this.blockedDatesList.remove(oldBlock);
     }
 
+    @Exclude
     public int getBlockedDatesCount() {
         return this.blockedDatesList.size();
     }

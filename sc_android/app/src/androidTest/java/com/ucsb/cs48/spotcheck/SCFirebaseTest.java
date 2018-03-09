@@ -164,7 +164,6 @@ public class SCFirebaseTest {
         });
 
         signal.await(30, TimeUnit.SECONDS);
-
     }
 
     @Test
@@ -208,6 +207,105 @@ public class SCFirebaseTest {
         });
 
         signal.await(30, TimeUnit.SECONDS);
+    }
+
+    @Test
+    public void test_updateBlockedDates() throws InterruptedException {
+        Context appContext = InstrumentationRegistry.getTargetContext();
+        FirebaseApp.initializeApp(appContext);
+
+        SCLatLng testLatLng = new SCLatLng(13.4, -35.73);
+
+        SCFirebase scFirebase = new SCFirebase();
+        final ParkingSpot writeSpot = new ParkingSpot(
+            TEST_SPOT_OWNER_ID,
+            "testAddress",
+            testLatLng,
+            10.5
+        );
+
+        final String spotID = scFirebase.createNewSpot(writeSpot);
+        writeSpot.setSpotID(spotID);
+
+        final CountDownLatch signalA = new CountDownLatch(1);
+        scFirebase.getParkingSpot(spotID, new SCFirebaseCallback<ParkingSpot>() {
+            @Override
+            public void callback(ParkingSpot data) {
+                assertNotNull(data);
+                assertEquals(0, data.getBlockedDatesCount());
+                signalA.countDown();
+            }
+        });
+        signalA.await(30, TimeUnit.SECONDS);
+
+
+        // Add blocked date
+        BlockedDates blockedDatesA = new BlockedDates(ThreadLocalRandom.current().nextLong(),
+            ThreadLocalRandom.current().nextLong());
+        writeSpot.addBlockedDates(blockedDatesA);
+        scFirebase.updateBlockedDates(writeSpot.getSpotID(), writeSpot.getBlockedDatesList());
+
+        final CountDownLatch signalB = new CountDownLatch(1);
+        scFirebase.getParkingSpot(spotID, new SCFirebaseCallback<ParkingSpot>() {
+            @Override
+            public void callback(ParkingSpot data) {
+                assertNotNull(data);
+                assertEquals(1, data.getBlockedDatesCount());
+                signalB.countDown();
+            }
+        });
+        signalB.await(30, TimeUnit.SECONDS);
+
+        // Add blocked date
+        BlockedDates blockedDatesB = new BlockedDates(ThreadLocalRandom.current().nextLong(),
+            ThreadLocalRandom.current().nextLong());
+        writeSpot.addBlockedDates(blockedDatesB);
+        scFirebase.updateBlockedDates(writeSpot.getSpotID(), writeSpot.getBlockedDatesList());
+
+        final CountDownLatch signalC = new CountDownLatch(1);
+        scFirebase.getParkingSpot(spotID, new SCFirebaseCallback<ParkingSpot>() {
+            @Override
+            public void callback(ParkingSpot data) {
+                assertNotNull(data);
+                assertEquals(2, data.getBlockedDatesCount());
+                signalC.countDown();
+            }
+        });
+        signalC.await(30, TimeUnit.SECONDS);
+
+
+        // Remove blocked date
+        writeSpot.removeBlockedDates(blockedDatesA);
+        scFirebase.updateBlockedDates(writeSpot.getSpotID(), writeSpot.getBlockedDatesList());
+
+        final CountDownLatch signalD = new CountDownLatch(1);
+        scFirebase.getParkingSpot(spotID, new SCFirebaseCallback<ParkingSpot>() {
+            @Override
+            public void callback(ParkingSpot data) {
+                assertNotNull(data);
+                assertEquals(1, data.getBlockedDatesCount());
+                signalD.countDown();
+            }
+        });
+        signalD.await(30, TimeUnit.SECONDS);
+
+        // Remove blocked date
+        writeSpot.removeBlockedDates(blockedDatesA);
+        scFirebase.updateBlockedDates(writeSpot.getSpotID(), writeSpot.getBlockedDatesList());
+
+        final CountDownLatch signalE = new CountDownLatch(1);
+        scFirebase.getParkingSpot(spotID, new SCFirebaseCallback<ParkingSpot>() {
+            @Override
+            public void callback(ParkingSpot data) {
+                assertNotNull(data);
+                assertEquals(1, data.getBlockedDatesCount());
+                signalE.countDown();
+            }
+        });
+        signalE.await(30, TimeUnit.SECONDS);
+
+
+        scFirebase.deleteParkingSpot(writeSpot.getSpotID());
     }
 
 

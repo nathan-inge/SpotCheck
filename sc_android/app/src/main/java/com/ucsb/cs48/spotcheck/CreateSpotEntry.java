@@ -19,9 +19,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebase;
+import com.ucsb.cs48.spotcheck.SCLocalObjects.BlockedDates;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.ParkingSpot;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.SCLatLng;
 import com.ucsb.cs48.spotcheck.Utilities.MoneyTextWatcher;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 
 public class CreateSpotEntry extends AppCompatActivity {

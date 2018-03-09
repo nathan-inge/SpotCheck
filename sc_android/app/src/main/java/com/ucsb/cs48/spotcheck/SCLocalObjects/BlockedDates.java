@@ -1,5 +1,7 @@
 package com.ucsb.cs48.spotcheck.SCLocalObjects;
 
+import com.google.firebase.database.Exclude;
+
 import java.util.Date;
 
 public class BlockedDates {
@@ -16,10 +18,12 @@ public class BlockedDates {
         this.end = end;
     }
 
+    @Exclude
     public Date getStartDate() {
         return new Date(start);
     }
 
+    @Exclude
     public Date getEndDate() {
         return new Date(end);
     }
