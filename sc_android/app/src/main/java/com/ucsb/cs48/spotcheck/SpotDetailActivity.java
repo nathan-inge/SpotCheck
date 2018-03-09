@@ -9,10 +9,12 @@ import android.os.Looper;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseUser;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebase;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseAuth;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseCallback;
@@ -25,9 +27,11 @@ public class SpotDetailActivity extends AppCompatActivity {
     private SCFirebaseAuth scAuth;
     private TextView addressView;
     private TextView rateView;
+    private Button rentButton;
 
     private SpotCheckUser owner;
     private ParkingSpot spot;
+    private boolean isOwner = false;
 
     private boolean openedMailClient = false;
     private int CODE_SEND = 0;
@@ -41,10 +45,14 @@ public class SpotDetailActivity extends AppCompatActivity {
         // Initialize UI components
         addressView = findViewById(R.id.spot_detail_address_view);
         rateView = findViewById(R.id.spot_detail_rate_view);
+        rentButton = findViewById(R.id.spot_details_rent_button);
 
         // Initialize SCFirebase instance
         scFirebase = new SCFirebase();
         scAuth = new SCFirebaseAuth();
+
+        // Get current, logged in user
+        final FirebaseUser currentUser = scAuth.getCurrentUser();
 
         final ProgressDialog dialog = ProgressDialog.show(
             SpotDetailActivity.this,
@@ -64,7 +72,17 @@ public class SpotDetailActivity extends AppCompatActivity {
                 dialog.dismiss();
                 if(data != null) {
                     spot = data;
-
+                    scFirebase.getSCUser(spot.getOwnerID(), new SCFirebaseCallback<SpotCheckUser>() {
+                        @Override
+                        public void callback(SpotCheckUser data) {
+                            if (data != null) {
+                                owner = data;
+                                if (currentUser.getUid().equals(owner.getUserID())) {
+                                    isOwner = true;
+                                }
+                            }
+                        }
+                    });
                     final Handler mainHandler = new Handler(Looper.getMainLooper());
                     mainHandler.post(new Runnable() {
                         @Override
@@ -82,7 +100,16 @@ public class SpotDetailActivity extends AppCompatActivity {
                     showSpotNotAvailableDialog();
                 }
             }
+
         });
+
+
+        if (isOwner) {
+            rentButton.setText(R.string.delete_button_text);
+        }
+
+
+
     }
 
     @Override
@@ -131,21 +158,49 @@ public class SpotDetailActivity extends AppCompatActivity {
     public void rentButtonClicked(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        builder.setTitle("Confirm Rent Request")
-            .setMessage(("Are you sure you want to request to rent this spot?\n\n" +
-                "You will be directed to a screen to send an email to the owner."))
-            .setPositiveButton("Rent", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    getOwnerInfo();
-                }
-            })
-            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    // do nothing
-                }
-            })
-            .setIcon(R.mipmap.spot_marker_icon)
-            .show();
+        if (isOwner) {
+            builder.setTitle("Confirm Spot Deletion")
+                    .setMessage(("Are you sure you want to delete this spot?\n\n" +
+                            "You will not be able to undo this change."))
+                    .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            if(spot != null) {
+                                scFirebase.deleteParkingSpot(spot.getSpotID());
+                            }
+
+                            Toast.makeText(
+                                    getApplicationContext(),
+                                    "Spot Deleted!",
+                                    Toast.LENGTH_SHORT).show();
+
+                            finish();
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // do nothing
+                        }
+                    })
+                    .setIcon(R.mipmap.spot_marker_icon)
+                    .show();
+        }
+        else {
+            builder.setTitle("Confirm Rent Request")
+                    .setMessage(("Are you sure you want to request to rent this spot?\n\n" +
+                            "You will be directed to a screen to send an email to the owner."))
+                    .setPositiveButton("Rent", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            getOwnerInfo();
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // do nothing
+                        }
+                    })
+                    .setIcon(R.mipmap.spot_marker_icon)
+                    .show();
+        }
     }
 
     public void showSpotNotAvailableDialog() {
@@ -230,4 +285,9 @@ public class SpotDetailActivity extends AppCompatActivity {
     public void rentSpot() {
 
     }
+
+    public void deleteSpot() {
+
+    }
+
 }
