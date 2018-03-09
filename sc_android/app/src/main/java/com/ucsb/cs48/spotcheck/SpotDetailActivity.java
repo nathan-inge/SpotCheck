@@ -16,8 +16,11 @@ import android.widget.Toast;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebase;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseAuth;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseCallback;
+import com.ucsb.cs48.spotcheck.SCLocalObjects.BlockedDates;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.ParkingSpot;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.SpotCheckUser;
+
+import java.util.Date;
 
 public class SpotDetailActivity extends AppCompatActivity {
 
@@ -32,6 +35,9 @@ public class SpotDetailActivity extends AppCompatActivity {
     private boolean openedMailClient = false;
     private int CODE_SEND = 0;
     private ProgressDialog startingEmailDialog;
+
+    private long startTime;
+    private long endTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +62,8 @@ public class SpotDetailActivity extends AppCompatActivity {
         // Get intent and extras
         Intent intent = getIntent();
         String spotID = intent.getStringExtra("spotID");
+        startTime = intent.getLongExtra("startTime", 0L);
+        endTime = intent.getLongExtra("endTime", 0L);
 
         // Get parking spot with ID from intent
         scFirebase.getParkingSpot(spotID, new SCFirebaseCallback<ParkingSpot>() {
@@ -101,10 +109,6 @@ public class SpotDetailActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         startingEmailDialog.dismiss();
         if(requestCode == CODE_SEND && openedMailClient){
-            Toast.makeText(
-                getApplicationContext(),
-                "Spot Successfully Rented!",
-                Toast.LENGTH_SHORT).show();
              rentSpot();
 
         } else {
@@ -178,7 +182,6 @@ public class SpotDetailActivity extends AppCompatActivity {
                         dialog.dismiss();
                         if (owner != null) {
                             sendOwnerEmail();
-                            rentSpot();
 
                         } else {
                             Toast.makeText(
@@ -228,6 +231,12 @@ public class SpotDetailActivity extends AppCompatActivity {
     }
 
     public void rentSpot() {
+        spot.addBlockedDates(new BlockedDates(startTime, endTime));
+        scFirebase.updateBlockedDates(spot.getSpotID(), spot.getBlockedDatesList());
 
+        Toast.makeText(
+            getApplicationContext(),
+            "Spot Successfully Rented!",
+            Toast.LENGTH_SHORT).show();
     }
 }

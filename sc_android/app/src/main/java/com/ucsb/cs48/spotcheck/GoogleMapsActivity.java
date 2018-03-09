@@ -278,6 +278,8 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                         if(startTimeSet && endTimeSet) {
                             Intent i = new Intent(getApplicationContext(), SpotDetailActivity.class);
                             i.putExtra("spotID", marker.getTag().toString());
+                            i.putExtra("startTime", startTime.getTime());
+                            i.putExtra("endTime", endTime.getTime());
                             startActivity(i);
                         } else {
                             AlertDialog.Builder builder = new AlertDialog.Builder(
@@ -747,8 +749,29 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
             return;
         }
 
+        final ProgressDialog dialog = ProgressDialog.show(GoogleMapsActivity.this, "",
+            "SpotChecking...", true);
+
         mMap.clear();
-        displayAllParkingSpots();
+
+        scFirebase.getAvailableParkingSpots(startTime.getTime(), endTime.getTime(),
+            new SCFirebaseCallback<ArrayList<ParkingSpot>>() {
+            @Override
+            public void callback(ArrayList<ParkingSpot> data) {
+                if((data != null) && (data.size() > 0)) {
+                    for(ParkingSpot spot : data) {
+                        Marker spotMarker = mMap.addMarker(new MarkerOptions()
+                            .position(spot.getLatLng().convertToGoogleLatLng())
+                            .title(spot.formattedRate() + "/hour")
+                            .icon(BitmapDescriptorFactory.fromResource(R.mipmap.spot_marker_icon))
+                            .snippet("See Details")
+                        );
+                        spotMarker.setTag(spot.getSpotID());
+                    }
+                }
+                dialog.dismiss();
+            }
+        });
 
     }
 }
