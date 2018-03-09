@@ -308,6 +308,65 @@ public class SCFirebaseTest {
         scFirebase.deleteParkingSpot(writeSpot.getSpotID());
     }
 
+    @Test
+    public void test_getAvailableParkingSpots() throws InterruptedException {
+        Context appContext = InstrumentationRegistry.getTargetContext();
+        FirebaseApp.initializeApp(appContext);
+        SCFirebase scFirebase = new SCFirebase();
+
+        // Create spot A
+        SCLatLng testLatLng = new SCLatLng(13.4, -35.73);
+        final ParkingSpot spotA = new ParkingSpot(
+            TEST_SPOT_OWNER_ID,
+            "testAddressA",
+            testLatLng,
+            10.5
+        );
+        final String spotAID = scFirebase.createNewSpot(spotA);
+        spotA.setSpotID(spotAID);
+
+        // Create spot B (conflict 200 - 600)
+        final ParkingSpot spotB = new ParkingSpot(
+            TEST_SPOT_OWNER_ID,
+            "testAddressB",
+            testLatLng,
+            10.5
+        );
+        spotB.addBlockedDates(new BlockedDates(200L, 600L));
+        final String spotBID = scFirebase.createNewSpot(spotB);
+        spotB.setSpotID(spotBID);
+        scFirebase.updateBlockedDates(spotBID, spotB.getBlockedDatesList());
+
+
+        // Create spot C
+        final ParkingSpot spotC = new ParkingSpot(
+            TEST_SPOT_OWNER_ID,
+            "testAddressC",
+            testLatLng,
+            10.5
+        );
+        final String spotCID = scFirebase.createNewSpot(spotC);
+        spotC.setSpotID(spotCID);
+
+
+        final CountDownLatch signalB = new CountDownLatch(1);
+        scFirebase.getParkingSpot(spotID, new SCFirebaseCallback<ParkingSpot>() {
+            @Override
+            public void callback(ParkingSpot data) {
+                assertNotNull(data);
+                assertEquals(1, data.getBlockedDatesCount());
+                signalB.countDown();
+            }
+        });
+        signalB.await(30, TimeUnit.SECONDS);
+
+
+
+
+        scFirebase.deleteParkingSpot(writeSpot.getSpotID());
+
+    }
+
 
     /**
      * MARK - SpotCheckUser Integration Tests
