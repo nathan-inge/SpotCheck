@@ -17,6 +17,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadLocalRandom;
@@ -257,7 +258,7 @@ public class SCFirebaseTest {
         signalB.await(30, TimeUnit.SECONDS);
 
         // Add blocked date
-        BlockedDates blockedDatesB = new BlockedDates(ThreadLocalRandom.current().nextLong(),
+        final BlockedDates blockedDatesB = new BlockedDates(ThreadLocalRandom.current().nextLong(),
             ThreadLocalRandom.current().nextLong());
         writeSpot.addBlockedDates(blockedDatesB);
         scFirebase.updateBlockedDates(writeSpot.getSpotID(), writeSpot.getBlockedDatesList());
@@ -268,6 +269,8 @@ public class SCFirebaseTest {
             public void callback(ParkingSpot data) {
                 assertNotNull(data);
                 assertEquals(2, data.getBlockedDatesCount());
+                ArrayList<BlockedDates> blockedDates = data.getBlockedDatesList();
+                assertTrue(blockedDates.contains(blockedDatesB));
                 signalC.countDown();
             }
         });
@@ -308,6 +311,7 @@ public class SCFirebaseTest {
         scFirebase.deleteParkingSpot(writeSpot.getSpotID());
     }
 
+    private int totalAvailable;
     @Test
     public void test_getAvailableParkingSpots() throws InterruptedException {
         Context appContext = InstrumentationRegistry.getTargetContext();
@@ -332,39 +336,76 @@ public class SCFirebaseTest {
             testLatLng,
             10.5
         );
-        spotB.addBlockedDates(new BlockedDates(200L, 600L));
+        BlockedDates blockedDatesB = new BlockedDates(200L, 600L);
+        spotB.addBlockedDates(blockedDatesB);
         final String spotBID = scFirebase.createNewSpot(spotB);
         spotB.setSpotID(spotBID);
-        scFirebase.updateBlockedDates(spotBID, spotB.getBlockedDatesList());
 
-
-        // Create spot C
-        final ParkingSpot spotC = new ParkingSpot(
-            TEST_SPOT_OWNER_ID,
-            "testAddressC",
-            testLatLng,
-            10.5
-        );
-        final String spotCID = scFirebase.createNewSpot(spotC);
-        spotC.setSpotID(spotCID);
-
-
-        final CountDownLatch signalB = new CountDownLatch(1);
-        scFirebase.getParkingSpot(spotID, new SCFirebaseCallback<ParkingSpot>() {
+        // No conflict
+        final CountDownLatch signalA = new CountDownLatch(1);
+        scFirebase.getAvailableParkingSpots(100L, 150L, new SCFirebaseCallback<ArrayList<ParkingSpot>>() {
             @Override
-            public void callback(ParkingSpot data) {
+            public void callback(ArrayList<ParkingSpot> data) {
                 assertNotNull(data);
-                assertEquals(1, data.getBlockedDatesCount());
+                totalAvailable = data.size();
+                assertTrue(totalAvailable >= 2);
+                signalA.countDown();
+
+            }
+        });
+        signalA.await(30, TimeUnit.SECONDS);
+
+        // Conflict with B
+        final CountDownLatch signalB = new CountDownLatch(1);
+        scFirebase.getAvailableParkingSpots(100L, 400L, new SCFirebaseCallback<ArrayList<ParkingSpot>>() {
+            @Override
+            public void callback(ArrayList<ParkingSpot> data) {
+                assertNotNull(data);
+                assertTrue(data.size() < totalAvailable);
+                totalAvailable = data.size();
                 signalB.countDown();
+
             }
         });
         signalB.await(30, TimeUnit.SECONDS);
 
+        // Create conflict with A
+        spotA.addBlockedDates(new BlockedDates(50L, 1000L));
+        scFirebase.updateBlockedDates(spotA.getSpotID(), spotA.getBlockedDatesList());
 
+        final CountDownLatch signalC = new CountDownLatch(1);
+        scFirebase.getAvailableParkingSpots(100L, 400L, new SCFirebaseCallback<ArrayList<ParkingSpot>>() {
+            @Override
+            public void callback(ArrayList<ParkingSpot> data) {
+                assertNotNull(data);
+                assertTrue(data.size() < totalAvailable);
+                totalAvailable = data.size();
+                signalC.countDown();
 
+            }
+        });
+        signalC.await(30, TimeUnit.SECONDS);
 
-        scFirebase.deleteParkingSpot(writeSpot.getSpotID());
+        // Remove conflict with B
+        spotB.removeBlockedDates(blockedDatesB);
+        scFirebase.updateBlockedDates(spotB.getSpotID(), spotB.getBlockedDatesList());
 
+        final CountDownLatch signalD = new CountDownLatch(1);
+        scFirebase.getAvailableParkingSpots(100L, 400L, new SCFirebaseCallback<ArrayList<ParkingSpot>>() {
+            @Override
+            public void callback(ArrayList<ParkingSpot> data) {
+                assertNotNull(data);
+                assertEquals(spotB.getBlockedDatesCount(), 0);
+                assertTrue(data.size() > totalAvailable);
+                signalD.countDown();
+
+            }
+        });
+        signalD.await(30, TimeUnit.SECONDS);
+
+        // Clean up
+        scFirebase.deleteParkingSpot(spotA.getSpotID());
+        scFirebase.deleteParkingSpot(spotB.getSpotID());
     }
 
 

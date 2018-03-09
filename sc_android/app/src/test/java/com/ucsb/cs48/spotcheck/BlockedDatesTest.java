@@ -70,6 +70,7 @@ public class BlockedDatesTest {
         assertTrue(blockedDatesA.conflict(300L, 500L));
         assertTrue(blockedDatesA.conflict(550L, 800L));
         assertTrue(blockedDatesA.conflict(200L, 1000L));
+        assertTrue(blockedDatesA.conflict(450L, 550L));
 
     }
 }

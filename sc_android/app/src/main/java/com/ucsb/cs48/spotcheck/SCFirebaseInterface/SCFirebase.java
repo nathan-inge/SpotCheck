@@ -72,7 +72,7 @@ public class SCFirebase {
 
         DatabaseReference myRef = scDatabase.child(PARKINGSPOT_PATH);
 
-        myRef.addValueEventListener(new ValueEventListener() {
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 ArrayList<ParkingSpot> parkingSpots = new ArrayList<>();
@@ -106,7 +106,7 @@ public class SCFirebase {
 
         DatabaseReference myRef = scDatabase.child(PARKINGSPOT_PATH);
 
-        myRef.addValueEventListener(new ValueEventListener() {
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 ArrayList<ParkingSpot> availableParkingSpots = new ArrayList<>();
