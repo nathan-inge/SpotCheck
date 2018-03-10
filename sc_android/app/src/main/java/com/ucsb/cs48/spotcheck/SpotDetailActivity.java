@@ -20,6 +20,7 @@ import com.ucsb.cs48.spotcheck.SCLocalObjects.BlockedDates;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.ParkingSpot;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.SpotCheckUser;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class SpotDetailActivity extends AppCompatActivity {
@@ -201,6 +202,13 @@ public class SpotDetailActivity extends AppCompatActivity {
             "Setting up email...", true);
 
         String currentUserName = scAuth.getCurrentUser().getDisplayName();
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("E M/d, h:mm a");
+        Date startDate = new Date(startTime);
+        String startString = simpleDateFormat.format(startDate);
+        Date endDate = new Date(endTime);
+        String endString = simpleDateFormat.format(endDate);
+
         Intent i = new Intent(Intent.ACTION_SEND);
         i.setType("message/rfc822");
         i.putExtra(Intent.EXTRA_EMAIL  , new String[]{owner.getEmail()});
@@ -209,7 +217,7 @@ public class SpotDetailActivity extends AppCompatActivity {
             Intent.EXTRA_TEXT   ,
             "Hello,\n" + currentUserName
                 + " would like to rent your parking spot located at " + spot.getAddress()
-                + " from START TIME until END TIME.\n\n"
+                + " from " + startString + " until " + endString + ".\n\n"
                 + "Please confirm this request by replying to this email.\n\n"
                 + "Payment should be arranged directly with " + currentUserName + "\n\n"
                 + "Thank you,\nThe SpotCheck Team"
