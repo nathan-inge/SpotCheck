@@ -35,6 +35,8 @@ public class SpotDetailActivity extends AppCompatActivity {
 
     private boolean openedMailClient = false;
     private int CODE_SEND = 0;
+    private int CODE_EDIT = 1;
+    private int CODE_DELETE = 2;
     private ProgressDialog startingEmailDialog;
 
     @Override
@@ -72,21 +74,18 @@ public class SpotDetailActivity extends AppCompatActivity {
                 dialog.dismiss();
                 if(data != null) {
                     spot = data;
-                    scFirebase.getSCUser(spot.getOwnerID(), new SCFirebaseCallback<SpotCheckUser>() {
-                        @Override
-                        public void callback(SpotCheckUser data) {
-                            if (data != null) {
-                                owner = data;
-                                if (currentUser.getUid().equals(owner.getUserID())) {
-                                    isOwner = true;
-                                }
-                            }
-                        }
-                    });
+
+
                     final Handler mainHandler = new Handler(Looper.getMainLooper());
                     mainHandler.post(new Runnable() {
                         @Override
                         public void run() {
+
+                            if (spot.getOwnerID().equals(currentUser.getUid())) {
+                                isOwner = true;
+                                rentButton.setText(R.string.edit_spot_button);
+                            }
+
                             addressView.setText(spot.getAddress());
                             rateView.setText(String.format(
                                 "%s%s",
@@ -102,12 +101,6 @@ public class SpotDetailActivity extends AppCompatActivity {
             }
 
         });
-
-
-        if (isOwner) {
-            rentButton.setText(R.string.delete_button_text);
-        }
-
 
 
     }
@@ -134,7 +127,14 @@ public class SpotDetailActivity extends AppCompatActivity {
                 Toast.LENGTH_SHORT).show();
              rentSpot();
 
-        } else {
+        }
+        else if (resultCode == CODE_EDIT) {
+            // do nothing
+        }
+        else if (resultCode == CODE_DELETE) {
+            finish();
+        }
+        else {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Rent Request Cancelled")
                 .setMessage((
@@ -159,30 +159,10 @@ public class SpotDetailActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         if (isOwner) {
-            builder.setTitle("Confirm Spot Deletion")
-                    .setMessage(("Are you sure you want to delete this spot?\n\n" +
-                            "You will not be able to undo this change."))
-                    .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            if(spot != null) {
-                                scFirebase.deleteParkingSpot(spot.getSpotID());
-                            }
+            Intent i = new Intent(this, EditSpotActivity.class);
+            i.putExtra("spotID", spot.getSpotID());
+            startActivity(i);
 
-                            Toast.makeText(
-                                    getApplicationContext(),
-                                    "Spot Deleted!",
-                                    Toast.LENGTH_SHORT).show();
-
-                            finish();
-                        }
-                    })
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            // do nothing
-                        }
-                    })
-                    .setIcon(R.mipmap.spot_marker_icon)
-                    .show();
         }
         else {
             builder.setTitle("Confirm Rent Request")
@@ -286,8 +266,6 @@ public class SpotDetailActivity extends AppCompatActivity {
 
     }
 
-    public void deleteSpot() {
 
-    }
 
 }
