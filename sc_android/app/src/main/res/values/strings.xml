@@ -29,7 +29,10 @@
     <string name="rate_input_error">Rate must be greater than $0.00 and less than $1000.00</string>
     <string name="address_placeholder">Address</string>
     <string name="owner_name_placeholder">Owner Name</string>
+    <string name="edit_spot_button">Edit Spot</string>
+    <string name="edit_spot_picture_button">Change Spot Picture</string>
     <string name="rent_button_text">Rent</string>
+    <string name="delete_button_text">Delete</string>
     <string name="address_view">Address:</string>
     <string name="rate_view">Rate:</string>
     <string name="per_hour">/hour</string>

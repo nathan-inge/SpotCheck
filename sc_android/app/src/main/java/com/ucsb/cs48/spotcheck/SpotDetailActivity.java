@@ -9,10 +9,12 @@ import android.os.Looper;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseUser;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebase;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseAuth;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseCallback;
@@ -25,12 +27,16 @@ public class SpotDetailActivity extends AppCompatActivity {
     private SCFirebaseAuth scAuth;
     private TextView addressView;
     private TextView rateView;
+    private Button rentButton;
 
     private SpotCheckUser owner;
     private ParkingSpot spot;
+    private boolean isOwner = false;
 
     private boolean openedMailClient = false;
     private int CODE_SEND = 0;
+    private int CODE_EDIT = 1;
+    private int CODE_DELETE = 2;
     private ProgressDialog startingEmailDialog;
 
     @Override
@@ -41,10 +47,14 @@ public class SpotDetailActivity extends AppCompatActivity {
         // Initialize UI components
         addressView = findViewById(R.id.spot_detail_address_view);
         rateView = findViewById(R.id.spot_detail_rate_view);
+        rentButton = findViewById(R.id.spot_details_rent_button);
 
         // Initialize SCFirebase instance
         scFirebase = new SCFirebase();
         scAuth = new SCFirebaseAuth();
+
+        // Get current, logged in user
+        final FirebaseUser currentUser = scAuth.getCurrentUser();
 
         final ProgressDialog dialog = ProgressDialog.show(
             SpotDetailActivity.this,
@@ -65,10 +75,17 @@ public class SpotDetailActivity extends AppCompatActivity {
                 if(data != null) {
                     spot = data;
 
+
                     final Handler mainHandler = new Handler(Looper.getMainLooper());
                     mainHandler.post(new Runnable() {
                         @Override
                         public void run() {
+
+                            if (spot.getOwnerID().equals(currentUser.getUid())) {
+                                isOwner = true;
+                                rentButton.setText(R.string.edit_spot_button);
+                            }
+
                             addressView.setText(spot.getAddress());
                             rateView.setText(String.format(
                                 "%s%s",
@@ -82,7 +99,10 @@ public class SpotDetailActivity extends AppCompatActivity {
                     showSpotNotAvailableDialog();
                 }
             }
+
         });
+
+
     }
 
     @Override
@@ -107,7 +127,14 @@ public class SpotDetailActivity extends AppCompatActivity {
                 Toast.LENGTH_SHORT).show();
              rentSpot();
 
-        } else {
+        }
+        else if (resultCode == CODE_EDIT) {
+            // do nothing
+        }
+        else if (resultCode == CODE_DELETE) {
+            finish();
+        }
+        else {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Rent Request Cancelled")
                 .setMessage((
@@ -131,21 +158,29 @@ public class SpotDetailActivity extends AppCompatActivity {
     public void rentButtonClicked(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        builder.setTitle("Confirm Rent Request")
-            .setMessage(("Are you sure you want to request to rent this spot?\n\n" +
-                "You will be directed to a screen to send an email to the owner."))
-            .setPositiveButton("Rent", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    getOwnerInfo();
-                }
-            })
-            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    // do nothing
-                }
-            })
-            .setIcon(R.mipmap.spot_marker_icon)
-            .show();
+        if (isOwner) {
+            Intent i = new Intent(this, EditSpotActivity.class);
+            i.putExtra("spotID", spot.getSpotID());
+            startActivity(i);
+
+        }
+        else {
+            builder.setTitle("Confirm Rent Request")
+                    .setMessage(("Are you sure you want to request to rent this spot?\n\n" +
+                            "You will be directed to a screen to send an email to the owner."))
+                    .setPositiveButton("Rent", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            getOwnerInfo();
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // do nothing
+                        }
+                    })
+                    .setIcon(R.mipmap.spot_marker_icon)
+                    .show();
+        }
     }
 
     public void showSpotNotAvailableDialog() {
@@ -230,4 +265,7 @@ public class SpotDetailActivity extends AppCompatActivity {
     public void rentSpot() {
 
     }
+
+
+
 }

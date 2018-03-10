@@ -38,6 +38,10 @@
             android:label="@string/title_activity_create_spot_entry"
             android:parentActivityName=".MainActivity"/>
         <activity
+            android:name=".EditSpotActivity"
+            android:label="Edit Spot"
+            android:parentActivityName=".SpotDetailActivity"/>
+        <activity
             android:name=".UserAuthentication.LoginActivity"
             android:label="@string/title_activity_login"/>
         <activity
