@@ -1,102 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.widget.RelativeLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:fillViewport="true">
 
-
-    <TextView
-        android:id="@+id/edit_spot_address_view"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/edit_spot_address"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="26dp"
-        tools:text="Placeholder Address" />
+        xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
-        android:id="@+id/edit_spot_address"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="21dp"
-        android:text="@string/address_view"
-        android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/edit_spot_address_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/edit_spot_address"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="26dp"
+            tools:text="Placeholder Address" />
 
-    <EditText
-        android:id="@+id/edit_spot_rate_edit_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/edit_spot_address_view"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:ems="10"
-        android:hint="Rate ($/hour)"
-        android:inputType="number"
-        android:textAlignment="center"
-        tools:layout_editor_absoluteX="123dp"
-        tools:layout_editor_absoluteY="46dp"/>
+        <TextView
+            android:id="@+id/edit_spot_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="21dp"
+            android:text="@string/address_view"
+            android:textStyle="bold"/>
 
-    <Button
-        android:id="@+id/edit_spot_confirm_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/edit_spot_delete_button"
-        android:layout_alignLeft="@+id/edit_spot_rate_edit_text"
-        android:layout_alignStart="@+id/edit_spot_rate_edit_text"
-        android:layout_marginBottom="15dp"
-        android:contentDescription="confirm_change"
-        android:onClick="confirmChanges"
-        android:text="Confirm"/>
+        <EditText
+            android:id="@+id/edit_spot_rate_edit_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edit_spot_address_view"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:ems="10"
+            android:hint="Rate ($/hour)"
+            android:inputType="number"
+            android:textAlignment="center"
+            tools:layout_editor_absoluteX="123dp"
+            tools:layout_editor_absoluteY="46dp"/>
 
-    <Button
-        android:id="@+id/edit_spot_cancel_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/edit_spot_confirm_button"
-        android:layout_alignBottom="@+id/edit_spot_confirm_button"
-        android:layout_alignEnd="@+id/edit_spot_rate_edit_text"
-        android:layout_alignRight="@+id/edit_spot_rate_edit_text"
-        android:contentDescription="cancel_edit"
-        android:onClick="cancelChanges"
-        android:text="Cancel" />
+        <Button
+            android:id="@+id/edit_spot_confirm_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/edit_spot_delete_button"
+            android:layout_alignLeft="@+id/edit_spot_rate_edit_text"
+            android:layout_alignStart="@+id/edit_spot_rate_edit_text"
+            android:layout_marginBottom="15dp"
+            android:contentDescription="confirm_change"
+            android:onClick="confirmChanges"
+            android:text="Confirm"/>
 
-    <Button
-        android:id="@+id/edit_spot_delete_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="13dp"
-        android:onClick="deleteSpot"
-        android:shadowColor="@android:color/holo_red_dark"
-        android:text="@string/delete_button_text"
-        android:textColor="@android:color/holo_red_dark"
-        android:textColorHighlight="@android:color/holo_red_dark"/>
+        <Button
+            android:id="@+id/edit_spot_cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/edit_spot_confirm_button"
+            android:layout_alignBottom="@+id/edit_spot_confirm_button"
+            android:layout_alignEnd="@+id/edit_spot_rate_edit_text"
+            android:layout_alignRight="@+id/edit_spot_rate_edit_text"
+            android:contentDescription="cancel_edit"
+            android:onClick="cancelChanges"
+            android:text="Cancel" />
 
-    <Button
-        android:id="@+id/edit_spot_spot_picture_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/edit_spot_confirm_button"
-        android:layout_centerHorizontal="true"
-        android:onClick="changeSpotPicture"
-        android:text="@string/edit_spot_picture_button"/>
+        <Button
+            android:id="@+id/edit_spot_delete_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="13dp"
+            android:onClick="deleteSpot"
+            android:shadowColor="@android:color/holo_red_dark"
+            android:text="@string/delete_button_text"
+            android:textColor="@android:color/holo_red_dark"
+            android:textColorHighlight="@android:color/holo_red_dark"/>
 
-    <ImageView
-        android:id="@+id/spotImageEdit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/edit_spot_spot_picture_button"
-        android:layout_centerHorizontal="true"
-        android:adjustViewBounds="true"
-        android:maxHeight="200dp"
-        android:maxWidth="300dp"
-        android:minHeight="200dp"
-        android:minWidth="300dp"
-        android:scaleType="centerInside"/>
+        <Button
+            android:id="@+id/edit_spot_spot_picture_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/edit_spot_confirm_button"
+            android:layout_centerHorizontal="true"
+            android:onClick="changeSpotPicture"
+            android:text="@string/edit_spot_picture_button"/>
 
 
-</android.widget.RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="300dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_above="@+id/edit_spot_spot_picture_button"
+            android:layout_centerHorizontal="true">
+
+            <ImageView
+                android:id="@+id/spotImageEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:maxHeight="200dp"
+                android:maxWidth="300dp"
+                android:minHeight="200dp"
+                android:minWidth="300dp"
+                android:scaleType="centerInside"/>
+
+            <ProgressBar
+                android:id="@+id/spotImageProgress"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible"
+                android:indeterminateTint="@color/colorPrimary"/>
+        </RelativeLayout>
+
+
+
+    </RelativeLayout>
+
+
+
+
+
+</ScrollView>

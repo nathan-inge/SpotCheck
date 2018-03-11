@@ -237,12 +237,6 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        Toast.makeText(
-            getApplicationContext(),
-            "Request code: " + requestCode + "\nResult Code: " + resultCode,
-            Toast.LENGTH_LONG).show();
-        
         if(requestCode == TIME_SELECTION){
             Toast.makeText(
                 getApplicationContext(),
