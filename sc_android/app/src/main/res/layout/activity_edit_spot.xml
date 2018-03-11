@@ -5,22 +5,6 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-
-
-    </LinearLayout>
-
-    <android.widget.RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-
-    </android.widget.RelativeLayout>
-
 
     <TextView
         android:id="@+id/edit_spot_address_view"

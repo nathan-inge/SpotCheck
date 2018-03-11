@@ -116,6 +116,7 @@ public class SpotDetailActivity extends AppCompatActivity {
                                 .fitCenter()).listener(new RequestListener<Drawable>() {
                                     @Override
                                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                        spotImage.setImageResource(R.mipmap.spot_marker_icon);
                                         spotImageProgress.setVisibility(View.GONE);
                                         return false;
                                     }
@@ -126,7 +127,9 @@ public class SpotDetailActivity extends AppCompatActivity {
                                         return false;
                                     }
                                 }).into(spotImage);
-
+                            } else {
+                                spotImage.setImageResource(R.mipmap.spot_marker_icon);
+                                spotImageProgress.setVisibility(View.GONE);
                             }
                         }
                     });

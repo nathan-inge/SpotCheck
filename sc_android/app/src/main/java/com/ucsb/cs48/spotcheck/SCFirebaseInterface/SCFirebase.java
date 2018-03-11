@@ -112,10 +112,10 @@ public class SCFirebase {
                                 @NonNull final SCFirebaseCallback<Uri> finishedCallback) {
 
         StorageReference uploadLocation = scStorage.child(
-            PARKINGSPOT_PATH).child(spotID).child("spotImage.jpg");
+            PARKINGSPOT_PATH).child(spotID + " -spotImage.jpg");
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        imageBitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
         byte[] data = baos.toByteArray();
 
         UploadTask uploadTask = uploadLocation.putBytes(data);
