@@ -3,6 +3,7 @@ package com.ucsb.cs48.spotcheck;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -10,16 +11,21 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.annotation.GlideModule;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.auth.FirebaseUser;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebase;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseAuth;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseCallback;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.ParkingSpot;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.SpotCheckUser;
+
 
 public class SpotDetailActivity extends AppCompatActivity {
 
@@ -28,6 +34,7 @@ public class SpotDetailActivity extends AppCompatActivity {
     private TextView addressView;
     private TextView rateView;
     private Button rentButton;
+    private ImageView spotImage;
 
     private SpotCheckUser owner;
     private ParkingSpot spot;
@@ -48,6 +55,7 @@ public class SpotDetailActivity extends AppCompatActivity {
         addressView = findViewById(R.id.spot_detail_address_view);
         rateView = findViewById(R.id.spot_detail_rate_view);
         rentButton = findViewById(R.id.spot_details_rent_button);
+        spotImage = findViewById(R.id.spotImageDetail);
 
         // Initialize SCFirebase instance
         scFirebase = new SCFirebase();
@@ -92,6 +100,13 @@ public class SpotDetailActivity extends AppCompatActivity {
                                 spot.formattedRate(),
                                 getString(R.string.per_hour)
                             ));
+
+                            if (spot.getImageUrl() != null) {
+                                Uri spotImageUri = Uri.parse(spot.getImageUrl());
+                                Glide.with(SpotDetailActivity.this).load(spotImageUri).apply(new RequestOptions()
+                                .fitCenter()).into(spotImage);
+
+                            }
                         }
                     });
 
