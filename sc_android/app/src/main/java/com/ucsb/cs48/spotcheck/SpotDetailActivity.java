@@ -34,6 +34,8 @@ import com.ucsb.cs48.spotcheck.SCLocalObjects.BlockedDates;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.ParkingSpot;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.SpotCheckUser;
 
+import static com.ucsb.cs48.spotcheck.Utilities.SCConstants.*;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -52,10 +54,10 @@ public class SpotDetailActivity extends AppCompatActivity {
     private boolean isOwner = false;
 
     private boolean openedMailClient = false;
-    private int CODE_SEND = 0;
-    private int CODE_EDIT = 1;
-    private int CODE_DELETE = 2;
+
     private ProgressDialog startingEmailDialog;
+
+
 
     private long startTime;
     private long endTime;
@@ -163,18 +165,26 @@ public class SpotDetailActivity extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        startingEmailDialog.dismiss();
-        if(requestCode == CODE_SEND && openedMailClient){
+        if(startingEmailDialog != null) {
+            startingEmailDialog.dismiss();
+        }
+
+        if(requestCode == SEND_OWNER_EMAIL && openedMailClient){
              rentSpot();
 
-        }
-        else if (resultCode == CODE_EDIT) {
-            // do nothing
-        }
-        else if (resultCode == CODE_DELETE) {
+        } else if ((resultCode == SPOT_EDITED) && (requestCode == REQUEST_EDIT_SPOT)) {
+            // Refresh info
             finish();
-        }
-        else {
+            overridePendingTransition(0, 0);
+            startActivity(getIntent());
+            overridePendingTransition(0,0);
+            setResult(SPOT_EDITED);
+
+        } else if (resultCode == SPOT_DELETED && (requestCode == REQUEST_EDIT_SPOT)) {
+            setResult(SPOT_DELETED);
+            finish();
+
+        } else if (requestCode == SEND_OWNER_EMAIL) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Rent Request Cancelled")
                 .setMessage((
@@ -201,7 +211,7 @@ public class SpotDetailActivity extends AppCompatActivity {
         if (isOwner) {
             Intent i = new Intent(this, EditSpotActivity.class);
             i.putExtra("spotID", spot.getSpotID());
-            startActivity(i);
+            startActivityForResult(i, REQUEST_EDIT_SPOT);
 
         }
         else {
@@ -296,7 +306,7 @@ public class SpotDetailActivity extends AppCompatActivity {
         try {
             startActivityForResult(
                 Intent.createChooser(i, "Send rent request..."),
-                0
+                SEND_OWNER_EMAIL
             );
 
         } catch (android.content.ActivityNotFoundException ex) {

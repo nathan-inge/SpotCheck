@@ -60,7 +60,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 
+import static com.ucsb.cs48.spotcheck.Utilities.SCConstants.REQUEST_CREATE_SPOT;
+import static com.ucsb.cs48.spotcheck.Utilities.SCConstants.REQUEST_SPOT_DETAILS;
 import static com.ucsb.cs48.spotcheck.Utilities.SCConstants.SPOT_CREATED;
+import static com.ucsb.cs48.spotcheck.Utilities.SCConstants.SPOT_DELETED;
+import static com.ucsb.cs48.spotcheck.Utilities.SCConstants.SPOT_EDITED;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -233,13 +237,22 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        Toast.makeText(
+            getApplicationContext(),
+            "Request code: " + requestCode + "\nResult Code: " + resultCode,
+            Toast.LENGTH_LONG).show();
+        
         if(requestCode == TIME_SELECTION){
             Toast.makeText(
                 getApplicationContext(),
                 "Spot Successfully Rented!",
                 Toast.LENGTH_SHORT).show();
 
-        } else if(requestCode == SPOT_CREATED) {
+        } else if(
+            (requestCode == SPOT_CREATED)
+                || (requestCode == SPOT_EDITED)
+                || (requestCode == SPOT_DELETED)) {
             displayParkingSpots();
         }
     }
@@ -284,7 +297,8 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                             i.putExtra("spotID", marker.getTag().toString());
                             i.putExtra("startTime", startTime.getTime());
                             i.putExtra("endTime", endTime.getTime());
-                            startActivity(i);
+                            startActivityForResult(i, REQUEST_SPOT_DETAILS);
+
                         } else {
                             AlertDialog.Builder builder = new AlertDialog.Builder(
                                 GoogleMapsActivity.this);
@@ -578,7 +592,7 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
 
             case R.id.create_spot_entry_button: {
                 Intent create_spot_entry = new Intent(this, CreateSpotEntry.class);
-                startActivity(create_spot_entry);
+                startActivityForResult(create_spot_entry, REQUEST_CREATE_SPOT);
                 break;
             }
 

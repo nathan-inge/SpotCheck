@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import static com.ucsb.cs48.spotcheck.Utilities.SCConstants.*;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebase;
@@ -20,9 +21,6 @@ import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseCallback;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.ParkingSpot;
 import com.ucsb.cs48.spotcheck.Utilities.MoneyTextWatcher;
 
-/**
- * Created by Ray on 3/9/2018.
- */
 
 public class EditSpotActivity extends AppCompatActivity {
 
@@ -35,8 +33,6 @@ public class EditSpotActivity extends AppCompatActivity {
 
     private ParkingSpot spot;
     private boolean validRate = false;
-    private int CODE_EDIT = 1;
-    private int CODE_DELETE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +88,7 @@ public class EditSpotActivity extends AppCompatActivity {
         if (newRate > 0 && newRate < 1000) {
             spot.setRate(newRate);
             scFirebase.updateSpot(spot.getSpotID(), spot);
-            setResult(CODE_EDIT);
+            setResult(SPOT_EDITED);
             finish();
         }
 
@@ -136,7 +132,7 @@ public class EditSpotActivity extends AppCompatActivity {
                                 "Spot Deleted!",
                                 Toast.LENGTH_SHORT).show();
 
-                        setResult(CODE_DELETE);
+                        setResult(SPOT_DELETED);
                         finish();
                     }
                 })
