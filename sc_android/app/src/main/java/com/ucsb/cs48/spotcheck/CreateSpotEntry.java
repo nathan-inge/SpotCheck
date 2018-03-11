@@ -1,12 +1,18 @@
 package com.ucsb.cs48.spotcheck;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -23,13 +29,15 @@ import com.ucsb.cs48.spotcheck.SCLocalObjects.ParkingSpot;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.SCLatLng;
 import com.ucsb.cs48.spotcheck.Utilities.MoneyTextWatcher;
 
+import java.io.IOException;
+
 
 public class CreateSpotEntry extends AppCompatActivity {
 
 
     private TextView placeText;
-    private TextView rateErrorText;
     private EditText rateInput;
+    private ImageView spotImageView;
 
     private static final String TAG = "CreateSpotEntry";
     int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
@@ -37,6 +45,9 @@ public class CreateSpotEntry extends AppCompatActivity {
 
     private boolean validPlace = false;
     private boolean validRate = false;
+    private boolean validImage = false;
+
+    private int PICK_IMAGE_REQUEST = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +55,8 @@ public class CreateSpotEntry extends AppCompatActivity {
         setContentView(R.layout.activity_create_spot_entry);
 
         rateInput = findViewById(R.id.rateEditText);
-        rateErrorText = findViewById(R.id.rate_error_text);
         placeText = findViewById(R.id.place_result_text);
+        spotImageView = findViewById(R.id.spotImageView);
 
         rateInput.addTextChangedListener(new MoneyTextWatcher(rateInput));
     }
@@ -84,6 +95,25 @@ public class CreateSpotEntry extends AppCompatActivity {
                 placeText.setTextColor(0xff000000);
 
             }
+
+        } else if (requestCode == PICK_IMAGE_REQUEST) {
+            if ((resultCode == RESULT_OK) && (data != null)) {
+                spotImageView.setImageURI(data.getData());
+                validImage = true;
+
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+                builder.setTitle("Unable to Upload Picture")
+                    .setMessage(("Couldn't upload picture. Please select a different image."))
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // do nothing
+                        }
+                    })
+                    .setIcon(R.mipmap.spot_marker_icon)
+                    .show();
+            }
         }
     }
 
@@ -109,7 +139,25 @@ public class CreateSpotEntry extends AppCompatActivity {
             }
         }
 
-        if(validRate && validPlace) {
+        if(!validPlace) {
+            Toast.makeText(
+                CreateSpotEntry.this,
+                "Please select a valid spot location.",
+                Toast.LENGTH_SHORT).show();
+
+        } else if(!validRate) {
+            Toast.makeText(
+                CreateSpotEntry.this,
+                R.string.rate_input_error,
+                Toast.LENGTH_SHORT).show();
+
+        } else if(!validImage) {
+            Toast.makeText(
+                CreateSpotEntry.this,
+                "Please upload an image of the spot.",
+                Toast.LENGTH_SHORT).show();
+
+        } else {
             String address = place.getAddress().toString();
 
             LatLng latLng = place.getLatLng();
@@ -121,15 +169,17 @@ public class CreateSpotEntry extends AppCompatActivity {
             scFirebase.createNewSpot(newSpot);
 
             finish();
-
-        } else {
-            if(!validPlace) {
-                placeText.setTextColor(0xffcc0000);
-
-                placeText.setText(R.string.place_error);
-            } else {
-                rateErrorText.setText(R.string.rate_input_error);
-            }
         }
     }
+
+    public void changeSpotImageTapped(View view) {
+        Intent intent = new Intent();
+
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Spot Image"),
+            PICK_IMAGE_REQUEST
+        );
+    }
+
 }
