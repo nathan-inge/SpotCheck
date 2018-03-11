@@ -25,9 +25,10 @@ hs_err_pid*
 /sc_android/*.iml
 /sc_android/.gradle
 /sc_android/local.properties
-/sc_android/.idea/workspace.xml
-/sc_android/.idea/libraries
-/sc_android/.idea/misc.xml
+sc_android/.idea/workspace.xml
+sc_android/.idea/libraries
+sc_android/.idea/misc.xml
+sc_android/.idea/
 /sc_android/.DS_Store
 /sc_android/build
 /sc_android/captures
