@@ -3,17 +3,29 @@ package com.ucsb.cs48.spotcheck;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.annotation.GlideModule;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 import com.google.firebase.auth.FirebaseUser;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebase;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseAuth;
@@ -21,6 +33,8 @@ import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseCallback;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.BlockedDates;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.ParkingSpot;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.SpotCheckUser;
+
+import static com.ucsb.cs48.spotcheck.Utilities.SCConstants.*;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -32,16 +46,18 @@ public class SpotDetailActivity extends AppCompatActivity {
     private TextView addressView;
     private TextView rateView;
     private Button rentButton;
+    private ImageView spotImage;
+    private ProgressBar spotImageProgress;
 
     private SpotCheckUser owner;
     private ParkingSpot spot;
     private boolean isOwner = false;
 
     private boolean openedMailClient = false;
-    private int CODE_SEND = 0;
-    private int CODE_EDIT = 1;
-    private int CODE_DELETE = 2;
+
     private ProgressDialog startingEmailDialog;
+
+
 
     private long startTime;
     private long endTime;
@@ -55,6 +71,8 @@ public class SpotDetailActivity extends AppCompatActivity {
         addressView = findViewById(R.id.spot_detail_address_view);
         rateView = findViewById(R.id.spot_detail_rate_view);
         rentButton = findViewById(R.id.spot_details_rent_button);
+        spotImage = findViewById(R.id.spotImageDetail);
+        spotImageProgress = findViewById(R.id.spotImageProgress);
 
         // Initialize SCFirebase instance
         scFirebase = new SCFirebase();
@@ -101,6 +119,28 @@ public class SpotDetailActivity extends AppCompatActivity {
                                 spot.formattedRate(),
                                 getString(R.string.per_hour)
                             ));
+
+                            if (spot.getImageUrl() != null) {
+                                Uri spotImageUri = Uri.parse(spot.getImageUrl());
+                                Glide.with(SpotDetailActivity.this).load(spotImageUri).apply(new RequestOptions()
+                                .fitCenter()).listener(new RequestListener<Drawable>() {
+                                    @Override
+                                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                        spotImage.setImageResource(R.mipmap.spot_marker_icon);
+                                        spotImageProgress.setVisibility(View.GONE);
+                                        return false;
+                                    }
+
+                                    @Override
+                                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                        spotImageProgress.setVisibility(View.GONE);
+                                        return false;
+                                    }
+                                }).into(spotImage);
+                            } else {
+                                spotImage.setImageResource(R.mipmap.spot_marker_icon);
+                                spotImageProgress.setVisibility(View.GONE);
+                            }
                         }
                     });
 
@@ -108,10 +148,7 @@ public class SpotDetailActivity extends AppCompatActivity {
                     showSpotNotAvailableDialog();
                 }
             }
-
         });
-
-
     }
 
     @Override
@@ -128,18 +165,26 @@ public class SpotDetailActivity extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        startingEmailDialog.dismiss();
-        if(requestCode == CODE_SEND && openedMailClient){
+        if(startingEmailDialog != null) {
+            startingEmailDialog.dismiss();
+        }
+
+        if(requestCode == SEND_OWNER_EMAIL && openedMailClient){
              rentSpot();
 
-        }
-        else if (resultCode == CODE_EDIT) {
-            // do nothing
-        }
-        else if (resultCode == CODE_DELETE) {
+        } else if ((resultCode == SPOT_EDITED) && (requestCode == REQUEST_EDIT_SPOT)) {
+            // Refresh info
             finish();
-        }
-        else {
+            overridePendingTransition(0, 0);
+            startActivity(getIntent());
+            overridePendingTransition(0,0);
+            setResult(SPOT_EDITED);
+
+        } else if (resultCode == SPOT_DELETED && (requestCode == REQUEST_EDIT_SPOT)) {
+            setResult(SPOT_DELETED);
+            finish();
+
+        } else if (requestCode == SEND_OWNER_EMAIL) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Rent Request Cancelled")
                 .setMessage((
@@ -166,7 +211,7 @@ public class SpotDetailActivity extends AppCompatActivity {
         if (isOwner) {
             Intent i = new Intent(this, EditSpotActivity.class);
             i.putExtra("spotID", spot.getSpotID());
-            startActivity(i);
+            startActivityForResult(i, REQUEST_EDIT_SPOT);
 
         }
         else {
@@ -261,7 +306,7 @@ public class SpotDetailActivity extends AppCompatActivity {
         try {
             startActivityForResult(
                 Intent.createChooser(i, "Send rent request..."),
-                0
+                SEND_OWNER_EMAIL
             );
 
         } catch (android.content.ActivityNotFoundException ex) {

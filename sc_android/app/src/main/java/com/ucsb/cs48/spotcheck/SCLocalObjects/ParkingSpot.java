@@ -15,6 +15,7 @@ public class ParkingSpot {
     private SCLatLng latLng;
     private ArrayList<BlockedDates> blockedDatesList = new ArrayList<>();
 
+    private String imageUrl;
     public ParkingSpot() {
         // Required no argument constructor for Firebase database
     }
@@ -71,7 +72,10 @@ public class ParkingSpot {
         return this.rate;
     }
 
+
     public ArrayList<BlockedDates> getBlockedDatesList() { return this.blockedDatesList; }
+
+    public String getImageUrl() { return this.imageUrl; }
 
     @Exclude
     public void setSpotID(String spotID) { this.spotID = spotID; }
@@ -87,4 +91,6 @@ public class ParkingSpot {
     }
 
     public void setBlockedDatesList(ArrayList<BlockedDates> list) { this.blockedDatesList = list; }
+
+    public void setImageUrl(String url) { this.imageUrl = url; }
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.widget.RelativeLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,56 +7,102 @@
     android:layout_height="match_parent"
     tools:context="com.ucsb.cs48.spotcheck.SpotDetailActivity">
 
-    <TextView
-        android:id="@+id/spot_detail_address_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="58dp"
-        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/spot_detail_rate_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/spot_detail_address_view"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="41dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/spot_details_rent_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/spot_detail_rate_view"
-        android:layout_alignStart="@+id/spot_detail_rate_view"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:onClick="rentButtonClicked"
-        android:text="@string/rent_button_text" />
+            <TextView
+                android:id="@+id/spot_detail_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginBottom="20dp"
+                android:text="@string/address_view"
+                android:textStyle="bold"/>
 
-    <TextView
-        android:id="@+id/spot_detail_address"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/spot_detail_rate_view"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="20dp"
-        android:layout_marginLeft="38dp"
-        android:layout_marginStart="38dp"
-        android:text="@string/address_view"
-        android:textStyle="bold"/>
+            <TextView
+                android:id="@+id/spot_detail_address_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginBottom="20dp"
+                />
 
-    <TextView
-        android:id="@+id/spot_detail_rate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/spot_detail_rate_view"
-        android:layout_alignLeft="@+id/spot_detail_address"
-        android:layout_alignStart="@+id/spot_detail_address"
-        android:layout_marginBottom="20dp"
-        android:text="@string/rate_view"
-        android:textStyle="bold"/>
 
-</android.widget.RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/spot_detail_rate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginBottom="20dp"
+                android:text="@string/rate_view"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/spot_detail_rate_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginBottom="20dp"/>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="300dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp">
+
+            <ImageView
+                android:id="@+id/spotImageDetail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:maxHeight="200dp"
+                android:maxWidth="300dp"
+                android:minHeight="200dp"
+                android:minWidth="300dp"
+                android:scaleType="centerInside"
+                android:adjustViewBounds="true"/>
+
+            <ProgressBar
+                android:id="@+id/spotImageProgress"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible"
+                android:indeterminateTint="@color/colorPrimary"/>
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/spot_details_rent_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="rentButtonClicked"
+            android:text="@string/rent_button_text"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"/>
+
+    </LinearLayout>
+</ScrollView>
