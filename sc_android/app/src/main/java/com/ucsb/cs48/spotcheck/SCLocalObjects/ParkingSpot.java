@@ -1,9 +1,9 @@
 package com.ucsb.cs48.spotcheck.SCLocalObjects;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.Exclude;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
 
 
 public class ParkingSpot {
@@ -13,6 +13,7 @@ public class ParkingSpot {
     private String address;
     private Double rate;
     private SCLatLng latLng;
+    private ArrayList<BlockedDates> blockedDatesList = new ArrayList<>();
 
     public ParkingSpot() {
         // Required no argument constructor for Firebase database
@@ -38,6 +39,19 @@ public class ParkingSpot {
         return NumberFormat.getCurrencyInstance().format((rate));
     }
 
+    public void addBlockedDates(BlockedDates newBlock) {
+        this.blockedDatesList.add(newBlock);
+    }
+
+    public void removeBlockedDates(BlockedDates oldBlock) {
+        this.blockedDatesList.remove(oldBlock);
+    }
+
+    @Exclude
+    public int getBlockedDatesCount() {
+        return this.blockedDatesList.size();
+    }
+
     @Exclude
     public String getSpotID() {
         return this.spotID;
@@ -57,6 +71,8 @@ public class ParkingSpot {
         return this.rate;
     }
 
+    public ArrayList<BlockedDates> getBlockedDatesList() { return this.blockedDatesList; }
+
     @Exclude
     public void setSpotID(String spotID) { this.spotID = spotID; }
 
@@ -69,4 +85,6 @@ public class ParkingSpot {
     public void setRate(Double rate) {
         this.rate = rate;
     }
+
+    public void setBlockedDatesList(ArrayList<BlockedDates> list) { this.blockedDatesList = list; }
 }

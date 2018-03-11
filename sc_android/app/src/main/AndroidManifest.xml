@@ -60,6 +60,8 @@
             android:label="Spot Details"
             android:parentActivityName=".GoogleMapsActivity">
         </activity>
+
+
     </application>
 
 </manifest>
