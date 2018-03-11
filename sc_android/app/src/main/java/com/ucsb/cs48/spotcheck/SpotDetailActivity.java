@@ -3,10 +3,12 @@ package com.ucsb.cs48.spotcheck;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -18,7 +20,12 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.annotation.GlideModule;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 import com.google.firebase.auth.FirebaseUser;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebase;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseAuth;
@@ -35,6 +42,7 @@ public class SpotDetailActivity extends AppCompatActivity {
     private TextView rateView;
     private Button rentButton;
     private ImageView spotImage;
+    private ProgressBar spotImageProgress;
 
     private SpotCheckUser owner;
     private ParkingSpot spot;
@@ -56,6 +64,7 @@ public class SpotDetailActivity extends AppCompatActivity {
         rateView = findViewById(R.id.spot_detail_rate_view);
         rentButton = findViewById(R.id.spot_details_rent_button);
         spotImage = findViewById(R.id.spotImageDetail);
+        spotImageProgress = findViewById(R.id.spotImageProgress);
 
         // Initialize SCFirebase instance
         scFirebase = new SCFirebase();
@@ -104,7 +113,19 @@ public class SpotDetailActivity extends AppCompatActivity {
                             if (spot.getImageUrl() != null) {
                                 Uri spotImageUri = Uri.parse(spot.getImageUrl());
                                 Glide.with(SpotDetailActivity.this).load(spotImageUri).apply(new RequestOptions()
-                                .fitCenter()).into(spotImage);
+                                .fitCenter()).listener(new RequestListener<Drawable>() {
+                                    @Override
+                                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                        spotImageProgress.setVisibility(View.GONE);
+                                        return false;
+                                    }
+
+                                    @Override
+                                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                        spotImageProgress.setVisibility(View.GONE);
+                                        return false;
+                                    }
+                                }).into(spotImage);
 
                             }
                         }
@@ -114,10 +135,7 @@ public class SpotDetailActivity extends AppCompatActivity {
                     showSpotNotAvailableDialog();
                 }
             }
-
         });
-
-
     }
 
     @Override

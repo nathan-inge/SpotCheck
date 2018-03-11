@@ -1,8 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.widget.RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+
+    </LinearLayout>
+
+    <android.widget.RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+    </android.widget.RelativeLayout>
 
 
     <TextView
@@ -20,23 +37,23 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="21dp"
         android:text="@string/address_view"
-        android:textStyle="bold" />
+        android:textStyle="bold"/>
 
     <EditText
         android:id="@+id/edit_spot_rate_edit_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/edit_spot_confirm_button"
+        android:layout_below="@+id/edit_spot_address_view"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="88dp"
+        android:layout_marginTop="20dp"
         android:ems="10"
         android:hint="Rate ($/hour)"
         android:inputType="number"
         android:textAlignment="center"
         tools:layout_editor_absoluteX="123dp"
-        tools:layout_editor_absoluteY="46dp" />
+        tools:layout_editor_absoluteY="46dp"/>
 
     <Button
         android:id="@+id/edit_spot_confirm_button"
@@ -45,10 +62,10 @@
         android:layout_above="@+id/edit_spot_delete_button"
         android:layout_alignLeft="@+id/edit_spot_rate_edit_text"
         android:layout_alignStart="@+id/edit_spot_rate_edit_text"
-        android:layout_marginBottom="31dp"
+        android:layout_marginBottom="15dp"
         android:contentDescription="confirm_change"
         android:onClick="confirmChanges"
-        android:text="Confirm" />
+        android:text="Confirm"/>
 
     <Button
         android:id="@+id/edit_spot_cancel_button"
@@ -68,12 +85,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="53dp"
+        android:layout_marginBottom="13dp"
         android:onClick="deleteSpot"
         android:shadowColor="@android:color/holo_red_dark"
         android:text="@string/delete_button_text"
         android:textColor="@android:color/holo_red_dark"
-        android:textColorHighlight="@android:color/holo_red_dark" />
+        android:textColorHighlight="@android:color/holo_red_dark"/>
 
     <Button
         android:id="@+id/edit_spot_spot_picture_button"
@@ -81,9 +98,21 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/edit_spot_confirm_button"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="15dp"
         android:onClick="changeSpotPicture"
-        android:text="@string/edit_spot_picture_button" />
+        android:text="@string/edit_spot_picture_button"/>
+
+    <ImageView
+        android:id="@+id/spotImageEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/edit_spot_spot_picture_button"
+        android:layout_centerHorizontal="true"
+        android:adjustViewBounds="true"
+        android:maxHeight="200dp"
+        android:maxWidth="300dp"
+        android:minHeight="200dp"
+        android:minWidth="300dp"
+        android:scaleType="centerInside"/>
 
 
 </android.widget.RelativeLayout>
