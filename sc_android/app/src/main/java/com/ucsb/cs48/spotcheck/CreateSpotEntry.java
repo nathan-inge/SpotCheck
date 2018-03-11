@@ -2,6 +2,8 @@ package com.ucsb.cs48.spotcheck;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -19,8 +21,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebase;
+import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseCallback;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.ParkingSpot;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.SCLatLng;
+import com.ucsb.cs48.spotcheck.SCLocalObjects.SpotCheckUser;
 import com.ucsb.cs48.spotcheck.Utilities.MoneyTextWatcher;
 
 
@@ -119,6 +123,18 @@ public class CreateSpotEntry extends AppCompatActivity {
 
             SCFirebase scFirebase = new SCFirebase();
             scFirebase.createNewSpot(newSpot);
+            //Trying to add new spot ID to user's ArrayList
+//            Intent intent = getIntent();
+//            String currentSCUserID = intent.getStringExtra("currentSCUserID");
+//            SpotCheckUser SCuser;
+//            scFirebase.getSCUser(currentSCUserID, new SCFirebaseCallback<SpotCheckUser>() {
+//                @Override
+//                public void callback(SpotCheckUser data) {
+//                    if(data != null) {
+//                        SCuser = data;
+//                    }
+//                }
+//            });
 
             finish();
 

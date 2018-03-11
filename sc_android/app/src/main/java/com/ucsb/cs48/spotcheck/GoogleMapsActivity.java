@@ -535,6 +535,10 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                 break;
             }
 
+            case R.id.current_listings: {
+                viewCurrentListingsButtonClicked();
+            }
+
         }
         //close navigation drawer
         mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -557,6 +561,11 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
 
     public void viewProfileButtonClicked() {
         Intent i = new Intent(this, ProfilePage.class);
+        startActivity(i);
+    }
+
+    public void viewCurrentListingsButtonClicked() {
+        Intent i = new Intent(this, CurrentListings.class);
         startActivity(i);
     }
 }

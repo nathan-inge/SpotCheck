@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.ucsb.cs48.spotcheck.CurrentListings"
+    tools:showIn="@layout/activity_current_listings">
+
+    <RelativeLayout
+        android:id="@+id/spots"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/spot1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerVertical="true"
+            android:onClick="goToSpot1"
+            android:text="Spot 1" />
+
+        <Button
+            android:id="@+id/spot2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/spot1"
+            android:text="Spot 2"
+            android:onClick="goToSpot2"/>
+
+        <Button
+            android:id="@+id/spot3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/spot2"
+            android:text="Spot 3" />
+
+        <Button
+            android:id="@+id/spot4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/spot3"
+            android:text="Spot 4" />
+
+        <Button
+            android:id="@+id/spot5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/spot4"
+            android:text="Spot 5" />
+
+        <Button
+            android:id="@+id/spot6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/spot5"
+            android:text="Spot 6" />
+
+        <Button
+            android:id="@+id/spot7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/spot6"
+            android:text="Spot 7" />
+
+        <Button
+            android:id="@+id/spot8"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/spot7"
+            android:text="Spot 8" />
+
+        <Button
+            android:id="@+id/spot9"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/spot8"
+            android:text="Spot 9" />
+
+        <Button
+            android:id="@+id/spot10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/spot9"
+            android:text="Spot 10" />
+
+
+    </RelativeLayout>
+
+</android.support.v4.widget.NestedScrollView>

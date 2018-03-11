@@ -18,4 +18,7 @@
     <item android:id="@+id/logout_button"
         android:title="Logout" />
 
+    <item android:id="@+id/current_listings"
+        android:title="My Current Listings"/>
+
 </menu>

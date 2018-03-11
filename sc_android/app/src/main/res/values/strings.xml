@@ -33,6 +33,8 @@
     <string name="address_view">Address:</string>
     <string name="rate_view">Rate:</string>
     <string name="per_hour">/hour</string>
+    <string name="title_activity_current_listings">Current Listings</string>
+    <string name="action_settings">Settings</string>
 
 
 </resources>
