@@ -139,8 +139,8 @@ public class CreateSpotEntry extends AppCompatActivity {
         String rawRateInput = rateInput.getText().toString();
 
         if((rawRateInput.length() > 0)) {
-            double rawRate = Double.parseDouble(rawRateInput.substring(1));
-            if(rawRate > 0) {
+            double rawRate = Double.parseDouble(rawRateInput.substring(1).replaceAll("[$+,+.+]", ""));
+            if((rawRate > 0) /*&& (rawRate < 1000)*/) {
                 validRate = true;
                 rate = rawRate;
             }
@@ -170,11 +170,11 @@ public class CreateSpotEntry extends AppCompatActivity {
 
             String address = place.getAddress().toString();
             LatLng latLng = place.getLatLng();
-            SCLatLng scLatLng = new SCLatLng(latLng.latitude, latLng.longitude);
+            final SCLatLng scLatLng = new SCLatLng(latLng.latitude, latLng.longitude);
 
             final ParkingSpot newSpot = new ParkingSpot(user.getUid(), address, scLatLng, rate);
 
-            String newSpotID = scFirebase.createNewSpot(newSpot);
+            final String newSpotID = scFirebase.createNewSpot(newSpot);
 
             scFirebase.uploadSpotImage(newSpotID, spotImageBitmp, new SCFirebaseCallback<Uri>() {
                 @Override
@@ -182,6 +182,7 @@ public class CreateSpotEntry extends AppCompatActivity {
                     dialog.dismiss();
                     if (data != null) {
                         newSpot.setImageUrl(data.toString());
+                        scFirebase.updateSpot(newSpotID, newSpot);
                         finish();
 
                     } else {

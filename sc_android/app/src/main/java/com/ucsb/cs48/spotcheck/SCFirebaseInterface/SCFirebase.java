@@ -46,6 +46,11 @@ public class SCFirebase {
         return newSpotID;
     }
 
+    // Update a current parking spot from the data base
+    public void updateSpot(final String spotID, ParkingSpot updatedSpot) {
+        scDatabase.child(PARKINGSPOT_PATH).child(spotID).setValue(updatedSpot);
+    }
+
     // Get a parking spot from the data base
     public void getParkingSpot(final String spotID,
                                @NonNull final SCFirebaseCallback<ParkingSpot> finishedCallback) {

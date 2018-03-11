@@ -31,8 +31,9 @@
         android:layout_alignLeft="@+id/spot_detail_rate_view"
         android:layout_alignStart="@+id/spot_detail_rate_view"
         android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
         android:onClick="rentButtonClicked"
-        android:text="@string/rent_button_text"/>
+        android:text="@string/rent_button_text" />
 
     <TextView
         android:id="@+id/spot_detail_address"
