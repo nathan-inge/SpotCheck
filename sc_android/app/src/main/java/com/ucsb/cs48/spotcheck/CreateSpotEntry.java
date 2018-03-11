@@ -143,7 +143,7 @@ public class CreateSpotEntry extends AppCompatActivity {
         String rawRateInput = rateInput.getText().toString();
 
         if((rawRateInput.length() > 0)) {
-            double rawRate = Double.parseDouble(rawRateInput.substring(1).replaceAll("[$+,+.+]", ""));
+            double rawRate = Double.parseDouble(rawRateInput.substring(1).replaceAll("[$+,+]", ""));
             if((rawRate > 0) /*&& (rawRate < 1000)*/) {
                 validRate = true;
                 rate = rawRate;
