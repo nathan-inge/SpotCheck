@@ -115,6 +115,7 @@ public class CurrentListings extends AppCompatActivity {
     }
 
     public void goToSpot1(View view) {
+        //Access SpotCheckUser.parkingSpots(1) to get parking spot page
         if (user != null) {
             Intent intent = new Intent(this, EditProfile.class);
             intent.putExtra("currentSCUserID", user.getUserID());
@@ -123,6 +124,70 @@ public class CurrentListings extends AppCompatActivity {
     }
 
     public void goToSpot2(View view) {
+        if (user != null) {
+            Intent intent = new Intent(this, EditProfile.class);
+            intent.putExtra("currentSCUserID", user.getUserID());
+            startActivity(intent);
+        }
+    }
+
+    public void goToSpot3(View view) {
+        if (user != null) {
+            Intent intent = new Intent(this, EditProfile.class);
+            intent.putExtra("currentSCUserID", user.getUserID());
+            startActivity(intent);
+        }
+    }
+
+    public void goToSpot4(View view) {
+        if (user != null) {
+            Intent intent = new Intent(this, EditProfile.class);
+            intent.putExtra("currentSCUserID", user.getUserID());
+            startActivity(intent);
+        }
+    }
+
+    public void goToSpot5(View view) {
+        if (user != null) {
+            Intent intent = new Intent(this, EditProfile.class);
+            intent.putExtra("currentSCUserID", user.getUserID());
+            startActivity(intent);
+        }
+    }
+
+    public void goToSpot6(View view) {
+        if (user != null) {
+            Intent intent = new Intent(this, EditProfile.class);
+            intent.putExtra("currentSCUserID", user.getUserID());
+            startActivity(intent);
+        }
+    }
+
+    public void goToSpot7(View view) {
+        if (user != null) {
+            Intent intent = new Intent(this, EditProfile.class);
+            intent.putExtra("currentSCUserID", user.getUserID());
+            startActivity(intent);
+        }
+    }
+
+    public void goToSpot8(View view) {
+        if (user != null) {
+            Intent intent = new Intent(this, EditProfile.class);
+            intent.putExtra("currentSCUserID", user.getUserID());
+            startActivity(intent);
+        }
+    }
+
+    public void goToSpot9(View view) {
+        if (user != null) {
+            Intent intent = new Intent(this, EditProfile.class);
+            intent.putExtra("currentSCUserID", user.getUserID());
+            startActivity(intent);
+        }
+    }
+
+    public void goToSpot10(View view) {
         if (user != null) {
             Intent intent = new Intent(this, EditProfile.class);
             intent.putExtra("currentSCUserID", user.getUserID());
