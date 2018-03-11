@@ -33,7 +33,7 @@ import com.ucsb.cs48.spotcheck.SCLocalObjects.BlockedDates;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.ParkingSpot;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.SCLatLng;
 import com.ucsb.cs48.spotcheck.Utilities.MoneyTextWatcher;
-import static com.ucsb.cs48.spotcheck.Utilities.SCConstants.SPOT_CREATED;
+import static com.ucsb.cs48.spotcheck.Utilities.SCConstants.*;
 
 import java.io.IOException;
 
@@ -57,8 +57,6 @@ public class CreateSpotEntry extends AppCompatActivity {
     private boolean validImage = false;
 
     private Bitmap spotImageBitmp;
-
-    private int PICK_IMAGE_REQUEST = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +107,7 @@ public class CreateSpotEntry extends AppCompatActivity {
 
             }
 
-        } else if (requestCode == PICK_IMAGE_REQUEST) {
+        } else if (requestCode == REQUEST_PICK_IMAGE) {
             if ((resultCode == RESULT_OK) && (data != null)) {
                 try {
                     spotImageBitmp = MediaStore.Images.Media.getBitmap(
@@ -215,7 +213,7 @@ public class CreateSpotEntry extends AppCompatActivity {
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select Spot Image"),
-            PICK_IMAGE_REQUEST
+            REQUEST_PICK_IMAGE
         );
     }
 

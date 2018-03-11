@@ -53,6 +53,8 @@
             android:layout_marginBottom="15dp"
             android:contentDescription="confirm_change"
             android:onClick="confirmChanges"
+            android:backgroundTint="@color/colorPrimary"
+            android:textColor="@android:color/white"
             android:text="Confirm"/>
 
         <Button
@@ -98,6 +100,7 @@
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
             android:layout_above="@+id/edit_spot_spot_picture_button"
+            android:layout_below="@+id/edit_spot_rate_edit_text"
             android:layout_centerHorizontal="true">
 
             <ImageView
@@ -112,7 +115,7 @@
                 android:scaleType="centerInside"/>
 
             <ProgressBar
-                android:id="@+id/spotImageProgress"
+                android:id="@+id/spotImageEditProgress"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:visibility="visible"
