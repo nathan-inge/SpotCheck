@@ -1,29 +1,39 @@
 package com.ucsb.cs48.spotcheck.SCFirebaseInterface;
 
 
-import android.provider.ContactsContract;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.ParkingSpot;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.SpotCheckUser;
 
+import java.io.ByteArrayOutputStream;
+import android.net.Uri;
 import java.util.ArrayList;
 import java.util.UUID;
 
 public class SCFirebase {
 
     private DatabaseReference scDatabase;
+    private StorageReference scStorage;
+
 
     private final String PARKINGSPOT_PATH = "parking_spots";
     private final String USER_PATH = "users";
 
     public SCFirebase() {
         scDatabase = FirebaseDatabase.getInstance().getReference();
+        scStorage = FirebaseStorage.getInstance().getReference();
     }
 
     /// MARK - Parking Spot Interface
@@ -72,9 +82,11 @@ public class SCFirebase {
 
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
                     ParkingSpot spot = postSnapshot.getValue(ParkingSpot.class);
-                    spot.setSpotID(postSnapshot.getKey());
 
-                    parkingSpots.add(spot);
+                    if (spot != null) {
+                        spot.setSpotID(postSnapshot.getKey());
+                        parkingSpots.add(spot);
+                    }
                 }
 
                 finishedCalback.callback(parkingSpots);
@@ -89,6 +101,32 @@ public class SCFirebase {
     public void deleteParkingSpot(String spotID) {
         DatabaseReference myRef = scDatabase.child(PARKINGSPOT_PATH).child(spotID);
         myRef.removeValue();
+    }
+
+    public void uploadSpotImage(String spotID, Bitmap imageBitmap,
+                                @NonNull final SCFirebaseCallback<Uri> finishedCallback) {
+
+        StorageReference uploadLocation = scStorage.child(
+            PARKINGSPOT_PATH).child(spotID).child("spotImage.jpg");
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+
+        UploadTask uploadTask = uploadLocation.putBytes(data);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                finishedCallback.callback(null);
+                
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                finishedCallback.callback(taskSnapshot.getDownloadUrl());
+
+            }
+        });
     }
 
 

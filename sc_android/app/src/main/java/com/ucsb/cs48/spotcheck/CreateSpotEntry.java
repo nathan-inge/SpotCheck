@@ -1,8 +1,10 @@
 package com.ucsb.cs48.spotcheck;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
@@ -25,6 +27,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebase;
+import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseCallback;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.ParkingSpot;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.SCLatLng;
 import com.ucsb.cs48.spotcheck.Utilities.MoneyTextWatcher;
@@ -34,6 +37,7 @@ import java.io.IOException;
 
 public class CreateSpotEntry extends AppCompatActivity {
 
+    private SCFirebase scFirebase;
 
     private TextView placeText;
     private EditText rateInput;
@@ -47,12 +51,16 @@ public class CreateSpotEntry extends AppCompatActivity {
     private boolean validRate = false;
     private boolean validImage = false;
 
+    private Bitmap spotImageBitmp;
+
     private int PICK_IMAGE_REQUEST = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_spot_entry);
+
+        scFirebase = new SCFirebase();
 
         rateInput = findViewById(R.id.rateEditText);
         placeText = findViewById(R.id.place_result_text);
@@ -98,21 +106,20 @@ public class CreateSpotEntry extends AppCompatActivity {
 
         } else if (requestCode == PICK_IMAGE_REQUEST) {
             if ((resultCode == RESULT_OK) && (data != null)) {
-                spotImageView.setImageURI(data.getData());
-                validImage = true;
+                try {
+                    spotImageBitmp = MediaStore.Images.Media.getBitmap(
+                        getContentResolver(), data.getData());
+                    spotImageView.setImageBitmap(spotImageBitmp);
+                    validImage = true;
+
+                } catch (IOException e) {
+                    validImage = false;
+                    e.printStackTrace();
+                    showUploadError();
+                }
 
             } else {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-                builder.setTitle("Unable to Upload Picture")
-                    .setMessage(("Couldn't upload picture. Please select a different image."))
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            // do nothing
-                        }
-                    })
-                    .setIcon(R.mipmap.spot_marker_icon)
-                    .show();
+                showUploadError();
             }
         }
     }
@@ -158,17 +165,40 @@ public class CreateSpotEntry extends AppCompatActivity {
                 Toast.LENGTH_SHORT).show();
 
         } else {
-            String address = place.getAddress().toString();
+            final ProgressDialog dialog = ProgressDialog.show(CreateSpotEntry.this, "",
+                "Creating spot...", true);
 
+            String address = place.getAddress().toString();
             LatLng latLng = place.getLatLng();
             SCLatLng scLatLng = new SCLatLng(latLng.latitude, latLng.longitude);
 
-            ParkingSpot newSpot = new ParkingSpot(user.getUid(), address, scLatLng, rate);
+            final ParkingSpot newSpot = new ParkingSpot(user.getUid(), address, scLatLng, rate);
 
-            SCFirebase scFirebase = new SCFirebase();
-            scFirebase.createNewSpot(newSpot);
+            String newSpotID = scFirebase.createNewSpot(newSpot);
 
-            finish();
+            scFirebase.uploadSpotImage(newSpotID, spotImageBitmp, new SCFirebaseCallback<Uri>() {
+                @Override
+                public void callback(Uri data) {
+                    dialog.dismiss();
+                    if (data != null) {
+                        newSpot.setImageUrl(data.toString());
+                        finish();
+
+                    } else {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(CreateSpotEntry.this);
+
+                        builder.setTitle("Unable to Create Spot")
+                            .setMessage(("Please check your internet connection and try again."))
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // do nothing
+                                }
+                            })
+                            .setIcon(R.mipmap.spot_marker_icon)
+                            .show();
+                    }
+                }
+            });
         }
     }
 
@@ -182,4 +212,17 @@ public class CreateSpotEntry extends AppCompatActivity {
         );
     }
 
+    private void showUploadError() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Unable to Upload Picture")
+            .setMessage(("Couldn't upload picture. Please select a different image."))
+            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    // do nothing
+                }
+            })
+            .setIcon(R.mipmap.spot_marker_icon)
+            .show();
+    }
 }
