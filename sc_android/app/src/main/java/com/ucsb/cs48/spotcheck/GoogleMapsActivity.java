@@ -60,6 +60,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 
+import static com.ucsb.cs48.spotcheck.Utilities.SCConstants.SPOT_CREATED;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -237,6 +239,8 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                 "Spot Successfully Rented!",
                 Toast.LENGTH_SHORT).show();
 
+        } else if(requestCode == SPOT_CREATED) {
+            displayParkingSpots();
         }
     }
 

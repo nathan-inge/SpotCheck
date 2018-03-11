@@ -33,6 +33,7 @@ import com.ucsb.cs48.spotcheck.SCLocalObjects.BlockedDates;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.ParkingSpot;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.SCLatLng;
 import com.ucsb.cs48.spotcheck.Utilities.MoneyTextWatcher;
+import static com.ucsb.cs48.spotcheck.Utilities.SCConstants.SPOT_CREATED;
 
 import java.io.IOException;
 
@@ -122,7 +123,7 @@ public class CreateSpotEntry extends AppCompatActivity {
                     showUploadError();
                 }
 
-            } else {
+            } else if (resultCode != RESULT_CANCELED) {
                 showUploadError();
             }
         }
@@ -187,6 +188,7 @@ public class CreateSpotEntry extends AppCompatActivity {
                     if (data != null) {
                         newSpot.setImageUrl(data.toString());
                         scFirebase.updateSpot(newSpotID, newSpot);
+                        setResult(SPOT_CREATED);
                         finish();
 
                     } else {
