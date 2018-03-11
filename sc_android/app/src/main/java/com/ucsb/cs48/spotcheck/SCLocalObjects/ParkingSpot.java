@@ -13,6 +13,7 @@ public class ParkingSpot {
     private String address;
     private Double rate;
     private SCLatLng latLng;
+    private String imageUrl;
 
     public ParkingSpot() {
         // Required no argument constructor for Firebase database
@@ -57,6 +58,8 @@ public class ParkingSpot {
         return this.rate;
     }
 
+    public String getImageUrl() { return this.imageUrl; }
+
     @Exclude
     public void setSpotID(String spotID) { this.spotID = spotID; }
 
@@ -69,4 +72,6 @@ public class ParkingSpot {
     public void setRate(Double rate) {
         this.rate = rate;
     }
+
+    public void setImageUrl(String url) { this.imageUrl = url; }
 }
