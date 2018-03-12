@@ -101,7 +101,6 @@ public class SCFirebase {
 
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
                     ParkingSpot spot = postSnapshot.getValue(ParkingSpot.class);
-                    spot.setSpotID(postSnapshot.getKey());
 
                     if (spot != null) {
                         spot.setSpotID(postSnapshot.getKey());
@@ -201,7 +200,6 @@ public class SCFirebase {
         });
     }
 
-
     public void uploadSpotImage(String spotID, Bitmap imageBitmap,
                                 @NonNull final SCFirebaseCallback<Uri> finishedCallback) {
 
@@ -225,6 +223,34 @@ public class SCFirebase {
                 finishedCallback.callback(taskSnapshot.getDownloadUrl());
 
             }
+        });
+    }
+
+    public void getUsersParkingSpots(final String userID,
+                                     @NonNull final SCFirebaseCallback<ArrayList<ParkingSpot>> finishedCalback) {
+
+        DatabaseReference myRef = scDatabase.child(PARKINGSPOT_PATH);
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<ParkingSpot> parkingSpots = new ArrayList<>();
+
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    ParkingSpot spot = postSnapshot.getValue(ParkingSpot.class);
+
+                    if ((spot != null) && (spot.getOwnerID() == userID)) {
+                        spot.setSpotID(postSnapshot.getKey());
+                        parkingSpots.add(spot);
+                    }
+                }
+
+                finishedCalback.callback(parkingSpots);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+
         });
     }
 
