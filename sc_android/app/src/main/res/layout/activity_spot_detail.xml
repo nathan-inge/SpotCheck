@@ -90,8 +90,11 @@
                 android:id="@+id/spotImageProgress"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="visible"
-                android:indeterminateTint="@color/colorPrimary"/>
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:indeterminateTint="@color/colorPrimary"
+                android:visibility="visible" />
         </RelativeLayout>
 
         <Button

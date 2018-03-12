@@ -1,19 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.widget.RelativeLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/profile_image"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_alignParentTop="true"
+
+    <Button
+        android:id="@+id/edit_profile_image_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="56dp"
-        android:src="@drawable/mario"
-        app:civ_border_color="#FF000000"
-        app:civ_border_width="2dp" />
+        android:layout_centerVertical="true"
+        android:onClick="changeProfilePicture"
+        android:text="Choose Profile Photo" />
+
+
+
+    <RelativeLayout
+        android:layout_width="300dp"
+        android:layout_height="200dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_above="@+id/edit_profile_image_button"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/relativeLayout2">
+
+        <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/profileImageEdit"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            app:civ_border_color="#FF000000"
+            app:civ_border_width="2dp"
+            android:scaleType="centerInside"/>
+
+        <!--<ImageView-->
+            <!--android:id="@+id/profileImageEdit"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:adjustViewBounds="true"-->
+            <!--android:maxHeight="200dp"-->
+            <!--android:maxWidth="300dp"-->
+            <!--android:minHeight="200dp"-->
+            <!--android:minWidth="300dp"-->
+            <!--android:scaleType="centerInside"/>-->
+
+        <ProgressBar
+            android:id="@+id/profileImageEditProgress"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:indeterminateTint="@color/colorPrimary"
+            android:visibility="visible" />
+
+    </RelativeLayout>
 
     <EditText
         android:id="@+id/edit_user_name"
@@ -21,7 +65,8 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/edit_user_location"
         android:layout_alignStart="@+id/edit_user_location"
-        android:layout_centerVertical="true"
+        android:layout_below="@+id/relativeLayout2"
+        android:layout_marginTop="45dp"
         android:contentDescription="user_name"
         android:ems="10"
         android:hint="Name"
@@ -31,22 +76,24 @@
         android:id="@+id/edit_user_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/edit_user_name"
+        android:layout_above="@+id/button2"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="29dp"
+        android:layout_marginBottom="22dp"
         android:contentDescription="user_location"
         android:ems="10"
         android:hint="Location"
-        android:inputType="textPersonName"/>
+        android:inputType="textPersonName" />
 
     <Button
         android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="55dp"
-        android:layout_toLeftOf="@+id/profile_image"
-        android:layout_toStartOf="@+id/profile_image"
+        android:layout_marginBottom="53dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginStart="15dp"
+        android:layout_toEndOf="@+id/relativeLayout3"
+        android:layout_toRightOf="@+id/relativeLayout3"
         android:contentDescription="confirm_change"
         android:onClick="confirm"
         android:text="Confirm" />
@@ -55,12 +102,15 @@
         android:id="@+id/button4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/button2"
         android:layout_alignBottom="@+id/button2"
-        android:layout_toEndOf="@+id/profile_image"
-        android:layout_toRightOf="@+id/profile_image"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="22dp"
+        android:layout_marginRight="22dp"
         android:contentDescription="cancel_edit"
         android:onClick="cancel"
         android:text="Cancel" />
 
 
-</android.widget.RelativeLayout>
+</RelativeLayout>
