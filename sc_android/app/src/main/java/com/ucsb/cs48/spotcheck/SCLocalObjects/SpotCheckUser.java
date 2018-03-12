@@ -13,9 +13,7 @@ public class SpotCheckUser {
     private String email;
     private String fullname;
     private String location;
-    private ArrayList<String> parkingSpots;
-    private ArrayList<String> currentListings;
-    // private List<String> parkingSpotIDs;
+    private String imageUrl;
 
 
     public SpotCheckUser() {
@@ -27,8 +25,6 @@ public class SpotCheckUser {
         this.email = email;
         this.fullname = fullname;
         this.location = location;
-        this.parkingSpots = new ArrayList<String>(); // Spots user owns
-        this.currentListings = new ArrayList<String>(); // Spots user renting
     }
 
     @Exclude
@@ -46,16 +42,7 @@ public class SpotCheckUser {
 
     public String getLocation() { return this.location; }
 
-    public ArrayList<String> getParkingSpots() { return this.parkingSpots; }
-
-    public String[] getCurrentListings() {
-//        String[] output = new String[this.currentListings.size()];
-//        for (int i=0; i< this.currentListings.size(); i++)
-//            output[i] = this.currentListings.get(i);
-//        return output;
-        String[] test = {"this", "those", "that"};
-        return test;
-    }
+    public String getImageUrl() { return this.imageUrl; }
 
     @Exclude
     public void setUserID(String userID) { this.userID = userID; }
@@ -66,13 +53,5 @@ public class SpotCheckUser {
 
     public void setLocation(String location) { this.location = location; }
 
-    public void addParkingSpot(String spot) { this.parkingSpots.add(spot); }
-
-    public void removeParkingSpot(String spot) { parkingSpots.remove(spot); }
-
-    public void addListing(String spot) { this.currentListings.add(spot); }
-
-    public void removeListing (String spot) { this.currentListings.remove(spot); }
-
-
+    public void setImageUrl(String url) { this.imageUrl = url; }
 }

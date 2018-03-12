@@ -38,6 +38,10 @@
             android:label="@string/title_activity_create_spot_entry"
             android:parentActivityName=".MainActivity" />
         <activity
+            android:name=".EditSpotActivity"
+            android:label="Edit Spot"
+            android:parentActivityName=".SpotDetailActivity"/>
+        <activity
             android:name=".UserAuthentication.LoginActivity"
             android:label="@string/title_activity_login" />
         <activity
@@ -55,9 +59,7 @@
             android:name=".SpotDetailActivity"
             android:label="Spot Details"
             android:parentActivityName=".GoogleMapsActivity" />
-        <activity
-            android:name=".CurrentListings"
-            android:label="@string/title_activity_current_listings" />
+
         <activity
             android:name=".MyParkingSpots"
             android:label="My Parking Spots" />

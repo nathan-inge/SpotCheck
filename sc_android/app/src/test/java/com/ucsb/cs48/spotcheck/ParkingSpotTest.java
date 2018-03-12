@@ -1,20 +1,22 @@
 package com.ucsb.cs48.spotcheck;
 
-import com.google.android.gms.maps.model.LatLng;
+import com.ucsb.cs48.spotcheck.SCLocalObjects.BlockedDates;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.ParkingSpot;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.SCLatLng;
-import com.ucsb.cs48.spotcheck.SCLocalObjects.SpotCheckUser;
 
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import static org.junit.Assert.*;
 
 /**
- * Unit tests for SCLocalObjects (user and parking spot)
+ * Unit tests for ParkingSpot
  */
-public class SCLocalObjectsTest {
+public class ParkingSpotTest {
 
-    /// MARK - ParkingSpot Unit Tests
     @Test
     public void firebase_constructor() {
         SCLatLng testLatLng = new SCLatLng(13.4, -35.73);
@@ -69,55 +71,38 @@ public class SCLocalObjectsTest {
         assertEquals("$9.50", parkingSpot.formattedRate());
     }
 
-
-    /// MARK - SpotCheckUser Unit Tests
     @Test
-    public void all_args_userConstructor() {
-        SpotCheckUser spotCheckUser = new SpotCheckUser(
-            "userID",
-            "email",
-            "Full Name",
-                "location"
+    public void test_blockedDates() {
+        SCLatLng testLatLng = new SCLatLng(13.4, -35.73);
+        ParkingSpot parkingSpot = new ParkingSpot(
+            "spotIDBlockedDates",
+            "ownerID",
+            "home",
+            testLatLng,
+            25.95
         );
 
-        assertEquals("userID", spotCheckUser.getUserID());
-        assertEquals("email", spotCheckUser.getEmail());
-        assertEquals("Full Name", spotCheckUser.getFullname());
-        assertEquals("location", spotCheckUser.getLocation());
-    }
+        assertEquals(0, parkingSpot.getBlockedDatesCount());
 
+        Date startDate = new Date();
 
-    /// MARK - SCLatLng Unit Tests
-    @Test
-    public void convert_to_google_latlng() {
-        double latitude = 16.02;
-        double longitude = -102.4;
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(startDate);
+        calendar.add(Calendar.MONTH, 3);
+        Date endDate = calendar.getTime();
 
-        SCLatLng scLatLng = new SCLatLng(latitude, longitude);
-        LatLng googlelatLng = new LatLng(latitude, longitude);
+        BlockedDates blockedDatesAdd = new BlockedDates(startDate.getTime(), endDate.getTime());
 
-        assertEquals(scLatLng.getLatitude(), googlelatLng.latitude, 0.0);
-        assertEquals(scLatLng.getLongitude(), googlelatLng.longitude, 0.0);
+        parkingSpot.addBlockedDates(blockedDatesAdd);
 
-        LatLng convertedSCLatLng = scLatLng.convertToGoogleLatLng();
+        assertEquals(1, parkingSpot.getBlockedDatesCount());
 
-        assertTrue(convertedSCLatLng.equals(googlelatLng));
-    }
+        ArrayList<BlockedDates> blockedDatesList= parkingSpot.getBlockedDatesList();
+        assertEquals(blockedDatesList.get(0), blockedDatesAdd);
 
-    @Test
-    public void overridden_equals() {
-        double latitude = 100.42;
-        double longitude = -349.3;
+        BlockedDates blockedDatesRemove = new BlockedDates(startDate.getTime(), endDate.getTime());
+        parkingSpot.removeBlockedDates(blockedDatesRemove);
 
-        SCLatLng scLatLngOne = new SCLatLng(latitude, longitude);
-        SCLatLng scLatLngTwo = new SCLatLng(latitude, longitude);
-
-        assertTrue(scLatLngOne.equals(scLatLngTwo));
-
-        LatLng latLng = new LatLng(latitude, longitude);
-        assertFalse(scLatLngOne.equals(latLng));
-
-        SCLatLng scLatLngThree = new SCLatLng(-223.4, -244.2);
-        assertFalse(scLatLngOne.equals(scLatLngThree));
+        assertEquals(0, parkingSpot.getBlockedDatesCount());
     }
 }

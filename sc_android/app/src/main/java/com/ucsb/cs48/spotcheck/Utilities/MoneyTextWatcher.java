@@ -23,7 +23,7 @@ public class MoneyTextWatcher implements TextWatcher {
         if(!s.toString().equals(current)){
             editTextWeakReference.removeTextChangedListener(this);
 
-            String cleanString = s.toString().replaceAll("[$,.]", "");
+            String cleanString = s.toString().replaceAll("[$+,+.+]", "");
 
             double parsed = Double.parseDouble(cleanString);
             String formatted = NumberFormat.getCurrencyInstance().format((parsed/100));

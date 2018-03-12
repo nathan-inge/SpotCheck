@@ -46,11 +46,11 @@ public class MyParkingSpots extends AppCompatActivity {
             }
         });
 
-        ArrayAdapter adapter = new ArrayAdapter<String>(this,
-                R.layout.activity_listview, user.getCurrentListings());
-
-        ListView listView = (ListView) findViewById(R.id.my_parking_spots);
-        listView.setAdapter(adapter);
+//        ArrayAdapter adapter = new ArrayAdapter<String>(this,
+//                R.layout.activity_listview, user.getCurrentListings());
+//
+//        ListView listView = (ListView) findViewById(R.id.my_parking_spots);
+//        listView.setAdapter(adapter);
 
 
     }
