@@ -18,7 +18,10 @@
     <item android:id="@+id/logout_button"
         android:title="Logout" />
 
-    <item android:id="@+id/current_listings"
+    <item android:id="@+id/current_listings_button"
         android:title="My Current Listings"/>
+
+    <item android:id="@+id/my_parking_spots_button"
+        android:title="My Parking Spots"/>
 
 </menu>

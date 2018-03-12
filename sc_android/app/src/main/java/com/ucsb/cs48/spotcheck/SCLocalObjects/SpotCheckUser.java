@@ -48,7 +48,14 @@ public class SpotCheckUser {
 
     public ArrayList<String> getParkingSpots() { return this.parkingSpots; }
 
-    public ArrayList<String> getCurrentListings() { return this.currentListings; }
+    public String[] getCurrentListings() {
+//        String[] output = new String[this.currentListings.size()];
+//        for (int i=0; i< this.currentListings.size(); i++)
+//            output[i] = this.currentListings.get(i);
+//        return output;
+        String[] test = {"this", "those", "that"};
+        return test;
+    }
 
     @Exclude
     public void setUserID(String userID) { this.userID = userID; }

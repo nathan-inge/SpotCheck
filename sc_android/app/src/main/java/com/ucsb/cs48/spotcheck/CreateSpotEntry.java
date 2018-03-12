@@ -42,6 +42,9 @@ public class CreateSpotEntry extends AppCompatActivity {
     private boolean validPlace = false;
     private boolean validRate = false;
 
+    private SpotCheckUser SCuser;
+    private SCFirebase scFirebase;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,12 +124,11 @@ public class CreateSpotEntry extends AppCompatActivity {
 
             ParkingSpot newSpot = new ParkingSpot(user.getUid(), address, scLatLng, rate);
 
-            SCFirebase scFirebase = new SCFirebase();
+            scFirebase = new SCFirebase();
             scFirebase.createNewSpot(newSpot);
             //Trying to add new spot ID to user's ArrayList
 //            Intent intent = getIntent();
 //            String currentSCUserID = intent.getStringExtra("currentSCUserID");
-//            SpotCheckUser SCuser;
 //            scFirebase.getSCUser(currentSCUserID, new SCFirebaseCallback<SpotCheckUser>() {
 //                @Override
 //                public void callback(SpotCheckUser data) {
@@ -135,7 +137,8 @@ public class CreateSpotEntry extends AppCompatActivity {
 //                    }
 //                }
 //            });
-
+//            SCuser.addParkingSpot(newSpot.getSpotID());
+//            scFirebase.uploadUser(SCuser);
             finish();
 
         } else {

@@ -54,11 +54,13 @@
         <activity
             android:name=".SpotDetailActivity"
             android:label="Spot Details"
-            android:parentActivityName=".GoogleMapsActivity"></activity>
+            android:parentActivityName=".GoogleMapsActivity" />
         <activity
             android:name=".CurrentListings"
-            android:label="@string/title_activity_current_listings"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:label="@string/title_activity_current_listings" />
+        <activity
+            android:name=".MyParkingSpots"
+            android:label="My Parking Spots" />
     </application>
 
 </manifest>

@@ -535,7 +535,7 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                 break;
             }
 
-            case R.id.current_listings: {
+            case R.id.current_listings_button: {
                 viewCurrentListingsButtonClicked();
             }
 
