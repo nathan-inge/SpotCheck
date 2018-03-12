@@ -192,7 +192,6 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                         public void callback(SpotCheckUser data) {
                             if(data != null) {
                                 user = data;
-
                             }
                         }
                     });
