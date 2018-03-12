@@ -13,6 +13,7 @@ public final class SCConstants {
     public static final int SPOT_CREATED = 10;
     public static final int SPOT_EDITED = 11;
     public static final int SPOT_DELETED = 12;
+    public static final int PROFILE_EDITED = 13;
 
 
     public static final int SEND_OWNER_EMAIL = 20;
@@ -22,5 +23,6 @@ public final class SCConstants {
     public static final int REQUEST_SPOT_DETAILS = 101;
     public static final int REQUEST_CREATE_SPOT = 102;
     public static final int REQUEST_PICK_IMAGE = 103;
+    public static final int REQUEST_EDIT_PROFILE = 104;
 
 }

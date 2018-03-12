@@ -12,6 +12,8 @@ public class SpotCheckUser {
     private String email;
     private String fullname;
     private String location;
+
+    private String imageUrl;
     // private List<String> parkingSpotIDs;
 
 
@@ -41,6 +43,8 @@ public class SpotCheckUser {
 
     public String getLocation() { return this.location; }
 
+    public String getImageUrl() { return this.imageUrl; }
+
     @Exclude
     public void setUserID(String userID) { this.userID = userID; }
 
@@ -49,4 +53,6 @@ public class SpotCheckUser {
     public void setFullname(String fullname) { this.fullname = fullname; }
 
     public void setLocation(String location) { this.location = location; }
+
+    public void setImageUrl(String url) { this.imageUrl = url; }
 }

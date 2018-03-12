@@ -64,6 +64,7 @@ public class SCFirebase {
         scDatabase.child(PARKINGSPOT_PATH).child(spotID).setValue(updatedSpot);
     }
 
+
     // Get a parking spot from the data base
     public void getParkingSpot(final String spotID,
                                @NonNull final SCFirebaseCallback<ParkingSpot> finishedCallback) {
@@ -234,7 +235,7 @@ public class SCFirebase {
 
     // Create or modify user object on database
     public void uploadUser(SpotCheckUser user) {
-        scDatabase.child("users").child(user.getUserID()).setValue(user);
+        scDatabase.child(USER_PATH).child(user.getUserID()).setValue(user);
     }
 
     // Get a user from the database
@@ -258,6 +259,32 @@ public class SCFirebase {
             @Override
             public void onCancelled(DatabaseError databaseError) {}
 
+        });
+    }
+
+    public void uploadProfileImage(String userID, Bitmap imageBitmap,
+                                   @NonNull final SCFirebaseCallback<Uri> finishedCallback) {
+
+        StorageReference uploadLocation = scStorage.child(
+                USER_PATH).child(userID + " -userImage.jpg");
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        imageBitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+        byte[] data = baos.toByteArray();
+
+        UploadTask uploadTask = uploadLocation.putBytes(data);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                finishedCallback.callback(null);
+
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                finishedCallback.callback(taskSnapshot.getDownloadUrl());
+
+            }
         });
     }
 
