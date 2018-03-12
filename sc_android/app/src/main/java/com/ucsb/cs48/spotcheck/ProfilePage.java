@@ -7,11 +7,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -26,7 +24,8 @@ import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseAuth;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseCallback;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.SpotCheckUser;
 
-import org.w3c.dom.Text;
+import static com.ucsb.cs48.spotcheck.Utilities.SCConstants.*;
+
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -71,6 +70,7 @@ public class ProfilePage extends AppCompatActivity {
             scFirebase.getSCUser(currentUserID, new SCFirebaseCallback<SpotCheckUser>() {
                 @Override
                 public void callback(SpotCheckUser data) {
+                    dialog.dismiss();
                     if(data != null) {
                         user = data;
 
@@ -113,12 +113,22 @@ public class ProfilePage extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if((requestCode == REQUEST_EDIT_PROFILE) && (resultCode == PROFILE_EDITED)) {
+            // Refresh info
+            finish();
+            overridePendingTransition(0, 0);
+            startActivity(getIntent());
+            overridePendingTransition(0,0);
+        }
+    }
+
     public void editProfile(View view){
         if(user != null) {
             Intent intent = new Intent(this, EditProfile.class);
             intent.putExtra("currentSCUserID", user.getUserID());
-            startActivity(intent);
+            startActivityForResult(intent, REQUEST_EDIT_PROFILE);
         }
     }
-
 }

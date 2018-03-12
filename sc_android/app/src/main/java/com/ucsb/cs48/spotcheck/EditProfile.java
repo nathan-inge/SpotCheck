@@ -168,11 +168,16 @@ public class EditProfile extends AppCompatActivity {
         String rawNewName = editName.getText().toString();
         String rawNewLocation = editLocation.getText().toString();
 
-        if ((rawNewName.length()) > 0) {
+        boolean newNameSet = false;
+        boolean newLocationSet = false;
+
+        if (((rawNewName.length()) > 0) && (rawNewName != user.getFullname())) {
+            newNameSet = true;
             user.setFullname(rawNewName);
             scFirebase.uploadUser(user);
         }
-        if ((rawNewLocation.length()) > 0) {
+        if (((rawNewLocation.length()  > 0) && (rawNewLocation != user.getLocation()))) {
+            newLocationSet = true;
             user.setLocation(rawNewLocation);
             scFirebase.uploadUser(user);
         }
@@ -187,8 +192,6 @@ public class EditProfile extends AppCompatActivity {
                     if (data != null) {
                         user.setImageUrl(data.toString());
                         scFirebase.uploadUser(user);
-
-//                        setResult(SPOT_EDITED);
                         setResult(PROFILE_EDITED);
 
                         finish();
@@ -208,7 +211,10 @@ public class EditProfile extends AppCompatActivity {
                     }
                 }
             });
-
+        } else {
+            if(newNameSet || newLocationSet) {
+                setResult(PROFILE_EDITED);
+            }
             finish();
         }
     }

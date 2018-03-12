@@ -23,5 +23,6 @@ public final class SCConstants {
     public static final int REQUEST_SPOT_DETAILS = 101;
     public static final int REQUEST_CREATE_SPOT = 102;
     public static final int REQUEST_PICK_IMAGE = 103;
+    public static final int REQUEST_EDIT_PROFILE = 104;
 
 }
