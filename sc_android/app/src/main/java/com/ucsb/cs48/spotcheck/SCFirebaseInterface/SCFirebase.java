@@ -2,7 +2,6 @@ package com.ucsb.cs48.spotcheck.SCFirebaseInterface;
 
 
 import android.graphics.Bitmap;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -27,6 +26,7 @@ import static com.ucsb.cs48.spotcheck.Utilities.SCConstants.TEST_USER_ID;
 import java.io.ByteArrayOutputStream;
 import android.net.Uri;
 
+import static com.ucsb.cs48.spotcheck.Utilities.SCConstants.*;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -35,10 +35,6 @@ public class SCFirebase {
 
     private DatabaseReference scDatabase;
     private StorageReference scStorage;
-
-
-    private final String PARKINGSPOT_PATH = "parking_spots";
-    private final String USER_PATH = "users";
 
     public SCFirebase() {
         scDatabase = FirebaseDatabase.getInstance().getReference();
@@ -172,6 +168,8 @@ public class SCFirebase {
     public void deleteParkingSpot(String spotID) {
         DatabaseReference myRef = scDatabase.child(PARKINGSPOT_PATH).child(spotID);
         myRef.removeValue();
+
+        deleteSpotImage(spotID);
     }
 
     public void deleteTestParkingSpots(@NonNull final SCFirebaseCallback<Boolean> finishedCallback) {
@@ -204,7 +202,7 @@ public class SCFirebase {
                                 @NonNull final SCFirebaseCallback<Uri> finishedCallback) {
 
         StorageReference uploadLocation = scStorage.child(
-            PARKINGSPOT_PATH).child(spotID + " -spotImage.jpg");
+            PARKINGSPOT_PATH).child(spotID + SPOT_IMAGE_POSTFIX);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         imageBitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
@@ -256,6 +254,23 @@ public class SCFirebase {
         });
     }
 
+    public void deleteSpotImage(String spotID) {
+        StorageReference spotImagePath = scStorage.child(PARKINGSPOT_PATH).child(
+            spotID + SPOT_IMAGE_POSTFIX);
+
+        spotImagePath.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                // File deleted successfully
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Uh-oh, an error occurred!
+            }
+        });
+    }
+
     /**
      *
      * MARK - SpotCheckUser Interface
@@ -294,7 +309,7 @@ public class SCFirebase {
                                    @NonNull final SCFirebaseCallback<Uri> finishedCallback) {
 
         StorageReference uploadLocation = scStorage.child(
-                USER_PATH).child(userID + " -userImage.jpg");
+                USER_PATH).child(userID + USER_IMAGE_POSTFIX);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         imageBitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
