@@ -12,6 +12,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import static com.ucsb.cs48.spotcheck.Utilities.SCConstants.*;
+
 import com.google.firebase.auth.FirebaseUser;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebase;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseAuth;
@@ -49,7 +51,7 @@ public class MyParkingSpots extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent i = new Intent(getApplicationContext(), SpotDetailActivity.class);
                 i.putExtra("spotID", usersParkingSpots.get(position).getSpotID());
-                startActivity(i);
+                startActivityForResult(i, REQUEST_SPOT_DETAILS);
             }
         });
 
@@ -80,5 +82,16 @@ public class MyParkingSpots extends AppCompatActivity {
                }
             }
         });
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == SPOT_DELETED) {
+            finish();
+            overridePendingTransition(0, 0);
+            startActivity(getIntent());
+            overridePendingTransition(0,0);
+        }
     }
 }
