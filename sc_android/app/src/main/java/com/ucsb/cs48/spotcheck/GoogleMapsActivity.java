@@ -308,7 +308,6 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                                 .setIcon(R.mipmap.spot_marker_icon)
                                 .show();
                         }
-
                     }
                 });
 
