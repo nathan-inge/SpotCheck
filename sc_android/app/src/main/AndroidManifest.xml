@@ -62,7 +62,8 @@
 
         <activity
             android:name=".MyParkingSpots"
-            android:label="My Parking Spots" />
+            android:label="My Parking Spots"
+            android:parentActivityName=".GoogleMapsActivity"/>
     </application>
 
 </manifest>

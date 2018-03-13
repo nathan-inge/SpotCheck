@@ -15,7 +15,7 @@
             android:id="@+id/date_picker"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="4"
+            android:layout_weight="0.4"
             android:calendarViewShown="true"
             android:headerBackground="@color/colorPrimary"
             android:spinnersShown="false"
@@ -25,21 +25,18 @@
             android:id="@+id/time_picker"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="4"
+            android:layout_weight="0.5"
             android:headerBackground="@color/colorPrimary"
             android:numbersSelectorColor="@color/colorPrimary"/>
 
-
-
         <Button
             android:id="@+id/date_time_set"
-            android:layout_weight="0.75"
+            android:layout_weight="0.1"
             android:layout_width="match_parent"
             android:text="Set"
-            android:layout_height="0dp" />
-
+            android:layout_height="0dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:textColor="@android:color/white"/>
     </LinearLayout>
-
-
 
 </ScrollView>
