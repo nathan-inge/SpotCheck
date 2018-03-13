@@ -57,10 +57,9 @@ public class SpotDetailActivity extends AppCompatActivity {
 
     private ProgressDialog startingEmailDialog;
 
-
-
     private long startTime;
     private long endTime;
+    private boolean timesSet = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +92,7 @@ public class SpotDetailActivity extends AppCompatActivity {
         String spotID = intent.getStringExtra("spotID");
         startTime = intent.getLongExtra("startTime", 0L);
         endTime = intent.getLongExtra("endTime", 0L);
+        timesSet = intent.getBooleanExtra("setTimes", false);
 
         // Get parking spot with ID from intent
         scFirebase.getParkingSpot(spotID, new SCFirebaseCallback<ParkingSpot>() {
@@ -213,8 +213,27 @@ public class SpotDetailActivity extends AppCompatActivity {
             i.putExtra("spotID", spot.getSpotID());
             startActivityForResult(i, REQUEST_EDIT_SPOT);
 
-        }
-        else {
+        } else if (!timesSet) {
+            AlertDialog.Builder alert = new AlertDialog.Builder(
+                SpotDetailActivity.this);
+
+            alert.setTitle("Set Start and End Time")
+                .setMessage(("Please set a start and end time to view availability and rent options. "))
+                .setPositiveButton("Set Times", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //Do nothing
+                    }
+                })
+                .setIcon(R.mipmap.spot_marker_icon)
+                .show();
+
+        } else {
             builder.setTitle("Confirm Rent Request")
                     .setMessage(("Are you sure you want to request to rent this spot?\n\n" +
                             "You will be directed to a screen to send an email to the owner."))

@@ -286,28 +286,14 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                 mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                     @Override
                     public void onInfoWindowClick(Marker marker) {
-                        if(startTimeSet && endTimeSet) {
-                            Intent i = new Intent(getApplicationContext(), SpotDetailActivity.class);
-                            i.putExtra("spotID", marker.getTag().toString());
-                            i.putExtra("startTime", startTime.getTime());
-                            i.putExtra("endTime", endTime.getTime());
-                            startActivityForResult(i, REQUEST_SPOT_DETAILS);
+                        Intent i = new Intent(getApplicationContext(), SpotDetailActivity.class);
+                        i.putExtra("spotID", marker.getTag().toString());
+                        i.putExtra("startTime", startTime.getTime());
+                        i.putExtra("endTime", endTime.getTime());
+                        i.putExtra("setTimes", (startTimeSet && endTimeSet));
+                        startActivityForResult(i, REQUEST_SPOT_DETAILS);
 
-                        } else {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(
-                                GoogleMapsActivity.this);
 
-                            builder.setTitle("Set Start and End Time")
-                                .setMessage(("Please set a start and end time to view available "
-                                    + "spots and their details."))
-                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        // do nothing
-                                    }
-                                })
-                                .setIcon(R.mipmap.spot_marker_icon)
-                                .show();
-                        }
                     }
                 });
 
