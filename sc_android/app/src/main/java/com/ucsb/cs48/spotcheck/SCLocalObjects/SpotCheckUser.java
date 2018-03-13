@@ -2,6 +2,7 @@ package com.ucsb.cs48.spotcheck.SCLocalObjects;
 
 import com.google.firebase.database.Exclude;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,9 +13,7 @@ public class SpotCheckUser {
     private String email;
     private String fullname;
     private String location;
-
     private String imageUrl;
-    // private List<String> parkingSpotIDs;
 
 
     public SpotCheckUser() {

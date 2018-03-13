@@ -8,6 +8,10 @@
           android:title="My Profile"
           android:icon="@drawable/menu_profile_icon"/>
 
+    <item android:id="@+id/my_parking_spots_button"
+          android:title="My Spots"
+          android:icon="@drawable/menu_my_spots_icon"/>
+
     <item
         android:id="@+id/create_spot_entry_button"
         android:title="Add a Spot"
@@ -19,7 +23,7 @@
           android:icon="@drawable/menu_around_icon"/>
 
     <item android:id="@+id/logout_button"
-        android:title="Logout"
-        android:icon="@drawable/menu_logout_icon"/>
+          android:title="Logout"
+          android:icon="@drawable/menu_logout_icon"/>
 
 </menu>

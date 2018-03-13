@@ -25,4 +25,9 @@ public final class SCConstants {
     public static final int REQUEST_PICK_IMAGE = 103;
     public static final int REQUEST_EDIT_PROFILE = 104;
 
+    // Firebase
+    public static final String PARKINGSPOT_PATH = "parking_spots";
+    public static final String USER_PATH = "users";
+    public static final String SPOT_IMAGE_POSTFIX = "-spotImage.jpg";
+    public static final String USER_IMAGE_POSTFIX = "-userImage.jpg";
 }

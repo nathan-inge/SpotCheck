@@ -236,6 +236,7 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         if(requestCode == TIME_SELECTION){
             Toast.makeText(
                 getApplicationContext(),
@@ -243,9 +244,9 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                 Toast.LENGTH_SHORT).show();
 
         } else if(
-            (requestCode == SPOT_CREATED)
-                || (requestCode == SPOT_EDITED)
-                || (requestCode == SPOT_DELETED)) {
+            (resultCode == SPOT_CREATED)
+                || (resultCode == SPOT_EDITED)
+                || (resultCode == SPOT_DELETED)) {
             displayParkingSpots();
         }
     }
@@ -307,7 +308,6 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                                 .setIcon(R.mipmap.spot_marker_icon)
                                 .show();
                         }
-
                     }
                 });
 
@@ -592,6 +592,11 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
             case R.id.option_get_place: {
                 showCurrentPlace();
                 break;
+            }
+
+            case R.id.my_parking_spots_button: {
+                Intent i = new Intent(this, MyParkingSpots.class);
+                startActivity(i);
             }
 
         }

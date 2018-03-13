@@ -289,8 +289,8 @@ public class SpotDetailActivity extends AppCompatActivity {
         Date endDate = new Date(endTime);
         String endString = simpleDateFormat.format(endDate);
 
-        Intent i = new Intent(Intent.ACTION_SEND);
-        i.setType("message/rfc822");
+        Intent i = new Intent(Intent.ACTION_SENDTO);
+        i.setData(Uri.parse("mailto:"));
         i.putExtra(Intent.EXTRA_EMAIL  , new String[]{owner.getEmail()});
         i.putExtra(Intent.EXTRA_SUBJECT, "SpotCheck Rent Request");
         i.putExtra(
