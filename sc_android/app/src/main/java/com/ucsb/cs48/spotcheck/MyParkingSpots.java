@@ -7,9 +7,9 @@ import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseUser;
@@ -21,14 +21,14 @@ import com.ucsb.cs48.spotcheck.SCLocalObjects.SpotCheckUser;
 
 import java.util.ArrayList;
 
-import static com.ucsb.cs48.spotcheck.Utilities.SCConstants.REQUEST_SPOT_DETAILS;
-
 public class MyParkingSpots extends AppCompatActivity {
 
     private SpotCheckUser user;
     private SCFirebase scFirebase;
     private SCFirebaseAuth scFirebaseAuth;
     private FirebaseUser currentUser;
+
+    private ListView ownedParkingSpotsLV;
 
     private ArrayList<ParkingSpot> usersParkingSpots;
 
@@ -42,15 +42,20 @@ public class MyParkingSpots extends AppCompatActivity {
         scFirebaseAuth = new SCFirebaseAuth();
         currentUser = scFirebaseAuth.getCurrentUser();
 
-//        ArrayAdapter adapter = new ArrayAdapter<String>(this,
-//                R.layout.activity_listview, mobileArray);
-//
-//        ListView listView = (ListView) findViewById(R.id.mobile_list);
-//        listView.setAdapter(adapter);
+        ownedParkingSpotsLV = findViewById(R.id.my_parking_spots);
+
+        ownedParkingSpotsLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent i = new Intent(getApplicationContext(), SpotDetailActivity.class);
+                i.putExtra("spotID", usersParkingSpots.get(position).getSpotID());
+                startActivity(i);
+            }
+        });
 
 
         final ProgressDialog dialog = ProgressDialog.show(MyParkingSpots.this, "",
-            "Setting up email...", true);
+            "Loading Spots...", true);
         scFirebase.getUsersParkingSpots(currentUser.getUid(), new SCFirebaseCallback<ArrayList<ParkingSpot>>() {
             @Override
             public void callback(ArrayList<ParkingSpot> data) {
@@ -63,28 +68,17 @@ public class MyParkingSpots extends AppCompatActivity {
                    mainHandler.post(new Runnable() {
                        @Override
                        public void run() {
-
-                           /**
-                            * Fill in the adapter/list view here
-                            * with the usersParkingSpots
-                            *
-                            */
                            String[] allSpots = new String[usersParkingSpots.size()];
                            for (int i=0; i < usersParkingSpots.size(); i++)
                                allSpots[i] = usersParkingSpots.get(i).getAddress();
-                           ArrayAdapter adapter = new ArrayAdapter<String>(MyParkingSpots.this,
+
+                           ArrayAdapter adapter = new ArrayAdapter<>(MyParkingSpots.this,
                                    R.layout.activity_listview, allSpots);
-                           ListView listView = (ListView) findViewById(R.id.my_parking_spots);
-                           listView.setAdapter(adapter);
+                           ownedParkingSpotsLV.setAdapter(adapter);
                        }
                    });
                }
             }
         });
-    }
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        Intent i = new Intent(getApplicationContext(), SpotDetailActivity.class);
-        i.putExtra("spotID", usersParkingSpots.get(position-1).getSpotID());
-        startActivityForResult(i, REQUEST_SPOT_DETAILS);
     }
 }

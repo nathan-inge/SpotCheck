@@ -231,7 +231,9 @@ public class SCFirebase {
 
         DatabaseReference myRef = scDatabase.child(PARKINGSPOT_PATH);
 
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        Query query = myRef.orderByChild("ownerID").equalTo(userID);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 ArrayList<ParkingSpot> parkingSpots = new ArrayList<>();
@@ -239,7 +241,7 @@ public class SCFirebase {
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
                     ParkingSpot spot = postSnapshot.getValue(ParkingSpot.class);
 
-                    if ((spot != null) && (spot.getOwnerID() == userID)) {
+                    if ((spot != null)) {
                         spot.setSpotID(postSnapshot.getKey());
                         parkingSpots.add(spot);
                     }
