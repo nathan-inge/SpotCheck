@@ -1,4 +1,4 @@
-package com.ucsb.cs48.spotcheck;
+package com.ucsb.cs48.spotcheck.ParkingSpotLists;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -10,16 +10,17 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import static com.ucsb.cs48.spotcheck.Utilities.SCConstants.*;
 
 import com.google.firebase.auth.FirebaseUser;
+import com.ucsb.cs48.spotcheck.R;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebase;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseAuth;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseCallback;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.ParkingSpot;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.SpotCheckUser;
+import com.ucsb.cs48.spotcheck.SpotDetailActivity;
 
 import java.util.ArrayList;
 
@@ -37,14 +38,14 @@ public class MyParkingSpots extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_parking_spots);
+        setContentView(R.layout.tab_layout_spots);
 
 
         scFirebase = new SCFirebase();
         scFirebaseAuth = new SCFirebaseAuth();
         currentUser = scFirebaseAuth.getCurrentUser();
 
-        ownedParkingSpotsLV = findViewById(R.id.my_parking_spots);
+        ownedParkingSpotsLV = findViewById(R.id.owned_spots_list);
 
         ownedParkingSpotsLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

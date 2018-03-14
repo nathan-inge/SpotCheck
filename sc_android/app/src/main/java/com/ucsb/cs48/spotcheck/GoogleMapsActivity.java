@@ -38,6 +38,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.ucsb.cs48.spotcheck.ParkingSpotLists.MyParkingSpots;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebase;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseCallback;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.ParkingSpot;
