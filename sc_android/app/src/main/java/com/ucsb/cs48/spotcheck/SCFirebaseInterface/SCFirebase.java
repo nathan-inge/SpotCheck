@@ -28,8 +28,13 @@ import android.net.Uri;
 
 import static com.ucsb.cs48.spotcheck.Utilities.SCConstants.*;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 public class SCFirebase {
 
@@ -252,6 +257,30 @@ public class SCFirebase {
             public void onCancelled(DatabaseError databaseError) {}
 
         });
+    }
+
+    public void getRentedParkingSpots(
+        final SpotCheckUser user,
+        @NonNull final SCFirebaseCallback<Map<ParkingSpot, BlockedDates>> finishedCallback) {
+
+        final Map<ParkingSpot, BlockedDates> spotsAndBlocks = new HashMap<>();
+
+        final Map<String, String> rentedSpots = user.getRentedSpots();
+
+        for (final String key : rentedSpots.keySet()) {
+            getParkingSpot(rentedSpots.get(key), new SCFirebaseCallback<ParkingSpot>() {
+                @Override
+                public void callback(ParkingSpot data) {
+                    if(data != null) {
+                        spotsAndBlocks.put(data, new BlockedDates(key));
+                    }
+
+                    if(spotsAndBlocks.size() == rentedSpots.size()) {
+                        finishedCallback.callback(spotsAndBlocks);
+                    }
+                }
+            });
+        }
     }
 
     public void deleteSpotImage(String spotID) {

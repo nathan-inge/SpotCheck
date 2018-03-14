@@ -71,6 +71,39 @@ public class BlockedDatesTest {
         assertTrue(blockedDatesA.conflict(550L, 800L));
         assertTrue(blockedDatesA.conflict(200L, 1000L));
         assertTrue(blockedDatesA.conflict(450L, 550L));
-
     }
+
+    @Test
+    public void test_toString() {
+        long start = 250346L;
+        long end = 4505L;
+
+        BlockedDates blockedDates = new BlockedDates(start, end);
+
+        assertEquals("250346-4505", blockedDates.toString());
+    }
+
+    @Test
+    public void test_stringConstructor() {
+        BlockedDates blockedDatesString = new BlockedDates("145-64034");
+
+        assertEquals(145L, blockedDatesString.getStart());
+        assertEquals(64034L, blockedDatesString.getEnd());
+
+
+        try {
+            BlockedDates blockedDatesInvalid = new BlockedDates("hello-lol");
+            assertTrue(false);
+        } catch (NumberFormatException e) {
+            assertTrue(true);
+        }
+
+        try {
+            BlockedDates blockedDatesInvalid = new BlockedDates("44423445");
+            assertTrue(false);
+        } catch (StringIndexOutOfBoundsException e) {
+            assertTrue(true);
+        }
+    }
+
 }
