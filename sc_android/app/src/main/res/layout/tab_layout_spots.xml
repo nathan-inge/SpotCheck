@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/spot_tab_RL"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="false"
+    app:elevation="0dp">
 
     <android.support.design.widget.TabLayout
         android:id="@+id/spots_tab_layout"
@@ -11,13 +14,16 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:background="@color/colorPrimary"
-        android:elevation="5dp"
-        android:minHeight="?attr/actionBarSize" />
+        android:minHeight="?attr/actionBarSize"
+        app:tabTextColor="@android:color/darker_gray"
+        app:tabSelectedTextColor="@android:color/white"
+        app:tabIndicatorColor="@android:color/white"
+        app:elevation="0dp"/>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/spots_view_pager"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
         android:layout_below="@+id/spots_tab_layout" />
-    
+
 </RelativeLayout>

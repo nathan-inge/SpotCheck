@@ -4,6 +4,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -21,6 +23,7 @@ import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseCallback;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.ParkingSpot;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.SpotCheckUser;
 import com.ucsb.cs48.spotcheck.SpotDetailActivity;
+import com.ucsb.cs48.spotcheck.Utilities.SpotListPagerAdapter;
 
 import java.util.ArrayList;
 
@@ -39,48 +42,39 @@ public class MyParkingSpots extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tab_layout_spots);
+        getSupportActionBar().setElevation(0);
 
 
         scFirebase = new SCFirebase();
         scFirebaseAuth = new SCFirebaseAuth();
         currentUser = scFirebaseAuth.getCurrentUser();
 
-        ownedParkingSpotsLV = findViewById(R.id.owned_spots_list);
 
-        ownedParkingSpotsLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        TabLayout tabLayout = findViewById(R.id.spots_tab_layout);
+        tabLayout.addTab(tabLayout.newTab().setText("Owned Spots"));
+        tabLayout.addTab(tabLayout.newTab().setText("Rented Spots"));
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
+        final ViewPager viewPager = findViewById(R.id.spots_view_pager);
+        final SpotListPagerAdapter adapter = new SpotListPagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
+
+        viewPager.setAdapter(adapter);
+
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent i = new Intent(getApplicationContext(), SpotDetailActivity.class);
-                i.putExtra("spotID", usersParkingSpots.get(position).getSpotID());
-                startActivityForResult(i, REQUEST_SPOT_DETAILS);
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
             }
-        });
 
-
-        final ProgressDialog dialog = ProgressDialog.show(MyParkingSpots.this, "",
-            "Loading Spots...", true);
-        scFirebase.getUsersParkingSpots(currentUser.getUid(), new SCFirebaseCallback<ArrayList<ParkingSpot>>() {
             @Override
-            public void callback(ArrayList<ParkingSpot> data) {
-               dialog.dismiss();
-               if(data != null) {
-                   usersParkingSpots = data;
+            public void onTabUnselected(TabLayout.Tab tab) {
 
+            }
 
-                   final Handler mainHandler = new Handler(Looper.getMainLooper());
-                   mainHandler.post(new Runnable() {
-                       @Override
-                       public void run() {
-                           String[] allSpots = new String[usersParkingSpots.size()];
-                           for (int i=0; i < usersParkingSpots.size(); i++)
-                               allSpots[i] = usersParkingSpots.get(i).getAddress();
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
 
-                           ArrayAdapter adapter = new ArrayAdapter<>(MyParkingSpots.this,
-                                   R.layout.activity_listview, allSpots);
-                           ownedParkingSpotsLV.setAdapter(adapter);
-                       }
-                   });
-               }
             }
         });
     }
