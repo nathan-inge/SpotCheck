@@ -57,12 +57,9 @@ public class OwnedSpotsFragment extends Fragment {
             }
         });
 
-        final ProgressDialog dialog = ProgressDialog.show(getActivity(), "",
-            "Loading Spots...", true);
         scFirebase.getUsersParkingSpots(currentUser.getUid(), new SCFirebaseCallback<ArrayList<ParkingSpot>>() {
             @Override
             public void callback(ArrayList<ParkingSpot> data) {
-                dialog.dismiss();
                 if(data != null) {
                     usersParkingSpots = data;
 

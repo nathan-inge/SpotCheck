@@ -19,8 +19,6 @@ public class SpotListPagerAdapter extends FragmentStatePagerAdapter {
 
     public SpotListPagerAdapter(FragmentManager fm, int numTabs) {
         super(fm);
-        this.ownedSpotsFragment = new OwnedSpotsFragment();
-        this.rentedSpotsFragment = new RentedSpotsFragment();
         this.numTabs = numTabs;
     }
 
@@ -28,10 +26,10 @@ public class SpotListPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return this.ownedSpotsFragment;
+                return new OwnedSpotsFragment();
 
             case 1:
-                return this.rentedSpotsFragment;
+                return new RentedSpotsFragment();
 
             default:
                 return null;
