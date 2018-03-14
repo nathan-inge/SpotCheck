@@ -51,6 +51,8 @@ public class SpotDetailActivity extends AppCompatActivity {
 
     private SpotCheckUser owner;
     private ParkingSpot spot;
+    private FirebaseUser currentUser;
+    private SpotCheckUser currentSCUser;
     private boolean isOwner = false;
 
     private boolean openedMailClient = false;
@@ -76,6 +78,7 @@ public class SpotDetailActivity extends AppCompatActivity {
         // Initialize SCFirebase instance
         scFirebase = new SCFirebase();
         scAuth = new SCFirebaseAuth();
+        currentUser = scAuth.getCurrentUser();
 
         // Get current, logged in user
         final FirebaseUser currentUser = scAuth.getCurrentUser();
@@ -338,13 +341,41 @@ public class SpotDetailActivity extends AppCompatActivity {
     }
 
     public void rentSpot() {
-        spot.addBlockedDates(new BlockedDates(startTime, endTime));
-        scFirebase.updateBlockedDates(spot.getSpotID(), spot.getBlockedDatesList());
+        scFirebase.getSCUser(currentUser.getUid(), new SCFirebaseCallback<SpotCheckUser>() {
+            @Override
+            public void callback(SpotCheckUser data) {
+                if(data != null) {
+                    BlockedDates rentalBlockedDates = new BlockedDates(startTime, endTime);
+                    spot.addBlockedDates(rentalBlockedDates);
+                    scFirebase.updateBlockedDates(spot.getSpotID(), spot.getBlockedDatesList());
 
-        Toast.makeText(
-            getApplicationContext(),
-            "Spot Successfully Rented!",
-            Toast.LENGTH_SHORT).show();
+                    currentSCUser = data;
+                    currentSCUser.addRentedSpot(rentalBlockedDates.toString(), spot.getSpotID());
+                    scFirebase.uploadUser(currentSCUser);
+
+                    Toast.makeText(
+                        getApplicationContext(),
+                        "Spot Successfully Rented!",
+                        Toast.LENGTH_SHORT).show();
+
+                    setResult(SPOT_RENTED);
+                    finish();
+
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(SpotDetailActivity.this);
+
+                    builder.setTitle("Error Renting Spot!")
+                        .setMessage(("An error occurred while attempting to rent this spot. Please try again."))
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        })
+                        .setIcon(R.mipmap.spot_marker_icon)
+                        .show();
+                }
+            }
+        });
     }
 
 

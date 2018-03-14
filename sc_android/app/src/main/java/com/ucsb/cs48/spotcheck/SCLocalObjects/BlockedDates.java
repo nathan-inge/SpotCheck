@@ -18,6 +18,13 @@ public class BlockedDates {
         this.end = end;
     }
 
+    public BlockedDates(String blockedString) {
+        int dashIndex = blockedString.indexOf("-");
+
+        this.start = Long.valueOf(blockedString.substring(0, dashIndex));
+        this.end = Long.valueOf(blockedString.substring(dashIndex + 1));
+    }
+
     @Exclude
     public Date getStartDate() {
         return new Date(start);
@@ -64,5 +71,10 @@ public class BlockedDates {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(start) + "-" + String.valueOf(end);
     }
 }

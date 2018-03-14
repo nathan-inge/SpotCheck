@@ -14,6 +14,7 @@ public final class SCConstants {
     public static final int SPOT_EDITED = 11;
     public static final int SPOT_DELETED = 12;
     public static final int PROFILE_EDITED = 13;
+    public static final int SPOT_RENTED = 14;
 
 
     public static final int SEND_OWNER_EMAIL = 20;

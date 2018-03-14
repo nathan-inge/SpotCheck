@@ -65,6 +65,7 @@ import static com.ucsb.cs48.spotcheck.Utilities.SCConstants.REQUEST_SPOT_DETAILS
 import static com.ucsb.cs48.spotcheck.Utilities.SCConstants.SPOT_CREATED;
 import static com.ucsb.cs48.spotcheck.Utilities.SCConstants.SPOT_DELETED;
 import static com.ucsb.cs48.spotcheck.Utilities.SCConstants.SPOT_EDITED;
+import static com.ucsb.cs48.spotcheck.Utilities.SCConstants.SPOT_RENTED;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -246,7 +247,8 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
         } else if(
             (resultCode == SPOT_CREATED)
                 || (resultCode == SPOT_EDITED)
-                || (resultCode == SPOT_DELETED)) {
+                || (resultCode == SPOT_DELETED)
+                || (resultCode == SPOT_RENTED)) {
             displayParkingSpots();
         }
     }
