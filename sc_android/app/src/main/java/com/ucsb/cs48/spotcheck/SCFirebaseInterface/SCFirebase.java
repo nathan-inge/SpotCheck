@@ -30,6 +30,7 @@ import static com.ucsb.cs48.spotcheck.Utilities.SCConstants.*;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
@@ -260,31 +261,26 @@ public class SCFirebase {
 
     public void getRentedParkingSpots(
         final SpotCheckUser user,
-        @NonNull final SCFirebaseCallback<ArrayList<ParkingSpot>> finishedCallback) throws InterruptedException {
+        @NonNull final SCFirebaseCallback<Map<ParkingSpot, BlockedDates>> finishedCallback) {
 
-        final ArrayList<ParkingSpot> spots = new ArrayList<>();
+        final Map<ParkingSpot, BlockedDates> spotsAndBlocks = new HashMap<>();
 
         final Map<String, String> rentedSpots = user.getRentedSpots();
 
-
-        for (String key : rentedSpots.keySet()) {
+        for (final String key : rentedSpots.keySet()) {
             getParkingSpot(rentedSpots.get(key), new SCFirebaseCallback<ParkingSpot>() {
                 @Override
                 public void callback(ParkingSpot data) {
                     if(data != null) {
-                        spots.add(data);
+                        spotsAndBlocks.put(data, new BlockedDates(key));
                     }
 
-                    if(spots.size() == rentedSpots.size()) {
-                        finishedCallback.callback(spots);
+                    if(spotsAndBlocks.size() == rentedSpots.size()) {
+                        finishedCallback.callback(spotsAndBlocks);
                     }
                 }
             });
-
-
         }
-
-        finishedCallback.callback(spots);
     }
 
     public void deleteSpotImage(String spotID) {
