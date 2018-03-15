@@ -1,32 +1,56 @@
 package com.ucsb.cs48.spotcheck.SCFirebaseInterface;
 
 
-import android.provider.ContactsContract;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import com.ucsb.cs48.spotcheck.SCLocalObjects.BlockedDates;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.ParkingSpot;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.SpotCheckUser;
 
+import static com.ucsb.cs48.spotcheck.Utilities.SCConstants.TEST_SPOT_OWNER_ID;
+import static com.ucsb.cs48.spotcheck.Utilities.SCConstants.TEST_USER_ID;
+
+import java.io.ByteArrayOutputStream;
+import android.net.Uri;
+
+import static com.ucsb.cs48.spotcheck.Utilities.SCConstants.*;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 public class SCFirebase {
 
     private DatabaseReference scDatabase;
-
-    private final String PARKINGSPOT_PATH = "parking_spots";
-    private final String USER_PATH = "users";
+    private StorageReference scStorage;
 
     public SCFirebase() {
         scDatabase = FirebaseDatabase.getInstance().getReference();
+        scStorage = FirebaseStorage.getInstance().getReference();
     }
 
-    /// MARK - Parking Spot Interface
+    /**
+     *
+     * MARK - ParkingSpot Interface
+     */
+
     // Create a new parking spot in the database
     public String createNewSpot(ParkingSpot spot) {
         String newSpotID = "spot-" + UUID.randomUUID().toString();
@@ -35,6 +59,12 @@ public class SCFirebase {
 
         return newSpotID;
     }
+
+    // Update a current parking spot from the data base
+    public void updateSpot(final String spotID, ParkingSpot updatedSpot) {
+        scDatabase.child(PARKINGSPOT_PATH).child(spotID).setValue(updatedSpot);
+    }
+
 
     // Get a parking spot from the data base
     public void getParkingSpot(final String spotID,
@@ -65,16 +95,18 @@ public class SCFirebase {
 
         DatabaseReference myRef = scDatabase.child(PARKINGSPOT_PATH);
 
-        myRef.addValueEventListener(new ValueEventListener() {
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 ArrayList<ParkingSpot> parkingSpots = new ArrayList<>();
 
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
                     ParkingSpot spot = postSnapshot.getValue(ParkingSpot.class);
-                    spot.setSpotID(postSnapshot.getKey());
 
-                    parkingSpots.add(spot);
+                    if (spot != null) {
+                        spot.setSpotID(postSnapshot.getKey());
+                        parkingSpots.add(spot);
+                    }
                 }
 
                 finishedCalback.callback(parkingSpots);
@@ -86,17 +118,196 @@ public class SCFirebase {
         });
     }
 
+
+    public void updateBlockedDates(String spotID, ArrayList<BlockedDates> blockedDates) {
+        scDatabase.child(PARKINGSPOT_PATH).child(spotID).child("blockedDatesList").setValue(blockedDates);
+    }
+
+    public void getAvailableParkingSpots(final long start, final long end,
+                                         @NonNull final SCFirebaseCallback<ArrayList<ParkingSpot>> finishedCallback) {
+
+        DatabaseReference myRef = scDatabase.child(PARKINGSPOT_PATH);
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<ParkingSpot> availableParkingSpots = new ArrayList<>();
+
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    ParkingSpot spot = postSnapshot.getValue(ParkingSpot.class);
+
+                    if(spot != null) {
+                        spot.setSpotID(postSnapshot.getKey());
+
+                        if (spot.getBlockedDatesCount() == 0) {
+                            availableParkingSpots.add(spot);
+
+                        } else {
+                            Boolean available = true;
+                            ArrayList<BlockedDates> blockedDates = spot.getBlockedDatesList();
+
+                            for ( BlockedDates block : blockedDates) {
+                                if(block.conflict(start, end)) {
+                                    available = false;
+                                    break;
+                                }
+                            }
+
+                            if(available) {
+                                availableParkingSpots.add(spot);
+                            }
+                        }
+                    }
+                }
+
+                finishedCallback.callback(availableParkingSpots);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     public void deleteParkingSpot(String spotID) {
         DatabaseReference myRef = scDatabase.child(PARKINGSPOT_PATH).child(spotID);
         myRef.removeValue();
+
+        deleteSpotImage(spotID);
     }
 
+    public void deleteTestParkingSpots(@NonNull final SCFirebaseCallback<Boolean> finishedCallback) {
+        DatabaseReference myRef = scDatabase.child(PARKINGSPOT_PATH);
 
-    /// MARK - User Interface
-    // Create a new user in database
-    // SHOULD ONLY BE USED WHEN REGISTERING A NEW USER
+        Query query = myRef.orderByChild("ownerID").equalTo(TEST_SPOT_OWNER_ID);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    // dataSnapshot is the "issue" node with all children with TEST_SPOT_OWNER_ID
+                    for (DataSnapshot issue : dataSnapshot.getChildren()) {
+                        issue.getRef().removeValue();
+                    }
+                    finishedCallback.callback(true);
+                } else {
+                    finishedCallback.callback(false);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void uploadSpotImage(String spotID, Bitmap imageBitmap,
+                                @NonNull final SCFirebaseCallback<Uri> finishedCallback) {
+
+        StorageReference uploadLocation = scStorage.child(
+            PARKINGSPOT_PATH).child(spotID + SPOT_IMAGE_POSTFIX);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        imageBitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+        byte[] data = baos.toByteArray();
+
+        UploadTask uploadTask = uploadLocation.putBytes(data);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                finishedCallback.callback(null);
+                
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                finishedCallback.callback(taskSnapshot.getDownloadUrl());
+
+            }
+        });
+    }
+
+    public void getUsersParkingSpots(final String userID,
+                                     @NonNull final SCFirebaseCallback<ArrayList<ParkingSpot>> finishedCalback) {
+
+        DatabaseReference myRef = scDatabase.child(PARKINGSPOT_PATH);
+
+        Query query = myRef.orderByChild("ownerID").equalTo(userID);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<ParkingSpot> parkingSpots = new ArrayList<>();
+
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    ParkingSpot spot = postSnapshot.getValue(ParkingSpot.class);
+
+                    if ((spot != null)) {
+                        spot.setSpotID(postSnapshot.getKey());
+                        parkingSpots.add(spot);
+                    }
+                }
+
+                finishedCalback.callback(parkingSpots);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+
+        });
+    }
+
+    public void getRentedParkingSpots(
+        final SpotCheckUser user,
+        @NonNull final SCFirebaseCallback<Map<ParkingSpot, BlockedDates>> finishedCallback) {
+
+        final Map<ParkingSpot, BlockedDates> spotsAndBlocks = new HashMap<>();
+
+        final Map<String, String> rentedSpots = user.getRentedSpots();
+
+        for (final String key : rentedSpots.keySet()) {
+            getParkingSpot(rentedSpots.get(key), new SCFirebaseCallback<ParkingSpot>() {
+                @Override
+                public void callback(ParkingSpot data) {
+                    if(data != null) {
+                        spotsAndBlocks.put(data, new BlockedDates(key));
+                    }
+
+                    if(spotsAndBlocks.size() == rentedSpots.size()) {
+                        finishedCallback.callback(spotsAndBlocks);
+                    }
+                }
+            });
+        }
+    }
+
+    public void deleteSpotImage(String spotID) {
+        StorageReference spotImagePath = scStorage.child(PARKINGSPOT_PATH).child(
+            spotID + SPOT_IMAGE_POSTFIX);
+
+        spotImagePath.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                // File deleted successfully
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Uh-oh, an error occurred!
+            }
+        });
+    }
+
+    /**
+     *
+     * MARK - SpotCheckUser Interface
+     */
+
+    // Create or modify user object on database
     public void uploadUser(SpotCheckUser user) {
-        scDatabase.child("users").child(user.getUserID()).setValue(user);
+        scDatabase.child(USER_PATH).child(user.getUserID()).setValue(user);
     }
 
     // Get a user from the database
@@ -121,5 +332,41 @@ public class SCFirebase {
             public void onCancelled(DatabaseError databaseError) {}
 
         });
+    }
+
+    public void uploadProfileImage(String userID, Bitmap imageBitmap,
+                                   @NonNull final SCFirebaseCallback<Uri> finishedCallback) {
+
+        StorageReference uploadLocation = scStorage.child(
+                USER_PATH).child(userID + USER_IMAGE_POSTFIX);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        imageBitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+        byte[] data = baos.toByteArray();
+
+        UploadTask uploadTask = uploadLocation.putBytes(data);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                finishedCallback.callback(null);
+
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                finishedCallback.callback(taskSnapshot.getDownloadUrl());
+
+            }
+        });
+    }
+
+    public void deleteUser(String userID) {
+        DatabaseReference myRef = scDatabase.child(USER_PATH).child(userID);
+        myRef.removeValue();
+    }
+
+
+    public void deleteTestUsers() {
+       deleteUser(TEST_USER_ID);
     }
 }
