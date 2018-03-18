@@ -30,9 +30,11 @@
 - [Integration Tests](https://github.com/nathan-inge/SpotCheck/tree/master/sc_android/app/src/androidTest/java/com/ucsb/cs48/spotcheck)
 
 **Project**
-- [Android Project](/sc_android)
+- [Android Project](/sc_android) 
+![Alt text](https://img.shields.io/badge/lines-5057-green.svg)
   - *All development should occur on dev branch*
 - [Design](/sc_design)
+![Alt text](https://img.shields.io/badge/lines-6661-green.svg)
   - Contains design ideas, mockups, features, etc...
 
 **Quick Links**
