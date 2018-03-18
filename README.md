@@ -45,3 +45,13 @@
 - [Trello Board](https://trello.com/b/LGbtxXUF/spotcheck)
 - [Draft Project Google Doc](https://docs.google.com/document/d/1UTn_WbTc9A-A8ftDLvF8qt2i_0-ll9bfwnuI36cjqpY/edit?usp=sharing)
 - [Final Project Google Doc](https://docs.google.com/document/d/18sviNH9FBbv4cDchEai6WGgODvYb3qnMHoBYNEsTPFg/edit)
+
+**Built Using...**
+<p align="center">
+  <img src="/sc_design/android-studio-logo.png" width="200" height="auto" align="center"/>
+  <img src="/sc_design/firebase%20icon.png" width="200" height="auto" align="center"/>
+  <img src="/sc_design/g-maps.png" width="200" height="auto" align="center"/>
+  <img src="/sc_design/glide_logo.png" width="200" height="auto" align="center"/>
+</p>
+
+
