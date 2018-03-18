@@ -1,0 +1,34 @@
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+# For Android project
+/sc_android/*.iml
+/sc_android/.gradle
+/sc_android/local.properties
+/sc_android/.idea/workspace.xml
+/sc_android/.idea/libraries
+/sc_android/.idea/misc.xml
+/sc_android/.DS_Store
+/sc_android/build
+/sc_android/captures
+/sc_android/.externalNativeBuild
