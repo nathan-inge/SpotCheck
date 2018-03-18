@@ -1,3 +1,5 @@
+
+![Alt text](https://img.shields.io/badge/version-1.1.0-brightgreen.svg)
 # SpotCheck
 **Overview**
 - Parking marketplace app
