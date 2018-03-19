@@ -28,53 +28,32 @@
         android:onClick="goToRegisterActivity"
         android:text="Register" />
 
-    <Button
-        android:id="@+id/google_login_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/or_text"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="42dp"
-        android:onClick="goToGoogleMapsActivity"
-        android:text="Login with Google" />
-
-    <Button
-        android:id="@+id/facebook_login_button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/google_login_button"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="24dp"
-        android:onClick="goToGoogleMapsActivity"
-        android:text="Login with Facebook" />
-
-    <TextView
-        android:id="@+id/or_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/register_button"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="19dp"
-        android:text="Or:" />
-
     <TextView
         android:id="@+id/login_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/facebook_login_button2"
+        android:layout_below="@+id/imageView"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="65dp"
-        android:text="Already registered? Login with e-mail here:" />
+        android:layout_marginTop="23dp"
+        android:text="Already registered? Login with e-mail here:"/>
 
     <Button
         android:id="@+id/login_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/register_button"
-        android:layout_alignStart="@+id/register_button"
         android:layout_below="@+id/login_text"
-        android:layout_marginTop="38dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="19dp"
         android:onClick="goToLoginActivity"
-        android:text="Login" />
+        android:text="Login"/>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/register_button"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="34dp"
+        android:src="@mipmap/spot_marker_icon"/>
 
 </android.widget.RelativeLayout>

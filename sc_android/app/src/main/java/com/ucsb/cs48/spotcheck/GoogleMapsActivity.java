@@ -1,13 +1,9 @@
 package com.ucsb.cs48.spotcheck;
 
-import android.app.ActionBar;
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -16,10 +12,8 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
+import android.widget.DatePicker;
 import android.widget.TextView;
-
 
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
@@ -27,28 +21,27 @@ import android.location.Location;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.AppCompatImageButton;
 import android.util.Log;
-import android.view.Menu;
 import android.widget.FrameLayout;
-import android.support.v7.widget.Toolbar;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.ucsb.cs48.spotcheck.ParkingSpotLists.MyParkingSpots;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebase;
 import com.ucsb.cs48.spotcheck.SCFirebaseInterface.SCFirebaseCallback;
+import com.ucsb.cs48.spotcheck.SCLocalObjects.ParkingSpot;
 import com.ucsb.cs48.spotcheck.SCLocalObjects.SpotCheckUser;
 
 
@@ -65,22 +58,33 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 
+import static com.ucsb.cs48.spotcheck.Utilities.SCConstants.REQUEST_CREATE_SPOT;
+import static com.ucsb.cs48.spotcheck.Utilities.SCConstants.REQUEST_SPOT_DETAILS;
+import static com.ucsb.cs48.spotcheck.Utilities.SCConstants.SPOT_CREATED;
+import static com.ucsb.cs48.spotcheck.Utilities.SCConstants.SPOT_DELETED;
+import static com.ucsb.cs48.spotcheck.Utilities.SCConstants.SPOT_EDITED;
+import static com.ucsb.cs48.spotcheck.Utilities.SCConstants.SPOT_RENTED;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+
 public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
 
+    // Map Related Vars
     private GoogleMap mMap;
     private CameraPosition mCameraPosition;
     PlaceAutocompleteFragment placeAutoComplete;
-
     private static final String TAG = GoogleMapsActivity.class.getSimpleName();
 
     // The entry points to the Places API.
     private GeoDataClient mGeoDataClient;
     private PlaceDetectionClient mPlaceDetectionClient;
-
 
     // The entry point to the Fused Location Provider.
     private FusedLocationProviderClient mFusedLocationProviderClient;
@@ -100,7 +104,6 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
 
-
     // Used for selecting the current place.
     private static final int M_MAX_ENTRIES = 5;
     private String[] mLikelyPlaceNames;
@@ -108,12 +111,25 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
     private String[] mLikelyPlaceAttributions;
     private LatLng[] mLikelyPlaceLatLngs;
 
+    // SC Interface Vars
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseAuth mAuth;
     private SCFirebase scFirebase;
+
+    // Local Vars
     private SpotCheckUser user;
+
+    // UI Vars
     private DrawerLayout mDrawerLayout;
-    private TextView mUserName;
+    private Button startTimeButton;
+    private Button endTimeButton;
+
+    // Time Range Vars
+    private Date startTime = new Date();
+    private Date endTime = new Date(Long.MAX_VALUE);
+    private int TIME_SELECTION = 4;
+    private Boolean startTimeSet = false;
+    private Boolean endTimeSet = false;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -127,8 +143,6 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
         // Retrieve the content view that renders the map.
         setContentView(R.layout.activity_google_maps);
 
-
-
         // Construct a GeoDataClient.
         mGeoDataClient = Places.getGeoDataClient(this, null);
 
@@ -138,10 +152,9 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
         // Construct a FusedLocationProviderClient.
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
+        // Set up search
         placeAutoComplete = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.place_autocomplete);
-
         placeAutoComplete.getView().setBackgroundColor(getResources().getColor(android.R.color.white));
-
         placeAutoComplete.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
@@ -181,8 +194,6 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                         public void callback(SpotCheckUser data) {
                             if(data != null) {
                                 user = data;
-                                user.setUserID(userFirebase.getUid());
-
                             }
                         }
                     });
@@ -194,6 +205,9 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
             }
         };
 
+        // Set up time range related stuff
+        startTimeButton = findViewById(R.id.start_time_button);
+        endTimeButton = findViewById(R.id.end_time_button);
     }
 
     /**
@@ -222,6 +236,24 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if(requestCode == TIME_SELECTION){
+            Toast.makeText(
+                getApplicationContext(),
+                "Spot Successfully Rented!",
+                Toast.LENGTH_SHORT).show();
+
+        } else if(
+            (resultCode == SPOT_CREATED)
+                || (resultCode == SPOT_EDITED)
+                || (resultCode == SPOT_DELETED)
+                || (resultCode == SPOT_RENTED)) {
+            displayParkingSpots();
+        }
+    }
+
     /**
      * Manipulates the map when it's available.
      * This callback is triggered when the map is ready to be used.
@@ -229,6 +261,8 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
     @Override
     public void onMapReady(GoogleMap map) {
         mMap = map;
+
+        mMap.getUiSettings().setCompassEnabled(false);
 
         // Use a custom info window adapter to handle multiple lines of text in the
         // info window contents.
@@ -252,6 +286,20 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
                 TextView snippet = ((TextView) infoWindow.findViewById(R.id.snippet));
                 snippet.setText(marker.getSnippet());
 
+                mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                    @Override
+                    public void onInfoWindowClick(Marker marker) {
+                        Intent i = new Intent(getApplicationContext(), SpotDetailActivity.class);
+                        i.putExtra("spotID", marker.getTag().toString());
+                        i.putExtra("startTime", startTime.getTime());
+                        i.putExtra("endTime", endTime.getTime());
+                        i.putExtra("setTimes", (startTimeSet && endTimeSet));
+                        startActivityForResult(i, REQUEST_SPOT_DETAILS);
+
+
+                    }
+                });
+
                 return infoWindow;
             }
         });
@@ -264,6 +312,32 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
 
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
+
+        displayAllParkingSpots();
+    }
+
+
+    private void displayAllParkingSpots() {
+        final ProgressDialog dialog = ProgressDialog.show(GoogleMapsActivity.this, "",
+            "SpotChecking...", true);
+
+        scFirebase.getAllParkingSpots(new SCFirebaseCallback<ArrayList<ParkingSpot>>() {
+            @Override
+            public void callback(ArrayList<ParkingSpot> data) {
+                if((data != null) && (data.size() > 0)) {
+                    for(ParkingSpot spot : data) {
+                        Marker spotMarker = mMap.addMarker(new MarkerOptions()
+                            .position(spot.getLatLng().convertToGoogleLatLng())
+                            .title(spot.formattedRate() + "/hour")
+                            .icon(BitmapDescriptorFactory.fromResource(R.mipmap.spot_marker_icon))
+                            .snippet("See Details")
+                        );
+                        spotMarker.setTag(spot.getSpotID());
+                    }
+                }
+                dialog.dismiss();
+            }
+        });
     }
 
 
@@ -469,7 +543,7 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
         try {
             if (mLocationPermissionGranted) {
                 mMap.setMyLocationEnabled(true);
-                mMap.getUiSettings().setMyLocationButtonEnabled(true);
+                mMap.getUiSettings().setMyLocationButtonEnabled(false);
             } else {
                 mMap.setMyLocationEnabled(false);
                 mMap.getUiSettings().setMyLocationButtonEnabled(false);
@@ -500,13 +574,18 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
 
             case R.id.create_spot_entry_button: {
                 Intent create_spot_entry = new Intent(this, CreateSpotEntry.class);
-                startActivity(create_spot_entry);
+                startActivityForResult(create_spot_entry, REQUEST_CREATE_SPOT);
                 break;
             }
 
             case R.id.option_get_place: {
                 showCurrentPlace();
                 break;
+            }
+
+            case R.id.my_parking_spots_button: {
+                Intent i = new Intent(this, MyParkingSpots.class);
+                startActivity(i);
             }
 
         }
@@ -532,5 +611,172 @@ public class GoogleMapsActivity extends AppCompatActivity implements OnMapReadyC
     public void viewProfileButtonClicked() {
         Intent i = new Intent(this, ProfilePage.class);
         startActivity(i);
+    }
+
+    public void startTimeTapped(View view) {
+        final View dialogView = View.inflate(this, R.layout.dialog_time_range, null);
+        final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+
+        alertDialog.setTitle("Set Start Time:");
+        dialogView.findViewById(R.id.date_time_set).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                DatePicker datePicker = dialogView.findViewById(R.id.date_picker);
+                TimePicker timePicker = dialogView.findViewById(R.id.time_picker);
+
+                Calendar calendar = new GregorianCalendar(datePicker.getYear(),
+                    datePicker.getMonth(),
+                    datePicker.getDayOfMonth(),
+                    timePicker.getCurrentHour(),
+                    timePicker.getCurrentMinute());
+
+                int unroundedMinutes = calendar.get(Calendar.MINUTE);
+                int mod = unroundedMinutes % 15;
+                calendar.add(Calendar.MINUTE, - mod);
+
+                verifyTimeRange(calendar.getTime(), true);
+
+                alertDialog.dismiss();
+            }});
+        alertDialog.setView(dialogView);
+        alertDialog.show();
+
+    }
+
+    public void endTimeTapped(View view) {
+        final View dialogView = View.inflate(this, R.layout.dialog_time_range, null);
+        final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+
+        alertDialog.setTitle("Set End Time:");
+        dialogView.findViewById(R.id.date_time_set).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                DatePicker datePicker = dialogView.findViewById(R.id.date_picker);
+                TimePicker timePicker = dialogView.findViewById(R.id.time_picker);
+
+                Calendar calendar = new GregorianCalendar(datePicker.getYear(),
+                    datePicker.getMonth(),
+                    datePicker.getDayOfMonth(),
+                    timePicker.getCurrentHour(),
+                    timePicker.getCurrentMinute());
+
+                int unroundedMinutes = calendar.get(Calendar.MINUTE);
+                int mod = unroundedMinutes % 15;
+                calendar.add(Calendar.MINUTE, - mod);
+
+                verifyTimeRange(calendar.getTime(), false);
+                alertDialog.dismiss();
+            }});
+        alertDialog.setView(dialogView);
+        alertDialog.show();
+    }
+
+    private void verifyTimeRange(Date newTime, Boolean start) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("E M/d, h:mm a");
+
+        if(start) {
+            Date currentTime = new Date();
+            long currentMillis = currentTime.getTime();
+
+            long endTimeMillis = endTime.getTime();
+
+            long newMillis = newTime.getTime();
+
+            if(newMillis < currentMillis) {
+                // Cannot set start time before current time
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+                builder.setTitle("Invalid Start Time")
+                    .setMessage(("Start time cannot have already passed."))
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // do nothing
+                        }
+                    })
+                    .setIcon(R.mipmap.spot_marker_icon)
+                    .show();
+
+            } else if(newMillis > endTimeMillis) {
+                // Cannot set start time before end time
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+                builder.setTitle("Invalid Start Time")
+                    .setMessage(("Start time cannot be after end time."))
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // do nothing
+                        }
+                    })
+                    .setIcon(R.mipmap.spot_marker_icon)
+                    .show();
+
+            } else {
+                startTimeSet = true;
+                startTime = newTime;
+                startTimeButton.setText(simpleDateFormat.format(startTime));
+                displayParkingSpots();
+
+            }
+
+        } else {
+            long currentStartTimeMillis = startTime.getTime();
+
+            long newMillis = newTime.getTime();
+
+            if(newMillis <= currentStartTimeMillis) {
+                // Cannot set end time before start time
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+                builder.setTitle("Invalid End Time")
+                    .setMessage(("End time cannot be before start time."))
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // do nothing
+                        }
+                    })
+                    .setIcon(R.mipmap.spot_marker_icon)
+                    .show();
+
+            } else {
+                endTimeSet = true;
+                endTime = newTime;
+                endTimeButton.setText(simpleDateFormat.format(endTime));
+                displayParkingSpots();
+
+            }
+        }
+    }
+
+    private void displayParkingSpots() {
+        if(mMap == null) {
+            return;
+        }
+
+        final ProgressDialog dialog = ProgressDialog.show(GoogleMapsActivity.this, "",
+            "SpotChecking...", true);
+
+        mMap.clear();
+
+        scFirebase.getAvailableParkingSpots(startTime.getTime(), endTime.getTime(),
+            new SCFirebaseCallback<ArrayList<ParkingSpot>>() {
+            @Override
+            public void callback(ArrayList<ParkingSpot> data) {
+                if((data != null) && (data.size() > 0)) {
+                    for(ParkingSpot spot : data) {
+                        Marker spotMarker = mMap.addMarker(new MarkerOptions()
+                            .position(spot.getLatLng().convertToGoogleLatLng())
+                            .title(spot.formattedRate() + "/hour")
+                            .icon(BitmapDescriptorFactory.fromResource(R.mipmap.spot_marker_icon))
+                            .snippet("See Details")
+                        );
+                        spotMarker.setTag(spot.getSpotID());
+                    }
+                }
+                dialog.dismiss();
+            }
+        });
+
     }
 }

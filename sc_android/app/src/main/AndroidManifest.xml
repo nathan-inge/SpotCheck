@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.ucsb.cs48.spotcheck">
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
@@ -9,22 +10,18 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
-
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/spot_marker_icon"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
             android:name=".MainActivity"
-            android:theme="@android:style/Theme.NoTitleBar"></activity>
+            android:theme="@android:style/Theme.NoTitleBar" />
 
-    <meta-data
+        <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key"
-             />
+            android:value="@string/google_maps_key" />
 
         <activity
             android:name=".GoogleMapsActivity"
@@ -36,29 +33,37 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".CreateSpotEntry"
-            android:parentActivityName=".MainActivity"
-            android:label="@string/title_activity_create_spot_entry" />
-
+            android:label="@string/title_activity_create_spot_entry"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".EditSpotActivity"
+            android:label="Edit Spot"
+            android:parentActivityName=".SpotDetailActivity"/>
         <activity
             android:name=".UserAuthentication.LoginActivity"
             android:label="@string/title_activity_login" />
-
         <activity
             android:name=".UserAuthentication.RegisterActivity"
             android:label="@string/title_activity_register" />
-
         <activity
             android:name=".EditProfile"
-            android:parentActivityName=".ProfilePage"
-            android:label="Edit Profile" />
-
+            android:label="Edit Profile"
+            android:parentActivityName=".ProfilePage" />
         <activity
             android:name=".ProfilePage"
-            android:parentActivityName=".GoogleMapsActivity"
-            android:label="My Profile"></activity>
+            android:label="My Profile"
+            android:parentActivityName=".GoogleMapsActivity" />
+        <activity
+            android:name=".SpotDetailActivity"
+            android:label="Spot Details"
+            android:parentActivityName=".GoogleMapsActivity" />
+
+        <activity
+            android:name=".ParkingSpotLists.MyParkingSpots"
+            android:label="My Parking Spots"
+            android:parentActivityName=".GoogleMapsActivity"/>
     </application>
 
 </manifest>
