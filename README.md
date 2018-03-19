@@ -15,7 +15,7 @@
 **Download**
   ![Alt text](https://img.shields.io/badge/version-1.1.0-brightgreen.svg)
   
-  Download the latest apk [here](/1.1.0_release.apk).
+  Download the latest apk [here](/SpotCheck_v1.1.0.apk).
   
 **Setup Instructions**
 1) Clone root directory
