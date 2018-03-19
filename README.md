@@ -23,7 +23,7 @@
 3) Select the folder `sc_android` and click `Open`
 4) Allow Gradle and project to sync
 5) Select the green run icon along the top bar
-6) Create/select an Android emulator or choose to run ona a physical device if plugged in via USB
+6) Create/select an Android emulator or choose to run on a physical device if plugged in via USB
 
 **Testing**
 - [Unit Tests](https://github.com/nathan-inge/SpotCheck/tree/master/sc_android/app/src/test/java/com/ucsb/cs48/spotcheck)
